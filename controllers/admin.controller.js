@@ -141,6 +141,9 @@ exports.AddCourse = async (req, res) => {
                 image.push(fileUrl)
             }
         }
+        console.log(req.body.tillDate);
+        const d = new Date(req.body.tillDate);
+        let text = d.toISOString();
         const data = {
             title: req.body.title,
             description: req.body.description,
@@ -149,7 +152,7 @@ exports.AddCourse = async (req, res) => {
             toDay: req.body.toDay,
             fromDay: req.body.fromDay,
             toTime: req.body.toTime,
-            tillDate: req.body.tillDate
+            tillDate: text
         }
         const Data = await CoursesModel.create(data);
         res.status(200).json({ status: 200, message: "Course is Added ", data: Data })
@@ -163,8 +166,9 @@ exports.getCourses = async (req, res) => {
         const Courses = await CoursesModel.find();
         if (Courses.length == 0) {
             return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        } else {
+            res.status(200).json({ status: 200, message: "All courses Data found successfully.", data: Courses })
         }
-        res.status(200).json({ status: 200, message: "All courses Data found successfully.", data: Courses })
     } catch (err) {
         console.log(err);
         res.status(501).send({ status: 501, message: "server error.", data: {}, });

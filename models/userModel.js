@@ -24,6 +24,18 @@ var userSchema = new schema(
         password: {
             type: String,
         },
+        selectQuestion: {
+            type: String,
+        },
+        yourAnswer: {
+            type: String,
+        },
+        interest: {
+            type: String,
+        },
+        pinCode: {
+            type: String,
+        },
         address1: {
             type: String,
         },

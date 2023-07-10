@@ -21,9 +21,11 @@ app.get("/", (req, res) => {
 const admin = require('./routes/admin.route');
 const static = require('./routes/static.route');
 const course = require('./routes/course.route');
+const user = require('./routes/user.route');
 app.use('/api/v1/admin', admin);
 app.use('/api/v1/static', static);
 app.use('/api/v1/course', course);
+app.use('/api/v1/user', user);
 
 
 mongoose.Promise = global.Promise;
