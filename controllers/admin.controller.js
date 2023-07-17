@@ -4,6 +4,11 @@ const authConfig = require("../configs/auth.config");
 const User = require("../models/userModel");
 const ContactDetail = require("../models/ContactDetail");
 const CoursesModel = require("../models/CoursesModel");
+const whoWeare = require("../models/whoWeare");
+const popularJob = require("../models/popularJob");
+const trendingService = require("../models/trendingService");
+const eventModel = require("../models/eventModel");
+
 exports.registration = async (req, res) => {
     const { phone, email } = req.body;
     try {
@@ -194,6 +199,255 @@ exports.DeleteCourses = async (req, res) => {
         }
         await CoursesModel.findByIdAndDelete({ _id: req.params.id });
         res.status(200).json({ status: 200, message: "Courses delete successfully.", data: {} })
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.addWhoWeare = async (req, res) => {
+    try {
+        const findData = await whoWeare.findOne({ type: req.body.type });
+        if (findData) {
+            res.status(409).json({ status: 409, message: "Already exit ", data: {} })
+        } else {
+            const data = {
+                title: req.body.title,
+                desc: req.body.desc,
+                image: req.body.image,
+                type: req.body.type
+            }
+            const Data = await whoWeare.create(data);
+            res.status(200).json({ status: 200, message: "whoWeare is Added ", data: Data })
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getWhoWeare = async (req, res) => {
+    try {
+        const WhoWeare = await whoWeare.find();
+        if (WhoWeare.length == 0) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        } else {
+            res.status(200).json({ status: 200, message: "All WhoWeare Data found successfully.", data: WhoWeare })
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getWhoWeareById = async (req, res) => {
+    try {
+        const WhoWeare = await whoWeare.findById({ _id: req.params.id });
+        if (!WhoWeare) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        res.status(200).json({ status: 200, message: "Data found successfully.", data: WhoWeare })
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.DeleteWhoWeare = async (req, res) => {
+    try {
+        const WhoWeare = await whoWeare.findById({ _id: req.params.id });
+        if (!WhoWeare) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        await whoWeare.findByIdAndDelete({ _id: req.params.id });
+        res.status(200).json({ status: 200, message: "Who we are delete successfully.", data: {} })
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.addPopularJob = async (req, res) => {
+    try {
+        const findData = await popularJob.findOne({ title: req.body.title });
+        if (findData) {
+            res.status(409).json({ status: 409, message: "Already exit ", data: {} })
+        } else {
+            const data = {
+                title: req.body.title,
+                mainImage: req.body.mainImage,
+                image: req.body.image,
+                desc: req.body.desc,
+                descPoints: req.body.descPoints,
+                earnUpto: req.body.earnUpto,
+                currency: req.body.currency,
+                per: req.body.per
+            }
+            const Data = await popularJob.create(data);
+            res.status(200).json({ status: 200, message: "popularJob is Added ", data: Data })
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getPopularJob = async (req, res) => {
+    try {
+        const PopularJob = await popularJob.find();
+        if (PopularJob.length == 0) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        } else {
+            res.status(200).json({ status: 200, message: "All popularJob Data found successfully.", data: PopularJob })
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getPopularJobById = async (req, res) => {
+    try {
+        const PopularJob = await popularJob.findById({ _id: req.params.id });
+        if (!PopularJob) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        res.status(200).json({ status: 200, message: "Data found successfully.", data: PopularJob })
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.DeletePopularJob = async (req, res) => {
+    try {
+        const PopularJob = await popularJob.findById({ _id: req.params.id });
+        if (!PopularJob) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        await popularJob.findByIdAndDelete({ _id: req.params.id });
+        res.status(200).json({ status: 200, message: "Who we are delete successfully.", data: {} })
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.addTrendingService = async (req, res) => {
+    try {
+        const findData = await trendingService.findOne({ title: req.body.title });
+        if (findData) {
+            res.status(409).json({ status: 409, message: "Already exit ", data: {} })
+        } else {
+            const data = {
+                title: req.body.title,
+                image: req.body.image,
+                desc: req.body.desc,
+            }
+            const Data = await trendingService.create(data);
+            res.status(200).json({ status: 200, message: "trendingService is Added ", data: Data })
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getTrendingService = async (req, res) => {
+    try {
+        const TrendingService = await trendingService.find();
+        if (TrendingService.length == 0) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        } else {
+            res.status(200).json({ status: 200, message: "All TrendingService Data found successfully.", data: TrendingService })
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getTrendingServiceById = async (req, res) => {
+    try {
+        const TrendingService = await trendingService.findById({ _id: req.params.id });
+        if (!TrendingService) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        res.status(200).json({ status: 200, message: "Data found successfully.", data: TrendingService })
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.DeleteTrendingService = async (req, res) => {
+    try {
+        const TrendingService = await trendingService.findById({ _id: req.params.id });
+        if (!TrendingService) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        await trendingService.findByIdAndDelete({ _id: req.params.id });
+        res.status(200).json({ status: 200, message: "Who we are delete successfully.", data: {} })
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.addEvent = async (req, res) => {
+    try {
+        const findData = await eventModel.findOne({ title: req.body.title, type: req.body.type });
+        if (findData) {
+            res.status(409).json({ status: 409, message: "Already exit ", data: {} })
+        } else {
+            const data = {
+                title: req.body.title,
+                image: req.body.image,
+                desc: req.body.desc,
+                type: req.body.type
+            }
+            const Data = await eventModel.create(data);
+            res.status(200).json({ status: 200, message: "event is Added ", data: Data })
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getEvent = async (req, res) => {
+    try {
+        const event = await eventModel.find();
+        if (event.length == 0) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        } else {
+            res.status(200).json({ status: 200, message: "All event Data found successfully.", data: event })
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getEventById = async (req, res) => {
+    try {
+        const event = await eventModel.findById({ _id: req.params.id });
+        if (!event) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        res.status(200).json({ status: 200, message: "Data found successfully.", data: event })
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.DeleteEvent = async (req, res) => {
+    try {
+        const event = await eventModel.findById({ _id: req.params.id });
+        if (!event) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        await eventModel.findByIdAndDelete({ _id: req.params.id });
+        res.status(200).json({ status: 200, message: "Who we are delete successfully.", data: {} })
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.imageUpload = async (req, res) => {
+    try {
+        let fileUrl;
+        if (req.file) {
+            fileUrl = req.file.path;
+            res.status(200).json({ status: 200, message: "image url ", data: fileUrl })
+        } else {
+            res.status(404).json({ status: 404, message: "Image not provided " })
+        }
     } catch (err) {
         console.log(err);
         res.status(501).send({ status: 501, message: "server error.", data: {}, });

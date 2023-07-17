@@ -15,7 +15,7 @@ const storage = new CloudinaryStorage({
         cloudinary: cloudinary,
         params: {
                 folder: "images/image",
-                allowed_formats: ["jpg", "jpeg", "png", "PNG", "xlsx", "xls", "pdf", "PDF"],
+                allowed_formats: ["jpg", "jpeg", "png", "PNG", "xlsx", "xls", "pdf", "PDF", "avif"],
         },
 });
 const upload = multer({ storage: storage });
@@ -24,4 +24,9 @@ router.post("/login", auth.signin);
 router.post("/sendInquire", auth.sendInquire);
 router.get('/all', auth.getCourses);
 router.post("/sendNewLetter", auth.sendNewLetter);
+router.put("/updateProfile", [authJwt.verifyToken], upload.single('image'), auth.updateProfile);
+router.post("/giveRating", [authJwt.verifyToken], auth.giveRating);
+router.get("/clientRating", auth.clientRating);
+router.get("/staffRating", auth.staffRating);
+
 module.exports = router;

@@ -1,5 +1,9 @@
 const mongoose = require("mongoose");
 const vendorDetailsSchema = new mongoose.Schema({
+    trendingServiceId: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: "trendingService",
+    },
     title: {
         type: String,
     },
