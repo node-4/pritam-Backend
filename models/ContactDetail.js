@@ -1,6 +1,15 @@
 const mongoose = require('mongoose');
 const schema = mongoose.Schema;
 const DocumentSchema = schema({
+        title: {
+                type: String,
+        },
+        image: {
+                type: String,
+        },
+        description: {
+                type: String,
+        },
         mobileNumber: {
                 type: String
         },
@@ -30,6 +39,13 @@ const DocumentSchema = schema({
         },
         map: {
                 type: String
+        },
+        address: {
+                type: String
+        },
+        contactType: {
+                type: String,
+                enum: ["Main", "Other"]
         },
         whatAppchatDescription: {
                 type: String

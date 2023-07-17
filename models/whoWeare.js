@@ -18,5 +18,7 @@ const staticContent = mongoose.Schema({
         type: String,
         enum: ["JOC", "CR", "ABS"],
     },
+}, {
+    timestamps: true
 })
 module.exports = mongoose.model('whoWeare', staticContent);

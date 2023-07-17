@@ -25,5 +25,7 @@ const staticContent = mongoose.Schema({
         type: String,
         enum: ["Hour", "Weekly", "Monthly"]
     },
+}, {
+    timestamps: true
 })
 module.exports = mongoose.model('popularJob', staticContent);

@@ -8,6 +8,7 @@ const whoWeare = require("../models/whoWeare");
 const popularJob = require("../models/popularJob");
 const trendingService = require("../models/trendingService");
 const eventModel = require("../models/eventModel");
+const subEvent = require("../models/subEvent");
 
 exports.registration = async (req, res) => {
     const { phone, email } = req.body;
@@ -76,12 +77,44 @@ exports.update = async (req, res) => {
 };
 exports.addContactDetails = async (req, res) => {
     try {
+        let findCon = await ContactDetail.findOne({ contactType: "Main" });
+        if (findCon) {
+            res.status(409).send({ status: 409, message: "Contact Detail already exit", data: {} });
+        }
         let result2 = await ContactDetail.create(req.body);
         if (result2) {
             res.status(200).send({ status: 200, message: "Contact Detail update successfully", data: result2 });
         }
     } catch (err) {
         console.log(err.message);
+        res.status(500).send({ status: 500, msg: "internal server error", error: err.message, });
+    }
+};
+exports.addContactDetailsOffice = async (req, res) => {
+    try {
+        let findCon = await ContactDetail.findOne({ title: req.body.title });
+        if (findCon) {
+            res.status(409).send({ status: 409, message: "Contact Detail already exit", data: {} });
+        }
+        let result2 = await ContactDetail.create(req.body);
+        if (result2) {
+            res.status(200).send({ status: 200, message: "Contact Detail update successfully", data: result2 });
+        }
+    } catch (err) {
+        console.log(err.message);
+        res.status(500).send({ status: 500, msg: "internal server error", error: err.message, });
+    }
+};
+exports.viewContactDetailsOffice = async (req, res) => {
+    try {
+        let findcontactDetails = await ContactDetail.find({ contactType: "Other" });
+        if (!findcontactDetails) {
+            res.status(404).send({ status: 404, message: "Contact Detail not found.", data: {} });
+        } else {
+            res.status(200).send({ status: 200, message: "Contact Detail fetch successfully", data: findcontactDetails });
+        }
+    } catch (err) {
+        console.log(err);
         res.status(500).send({ status: 500, msg: "internal server error", error: err.message, });
     }
 };
@@ -113,7 +146,7 @@ exports.updateContactDetails = async (req, res) => {
 };
 exports.viewContactDetails = async (req, res) => {
     try {
-        let findcontactDetails = await ContactDetail.findOne();
+        let findcontactDetails = await ContactDetail.findOne({ contactType: "Main" });
         if (!findcontactDetails) {
             res.status(404).send({ status: 404, message: "Contact Detail not found.", data: {} });
         } else {
@@ -139,6 +172,10 @@ exports.getbyIdContactDetails = async (req, res) => {
 };
 exports.AddCourse = async (req, res) => {
     try {
+        const TrendingService = await trendingService.findById({ _id: req.body.trendingServiceId });
+        if (!TrendingService) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
         let fileUrl, image = [];
         if (req.files) {
             for (let i = 0; i < req.files.length; i++) {
@@ -150,6 +187,7 @@ exports.AddCourse = async (req, res) => {
         const d = new Date(req.body.tillDate);
         let text = d.toISOString();
         const data = {
+            trendingServiceId: req.body.trendingServiceId,
             title: req.body.title,
             description: req.body.description,
             image: image,
@@ -169,6 +207,19 @@ exports.AddCourse = async (req, res) => {
 exports.getCourses = async (req, res) => {
     try {
         const Courses = await CoursesModel.find();
+        if (Courses.length == 0) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        } else {
+            res.status(200).json({ status: 200, message: "All courses Data found successfully.", data: Courses })
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getCoursesbyTrendingServiceId = async (req, res) => {
+    try {
+        const Courses = await CoursesModel.find({ trendingServiceId: req.params.trendingServiceId });
         if (Courses.length == 0) {
             return res.status(404).json({ status: 404, message: "No data found", data: {} });
         } else {
@@ -318,7 +369,7 @@ exports.DeletePopularJob = async (req, res) => {
             return res.status(404).json({ status: 404, message: "No data found", data: {} });
         }
         await popularJob.findByIdAndDelete({ _id: req.params.id });
-        res.status(200).json({ status: 200, message: "Who we are delete successfully.", data: {} })
+        res.status(200).json({ status: 200, message: "Popular Job delete successfully.", data: {} })
     } catch (err) {
         console.log(err);
         res.status(501).send({ status: 501, message: "server error.", data: {}, });
@@ -375,7 +426,7 @@ exports.DeleteTrendingService = async (req, res) => {
             return res.status(404).json({ status: 404, message: "No data found", data: {} });
         }
         await trendingService.findByIdAndDelete({ _id: req.params.id });
-        res.status(200).json({ status: 200, message: "Who we are delete successfully.", data: {} })
+        res.status(200).json({ status: 200, message: "Trending Service delete successfully.", data: {} })
     } catch (err) {
         console.log(err);
         res.status(501).send({ status: 501, message: "server error.", data: {}, });
@@ -433,7 +484,71 @@ exports.DeleteEvent = async (req, res) => {
             return res.status(404).json({ status: 404, message: "No data found", data: {} });
         }
         await eventModel.findByIdAndDelete({ _id: req.params.id });
-        res.status(200).json({ status: 200, message: "Who we are delete successfully.", data: {} })
+        res.status(200).json({ status: 200, message: "Event delete successfully.", data: {} })
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.addSubEvent = async (req, res) => {
+    try {
+        const findData = await subEvent.findOne({ title: req.body.title, eventId: req.body.eventId });
+        if (findData) {
+            res.status(409).json({ status: 409, message: "Already exit ", data: {} })
+        } else {
+            const event = await eventModel.findById({ _id: req.body.eventId });
+            if (!event) {
+                return res.status(404).json({ status: 404, message: "No data found", data: {} });
+            }
+            const data = {
+                eventId: req.body.eventId,
+                title: req.body.title,
+                mainImage: req.body.mainImage,
+                image: req.body.image,
+                desc: req.body.desc,
+                descPoints: req.body.descPoints,
+            }
+            const Data = await subEvent.create(data);
+            res.status(200).json({ status: 200, message: "Sub event is Added ", data: Data })
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getSubEvent = async (req, res) => {
+    try {
+        const event = await subEvent.find();
+        if (event.length == 0) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        } else {
+            res.status(200).json({ status: 200, message: "All event Data found successfully.", data: event })
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getSubEventById = async (req, res) => {
+    try {
+        const event = await subEvent.findById({ _id: req.params.id });
+        if (!event) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        res.status(200).json({ status: 200, message: "Data found successfully.", data: event })
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.DeleteSubEvent = async (req, res) => {
+    try {
+        const event = await subEvent.findById({ _id: req.params.id });
+        if (!event) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        await subEvent.findByIdAndDelete({ _id: req.params.id });
+        res.status(200).json({ status: 200, message: "Sub Event delete successfully.", data: {} })
     } catch (err) {
         console.log(err);
         res.status(501).send({ status: 501, message: "server error.", data: {}, });

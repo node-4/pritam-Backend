@@ -12,6 +12,10 @@ const vendorDetailsSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.ObjectId,
         ref: "whoWeare",
     },
+    eventId: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: "event",
+    },
     firstName: {
         type: String,
     },
@@ -40,6 +44,8 @@ const vendorDetailsSchema = new mongoose.Schema({
     interest: {
         type: String,
     },
+}, {
+    timestamps: true
 });
 
 module.exports = mongoose.model("inquire", vendorDetailsSchema);

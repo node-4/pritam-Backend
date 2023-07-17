@@ -28,6 +28,8 @@ const vendorDetailsSchema = new mongoose.Schema({
     tillDate: {
         type: Date,
     },
+}, {
+    timestamps: true
 });
 
 module.exports = mongoose.model("course", vendorDetailsSchema);

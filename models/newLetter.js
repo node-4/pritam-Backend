@@ -19,6 +19,8 @@ const vendorDetailsSchema = new mongoose.Schema({
     interest: {
         type: String,
     },
+}, {
+    timestamps: true
 });
 
 module.exports = mongoose.model("newLetter", vendorDetailsSchema);

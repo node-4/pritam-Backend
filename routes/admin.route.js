@@ -23,7 +23,9 @@ router.post("/registration", auth.registration);
 router.post("/login", auth.signin);
 router.put("/update", [authJwt.verifyToken], auth.update);
 router.post("/addContactDetails", [authJwt.verifyToken], auth.addContactDetails);
+router.post("/addContactDetailsOffice", [authJwt.verifyToken], auth.addContactDetailsOffice);
 router.get("/viewContactDetails", auth.viewContactDetails);
+router.get("/viewContactDetailsOffice", auth.viewContactDetailsOffice);
 router.put("/updateContactDetails/:id", auth.updateContactDetails);
 router.get("/getbyIdContactDetails/:id", auth.getbyIdContactDetails);
 router.post("/addWhoWeare", [authJwt.verifyToken], auth.addWhoWeare);
@@ -38,13 +40,16 @@ router.post("/addTrendingService", [authJwt.verifyToken], auth.addTrendingServic
 router.get("/getTrendingService", auth.getTrendingService);
 router.get("/getTrendingServiceById/:id", auth.getTrendingServiceById);
 router.delete("/DeleteTrendingService/:id", [authJwt.verifyToken], auth.DeleteTrendingService);
-
-
-
 router.post("/addEvent", [authJwt.verifyToken], auth.addEvent);
 router.get("/getEvent", auth.getEvent);
 router.get("/getEventById/:id", auth.getEventById);
 router.delete("/DeleteEvent/:id", [authJwt.verifyToken], auth.DeleteEvent);
+router.post("/addSubEvent", [authJwt.verifyToken], auth.addSubEvent);
+router.get("/getSubEvent", auth.getSubEvent);
+router.get("/getSubEventById/:id", auth.getSubEventById);
+router.delete("/DeleteSubEvent/:id", [authJwt.verifyToken], auth.DeleteSubEvent);
+
+
 
 router.post("/imageUpload", upload.single('image'), auth.imageUpload);
 module.exports = router;

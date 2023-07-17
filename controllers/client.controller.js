@@ -48,6 +48,8 @@ exports.signin = async (req, res) => {
 };
 exports.sendInquire = async (req, res) => {
     try {
+        const d = new Date(req.body.date);
+        req.body.date = d.toISOString();
         const userCreate = await inquire.create(req.body);
         res.status(200).send({ message: "send Inquire successfully ", data: userCreate, });
     } catch (error) {
