@@ -9,6 +9,7 @@ const popularJob = require("../models/popularJob");
 const trendingService = require("../models/trendingService");
 const eventModel = require("../models/eventModel");
 const subEvent = require("../models/subEvent");
+const freelancing = require("../models/freelancing");
 
 exports.registration = async (req, res) => {
     const { phone, email } = req.body;
@@ -563,6 +564,63 @@ exports.imageUpload = async (req, res) => {
         } else {
             res.status(404).json({ status: 404, message: "Image not provided " })
         }
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.addFreelancing = async (req, res) => {
+    try {
+        const findData = await freelancing.findOne({ title: req.body.title });
+        if (findData) {
+            res.status(409).json({ status: 409, message: "Already exit ", data: {} })
+        } else {
+            const data = {
+                title: req.body.title,
+                image: req.body.image,
+                desc: req.body.desc,
+            }
+            const Data = await freelancing.create(data);
+            res.status(200).json({ status: 200, message: "freelancing is Added ", data: Data })
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getFreelancing = async (req, res) => {
+    try {
+        const Freelancing = await freelancing.find();
+        if (Freelancing.length == 0) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        } else {
+            res.status(200).json({ status: 200, message: "All Freelancing Data found successfully.", data: Freelancing })
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getFreelancingById = async (req, res) => {
+    try {
+        const Freelancing = await freelancing.findById({ _id: req.params.id });
+        if (!Freelancing) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        res.status(200).json({ status: 200, message: "Data found successfully.", data: Freelancing })
+    } catch (err) {
+        console.log(err);
+        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.DeleteFreelancing = async (req, res) => {
+    try {
+        const Freelancing = await freelancing.findById({ _id: req.params.id });
+        if (!Freelancing) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        await freelancing.findByIdAndDelete({ _id: req.params.id });
+        res.status(200).json({ status: 200, message: "Freelancing delete successfully.", data: {} })
     } catch (err) {
         console.log(err);
         res.status(501).send({ status: 501, message: "server error.", data: {}, });

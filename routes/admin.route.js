@@ -48,8 +48,10 @@ router.post("/addSubEvent", [authJwt.verifyToken], auth.addSubEvent);
 router.get("/getSubEvent", auth.getSubEvent);
 router.get("/getSubEventById/:id", auth.getSubEventById);
 router.delete("/DeleteSubEvent/:id", [authJwt.verifyToken], auth.DeleteSubEvent);
-
-
+router.post("/addFreelancing", [authJwt.verifyToken], auth.addFreelancing);
+router.get("/getFreelancing", auth.getFreelancing);
+router.get("/getFreelancingById/:id", auth.getFreelancingById);
+router.delete("/DeleteFreelancing/:id", [authJwt.verifyToken], auth.DeleteFreelancing);
 
 router.post("/imageUpload", upload.single('image'), auth.imageUpload);
 module.exports = router;
