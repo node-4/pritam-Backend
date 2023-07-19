@@ -220,11 +220,20 @@ exports.getCourses = async (req, res) => {
 };
 exports.getCoursesbyTrendingServiceId = async (req, res) => {
     try {
-        const Courses = await CoursesModel.find({ trendingServiceId: req.params.trendingServiceId });
-        if (Courses.length == 0) {
-            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        if (req.query.date) {
+            const Courses = await CoursesModel.find({ trendingServiceId: req.params.trendingServiceId, tillDate: { $lte: req.query.date } });
+            if (Courses.length == 0) {
+                return res.status(404).json({ status: 404, message: "No data found", data: {} });
+            } else {
+                res.status(200).json({ status: 200, message: "All courses Data found successfully.", data: Courses })
+            }
         } else {
-            res.status(200).json({ status: 200, message: "All courses Data found successfully.", data: Courses })
+            const Courses = await CoursesModel.find({ trendingServiceId: req.params.trendingServiceId });
+            if (Courses.length == 0) {
+                return res.status(404).json({ status: 404, message: "No data found", data: {} });
+            } else {
+                res.status(200).json({ status: 200, message: "All courses Data found successfully.", data: Courses })
+            }
         }
     } catch (err) {
         console.log(err);
