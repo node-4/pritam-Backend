@@ -45,7 +45,7 @@ router.get("/getEvent", auth.getEvent);
 router.get("/getEventById/:id", auth.getEventById);
 router.delete("/DeleteEvent/:id", [authJwt.verifyToken], auth.DeleteEvent);
 router.post("/addSubEvent", [authJwt.verifyToken], auth.addSubEvent);
-router.get("/getSubEvent", auth.getSubEvent);
+router.get("/getSubEvent/:eventId", auth.getSubEvent);
 router.get("/getSubEventById/:id", auth.getSubEventById);
 router.delete("/DeleteSubEvent/:id", [authJwt.verifyToken], auth.DeleteSubEvent);
 router.post("/addFreelancing", [authJwt.verifyToken], auth.addFreelancing);

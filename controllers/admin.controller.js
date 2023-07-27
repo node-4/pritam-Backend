@@ -528,7 +528,7 @@ exports.addSubEvent = async (req, res) => {
 };
 exports.getSubEvent = async (req, res) => {
     try {
-        const event = await subEvent.find();
+        const event = await subEvent.find({ eventId: req.params.eventId }).populate('eventId');
         if (event.length == 0) {
             return res.status(404).json({ status: 404, message: "No data found", data: {} });
         } else {
