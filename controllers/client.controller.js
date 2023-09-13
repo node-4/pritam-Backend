@@ -7,6 +7,7 @@ const CoursesModel = require("../models/CoursesModel");
 const inquire = require("../models/inquireModel");
 const newLetter = require("../models/newLetter");
 const ratingModel = require("../models/ratingModel");
+const jobRegisterform = require("../models/jobRegisterform");
 
 exports.clientRegistration = async (req, res) => {
     try {
@@ -17,13 +18,13 @@ exports.clientRegistration = async (req, res) => {
             req.body.password = bcrypt.hashSync(req.body.password, 8);
             req.body.accountVerification = true;
             const userCreate = await User.create(req.body);
-            res.status(200).send({ message: "registered successfully ", data: userCreate, });
+            return res.status(200).send({ message: "registered successfully ", data: userCreate, });
         } else {
-            res.status(409).send({ message: "Already Exist", data: [] });
+            return res.status(409).send({ message: "Already Exist", data: [] });
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Server error" });
+        return res.status(500).json({ message: "Server error" });
     }
 };
 exports.signin = async (req, res) => {
@@ -40,10 +41,10 @@ exports.signin = async (req, res) => {
         const accessToken = jwt.sign({ id: user._id }, authConfig.secret, {
             expiresIn: authConfig.accessTokenTime,
         });
-        res.status(201).send({ data: user, accessToken: accessToken });
+        return res.status(201).send({ data: user, accessToken: accessToken });
     } catch (error) {
         console.error(error);
-        res.status(500).send({ message: "Server error" + error.message });
+        return res.status(500).send({ message: "Server error" + error.message });
     }
 };
 exports.sendInquire = async (req, res) => {
@@ -51,10 +52,10 @@ exports.sendInquire = async (req, res) => {
         const d = new Date(req.body.date);
         req.body.date = d.toISOString();
         const userCreate = await inquire.create(req.body);
-        res.status(200).send({ message: "send Inquire successfully ", data: userCreate, });
+        return res.status(200).send({ message: "send Inquire successfully ", data: userCreate, });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Server error" });
+        return res.status(500).json({ message: "Server error" });
     }
 };
 exports.getCourses = async (req, res) => {
@@ -64,28 +65,28 @@ exports.getCourses = async (req, res) => {
             if (Courses.length == 0) {
                 return res.status(404).json({ status: 404, message: "No data found", data: {} });
             } else {
-                res.status(200).json({ status: 200, message: "All courses Data found successfully.", data: Courses })
+                return res.status(200).json({ status: 200, message: "All courses Data found successfully.", data: Courses })
             }
         } else {
             const Courses = await CoursesModel.find();
             if (Courses.length == 0) {
                 return res.status(404).json({ status: 404, message: "No data found", data: {} });
             } else {
-                res.status(200).json({ status: 200, message: "All courses Data found successfully.", data: Courses })
+                return res.status(200).json({ status: 200, message: "All courses Data found successfully.", data: Courses })
             }
         }
     } catch (err) {
         console.log(err);
-        res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
     }
 };
 exports.sendNewLetter = async (req, res) => {
     try {
         const userCreate = await newLetter.create(req.body);
-        res.status(200).send({ message: "New Letter successfully ", data: userCreate, });
+        return res.status(200).send({ message: "New Letter successfully ", data: userCreate, });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Server error" });
+        return res.status(500).json({ message: "Server error" });
     }
 };
 exports.updateProfile = async (req, res) => {
@@ -97,12 +98,12 @@ exports.updateProfile = async (req, res) => {
             if (req.file) {
                 let image = req.file.path;
                 let updated = await User.findByIdAndUpdate(req.user.id, { image: image }, { new: true });
-                res.status(200).send({ message: "updated", data: updated });
+                return res.status(200).send({ message: "updated", data: updated });
             }
         }
     } catch (err) {
         console.log(err);
-        res.status(500).send({
+        return res.status(500).send({
             message: "internal server error " + err.message,
         });
     }
@@ -120,11 +121,11 @@ exports.giveRating = async (req, res) => {
                 type: user.userType,
             }
             const Data = await ratingModel.create(data);
-            res.status(200).send({ message: "Rating add successfully", data: Data });
+            return res.status(200).send({ message: "Rating add successfully", data: Data });
         }
     } catch (err) {
         console.log(err);
-        res.status(500).send({
+        return res.status(500).send({
             message: "internal server error " + err.message,
         });
     }
@@ -135,11 +136,11 @@ exports.clientRating = async (req, res) => {
         if (Rating.length == 0) {
             return res.status(404).json({ status: 404, message: "No data found", data: {} });
         } else {
-            res.status(200).json({ status: 200, message: "All rating Data found successfully.", data: Rating })
+            return res.status(200).json({ status: 200, message: "All rating Data found successfully.", data: Rating })
         }
     } catch (err) {
         console.log(err);
-        res.status(500).send({
+        return res.status(500).send({
             message: "internal server error " + err.message,
         });
     }
@@ -150,12 +151,22 @@ exports.staffRating = async (req, res) => {
         if (Rating.length == 0) {
             return res.status(404).json({ status: 404, message: "No data found", data: {} });
         } else {
-            res.status(200).json({ status: 200, message: "All rating Data found successfully.", data: Rating })
+            return res.status(200).json({ status: 200, message: "All rating Data found successfully.", data: Rating })
         }
     } catch (err) {
         console.log(err);
-        res.status(500).send({
+        return res.status(500).send({
             message: "internal server error " + err.message,
         });
+    }
+};
+
+exports.Registerform = async (req, res) => {
+    try {
+        const userCreate = await jobRegisterform.create(req.body);
+        return res.status(200).send({ message: "send Inquire successfully ", data: userCreate, });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Server error" });
     }
 };

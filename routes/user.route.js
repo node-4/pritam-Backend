@@ -28,5 +28,6 @@ router.put("/updateProfile", [authJwt.verifyToken], upload.single('image'), auth
 router.post("/giveRating", [authJwt.verifyToken], auth.giveRating);
 router.get("/clientRating", auth.clientRating);
 router.get("/staffRating", auth.staffRating);
+router.post("/Registerform", auth.Registerform);
 
 module.exports = router;
