@@ -173,10 +173,6 @@ exports.getbyIdContactDetails = async (req, res) => {
 };
 exports.AddCourse = async (req, res) => {
     try {
-        const TrendingService = await trendingService.findById({ _id: req.body.trendingServiceId });
-        if (!TrendingService) {
-            return res.status(404).json({ status: 404, message: "No data found", data: {} });
-        }
         let fileUrl, image = [];
         if (req.files) {
             for (let i = 0; i < req.files.length; i++) {
@@ -188,7 +184,6 @@ exports.AddCourse = async (req, res) => {
         const d = new Date(req.body.tillDate);
         let text = d.toISOString();
         const data = {
-            trendingServiceId: req.body.trendingServiceId,
             title: req.body.title,
             description: req.body.description,
             image: image,
