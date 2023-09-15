@@ -22,6 +22,7 @@ const upload = multer({ storage: storage });
 router.post('/addCourse', upload.array('image'), auth.AddCourse);
 router.get('/all', auth.getCourses);
 router.get('/view/:id', auth.getCoursesById);
+router.put('/edit/:id', auth.editCourse);
 router.get('/viewByTrendingServiceId/:trendingServiceId', auth.getCoursesbyTrendingServiceId);
 router.delete('/delete/:id', auth.DeleteCourses);
 module.exports = router;

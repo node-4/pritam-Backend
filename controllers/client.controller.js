@@ -160,7 +160,6 @@ exports.staffRating = async (req, res) => {
         });
     }
 };
-
 exports.Registerform = async (req, res) => {
     try {
         const userCreate = await jobRegisterform.create(req.body);

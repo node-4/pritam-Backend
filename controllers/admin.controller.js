@@ -201,6 +201,39 @@ exports.AddCourse = async (req, res) => {
         return res.status(501).send({ status: 501, message: "server error.", data: {}, });
     }
 };
+exports.editCourse = async (req, res) => {
+    try {
+        const Courses = await CoursesModel.findById({ _id: req.params.id });
+        if (!Courses) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        let fileUrl, image = [];
+        if (req.files) {
+            for (let i = 0; i < req.files.length; i++) {
+                fileUrl = req.files[i].path;
+                image.push(fileUrl)
+            }
+        }
+        console.log(req.body.tillDate);
+        const d = new Date(req.body.tillDate);
+        let text = d.toISOString();
+        const data = {
+            title: req.body.title || Courses.title,
+            description: req.body.description || Courses.description,
+            image: image || Courses.image,
+            price: req.body.price || Courses.price,
+            toDay: req.body.toDay || Courses.toDay,
+            fromDay: req.body.fromDay || Courses.fromDay,
+            toTime: req.body.toTime || Courses.toTime,
+            tillDate: text || Courses.tillDate,
+        }
+        const Data = await CoursesModel.findByIdAndUpdate({ _id: Courses._id }, { $set: data }, { new: true });
+        return res.status(200).json({ status: 200, message: "Course is Added ", data: Data })
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
 exports.getCourses = async (req, res) => {
     try {
         const Courses = await CoursesModel.find();
@@ -631,7 +664,6 @@ exports.DeleteFreelancing = async (req, res) => {
         return res.status(501).send({ status: 501, message: "server error.", data: {}, });
     }
 };
-
 exports.addAds = async (req, res) => {
     try {
         const findData = await ads.findOne({});
