@@ -57,4 +57,8 @@ router.post("/addAds", upload.single('image'), [authJwt.verifyToken], auth.addAd
 router.get("/getAds", auth.getAds);
 router.get("/getAdsById/:id", auth.getAdsById);
 router.delete("/DeleteAds/:id", [authJwt.verifyToken], auth.DeleteAds);
+router.get("/getClients", auth.getClients);
+router.get("/getStaffs", auth.getStaffs);
+router.get("/getUserById/:id", auth.getUserById);
+router.delete("/DeleteUser/:id", [authJwt.verifyToken], auth.DeleteUser);
 module.exports = router;

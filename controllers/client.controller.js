@@ -169,3 +169,42 @@ exports.Registerform = async (req, res) => {
         return res.status(500).json({ message: "Server error" });
     }
 };
+exports.getForms = async (req, res) => {
+    try {
+        const Courses = await jobRegisterform.find({});
+        if (Courses.length == 0) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        } else {
+            return res.status(200).json({ status: 200, message: "All Data found successfully.", data: Courses })
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+}
+exports.getInquires = async (req, res) => {
+    try {
+        const Courses = await inquire.find({});
+        if (Courses.length == 0) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        } else {
+            return res.status(200).json({ status: 200, message: "All Data found successfully.", data: Courses })
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+}
+exports.getNewLetter = async (req, res) => {
+    try {
+        const Courses = await newLetter.find({});
+        if (Courses.length == 0) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        } else {
+            return res.status(200).json({ status: 200, message: "All Data found successfully.", data: Courses })
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+}

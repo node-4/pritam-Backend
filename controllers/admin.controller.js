@@ -11,6 +11,7 @@ const eventModel = require("../models/eventModel");
 const subEvent = require("../models/subEvent");
 const freelancing = require("../models/freelancing");
 const ads = require("../models/ads");
+const userModel = require("../models/userModel");
 
 exports.registration = async (req, res) => {
     const { phone, email } = req.body;
@@ -214,8 +215,7 @@ exports.editCourse = async (req, res) => {
                 image.push(fileUrl)
             }
         }
-        console.log(req.body.tillDate);
-        const d = new Date(req.body.tillDate);
+        const d = new Date(req.params.tillDate);
         let text = d.toISOString();
         const data = {
             title: req.body.title || Courses.title,
@@ -727,6 +727,57 @@ exports.DeleteAds = async (req, res) => {
         }
         await ads.findByIdAndDelete({ _id: req.params.id });
         return res.status(200).json({ status: 200, message: "Ads delete successfully.", data: {} })
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getClients = async (req, res) => {
+    try {
+        const Courses = await userModel.find({ userType: "CLIENT" });
+        if (Courses.length == 0) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        } else {
+            return res.status(200).json({ status: 200, message: "All Client Data found successfully.", data: Courses })
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+}
+exports.getStaffs = async (req, res) => {
+    try {
+        const Courses = await userModel.find({ userType: "STAFF" });
+        if (Courses.length == 0) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        } else {
+            return res.status(200).json({ status: 200, message: "All Staff Data found successfully.", data: Courses })
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+}
+exports.getUserById = async (req, res) => {
+    try {
+        const Ads = await userModel.findById({ _id: req.params.id });
+        if (!Ads) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        return res.status(200).json({ status: 200, message: "Data found successfully.", data: Ads })
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.DeleteUser = async (req, res) => {
+    try {
+        const Ads = await userModel.findById({ _id: req.params.id });
+        if (!Ads) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        await userModel.findByIdAndDelete({ _id: req.params.id });
+        return res.status(200).json({ status: 200, message: "user delete successfully.", data: {} })
     } catch (err) {
         console.log(err);
         return res.status(501).send({ status: 501, message: "server error.", data: {}, });

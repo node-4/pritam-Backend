@@ -29,5 +29,8 @@ router.post("/giveRating", [authJwt.verifyToken], auth.giveRating);
 router.get("/clientRating", auth.clientRating);
 router.get("/staffRating", auth.staffRating);
 router.post("/Registerform", auth.Registerform);
+router.get("/getForms", auth.getForms);
+router.get("/getInquires", auth.getInquires);
+router.get("/getNewLetter", auth.getNewLetter);
 
 module.exports = router;
