@@ -52,6 +52,9 @@ router.post("/addFreelancing", [authJwt.verifyToken], auth.addFreelancing);
 router.get("/getFreelancing", auth.getFreelancing);
 router.get("/getFreelancingById/:id", auth.getFreelancingById);
 router.delete("/DeleteFreelancing/:id", [authJwt.verifyToken], auth.DeleteFreelancing);
-
 router.post("/imageUpload", upload.single('image'), auth.imageUpload);
+router.post("/addAds", upload.single('image'), [authJwt.verifyToken], auth.addAds);
+router.get("/getAds", auth.getAds);
+router.get("/getAdsById/:id", auth.getAdsById);
+router.delete("/DeleteAds/:id", [authJwt.verifyToken], auth.DeleteAds);
 module.exports = router;
