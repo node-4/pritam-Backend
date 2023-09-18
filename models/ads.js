@@ -3,11 +3,20 @@ const vendorDetailsSchema = new mongoose.Schema({
         title: {
                 type: String,
         },
+        description: {
+                type: String,
+        },
         link: {
                 type: String,
         },
         image: {
                 type: String,
+        },
+        images: {
+                type: Array,
+        },
+        desc: {
+                type: Array,
         },
 }, {
         timestamps: true

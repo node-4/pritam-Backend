@@ -19,6 +19,8 @@ const storage = new CloudinaryStorage({
         },
 });
 const upload = multer({ storage: storage });
+var cpUpload = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'images', maxCount: 10 },]);
+
 router.post("/registration", auth.registration);
 router.post("/login", auth.signin);
 router.get("/dashboard", [authJwt.verifyToken], auth.dashboard);
@@ -54,7 +56,7 @@ router.get("/getFreelancing", auth.getFreelancing);
 router.get("/getFreelancingById/:id", auth.getFreelancingById);
 router.delete("/DeleteFreelancing/:id", [authJwt.verifyToken], auth.DeleteFreelancing);
 router.post("/imageUpload", upload.single('image'), auth.imageUpload);
-router.post("/addAds", upload.single('image'), [authJwt.verifyToken], auth.addAds);
+router.post("/addAds", cpUpload, [authJwt.verifyToken], auth.addAds);
 router.get("/getAds", auth.getAds);
 router.get("/getAdsById/:id", auth.getAdsById);
 router.delete("/DeleteAds/:id", [authJwt.verifyToken], auth.DeleteAds);

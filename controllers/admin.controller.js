@@ -670,23 +670,39 @@ exports.addAds = async (req, res) => {
     try {
         const findData = await ads.findOne({});
         if (findData) {
-            if (req.file) {
-                req.body.image = req.file.path;
-            } else {
-                req.body.image == findData.image
+            let images = [];
+            let image = req.files['image'];
+            req.body.image = image[0].path;
+            let imagess = req.files['images'];
+            console.log(imagess);
+            for (let i = 0; i < imagess.length; i++) {
+                images.push(imagess[i].path)
             }
             const data = {
                 title: req.body.title || findData.title,
-                image: req.body.image,
+                description: req.body.description || findData.description,
                 link: req.body.link || findData.link,
+                image: req.body.image,
+                images: images,
+                desc: req.body.desc || findData.desc,
             }
             const Data = await ads.findByIdAndUpdate({ _id: findData._id }, { $set: data }, { new: true });
             return res.status(200).json({ status: 200, message: "Ads is Added ", data: Data })
         } else {
+            let images = [];
+            let image = req.files['image'];
+            req.body.image = image[0].path;
+            let imagess = req.files['images'];
+            for (let i = 0; i < imagess.length; i++) {
+                images.push(imagess[i].path)
+            }
             const data = {
                 title: req.body.title,
-                image: req.body.image,
+                description: req.body.description,
                 link: req.body.link,
+                image: req.body.image,
+                images: images,
+                desc: req.body.desc
             }
             const Data = await ads.create(data);
             return res.status(200).json({ status: 200, message: "Ads is Added ", data: Data })
