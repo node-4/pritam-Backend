@@ -10,6 +10,9 @@ const vendorDetailsSchema = new mongoose.Schema({
     description: {
         type: String,
     },
+    descriptionPoints: {
+        type: Array,
+    },
     image: {
         type: Array,
     },

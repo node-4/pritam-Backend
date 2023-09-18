@@ -193,7 +193,8 @@ exports.AddCourse = async (req, res) => {
             toDay: req.body.toDay,
             fromDay: req.body.fromDay,
             toTime: req.body.toTime,
-            tillDate: text
+            tillDate: text,
+            descriptionPoints: req.body.descriptionPoints
         }
         const Data = await CoursesModel.create(data);
         return res.status(200).json({ status: 200, message: "Course is Added ", data: Data })
@@ -226,6 +227,7 @@ exports.editCourse = async (req, res) => {
             fromDay: req.body.fromDay || Courses.fromDay,
             toTime: req.body.toTime || Courses.toTime,
             tillDate: text || Courses.tillDate,
+            descriptionPoints: req.body.descriptionPoints || Courses.descriptionPoints,
         }
         const Data = await CoursesModel.findByIdAndUpdate({ _id: Courses._id }, { $set: data }, { new: true });
         return res.status(200).json({ status: 200, message: "Course is Added ", data: Data })
