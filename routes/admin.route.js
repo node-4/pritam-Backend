@@ -21,6 +21,7 @@ const storage = new CloudinaryStorage({
 const upload = multer({ storage: storage });
 router.post("/registration", auth.registration);
 router.post("/login", auth.signin);
+router.get("/dashboard", [authJwt.verifyToken], auth.dashboard);
 router.put("/update", [authJwt.verifyToken], auth.update);
 router.post("/addContactDetails", [authJwt.verifyToken], auth.addContactDetails);
 router.post("/addContactDetailsOffice", [authJwt.verifyToken], auth.addContactDetailsOffice);

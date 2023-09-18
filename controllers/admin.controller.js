@@ -783,3 +783,31 @@ exports.DeleteUser = async (req, res) => {
         return res.status(501).send({ status: 501, message: "server error.", data: {}, });
     }
 };
+exports.dashboard = async (req, res, next) => {
+    try {
+        const client = await User.find({ userType: "CLIENT" }).count()
+        const staff = await User.find({ userType: "STAFF" }).count()
+        const findEvent = await eventModel.find({}).count()
+        const findFreelancing = await freelancing.find({}).count()
+        const findSubEvent = await subEvent.find({}).count();
+        const findtrendingService = await trendingService.find({}).count()
+        const findpopularJob = await popularJob.find({}).count()
+        const findwhoWeare = await whoWeare.find({}).count()
+        const findCourse = await CoursesModel.find({}).count()
+        let obj = {
+            client: client,
+            staff: staff,
+            Event: findEvent,
+            Freelancing: findFreelancing,
+            subEvent: findSubEvent,
+            TrendingService: findtrendingService,
+            popularJob: findpopularJob,
+            whoWeare: findwhoWeare,
+            Course: findCourse
+        }
+        return res.status(200).json({ status: 200, msg: "DashBoad data", data: obj })
+    } catch (error) {
+        console.log(error);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
