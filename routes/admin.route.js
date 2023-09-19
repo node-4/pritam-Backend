@@ -70,4 +70,5 @@ router.get('/Banner/:bannerId', auth.getBannerById);                            
 router.put('/Banner/:bannerId', bannerUpload, authJwt.verifyToken, auth.updateBanner);                     // edit Banner
 router.delete("/Banner/:id", authJwt.verifyToken, auth.deleteBanner);                                                // delete Banner
 router.get('/Banner', auth.getAllBanner);                                                                            // all Banner
+router.get('/BannerbyType/:type', auth.getAllBannerByType);                                                                            // all Banner
 module.exports = router;

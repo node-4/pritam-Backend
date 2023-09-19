@@ -931,3 +931,16 @@ exports.getAllBanner = async (req, res) => {
         return res.status(500).json({ error: 'Failed to fetch Banner' });
     }
 };
+exports.getAllBannerByType = async (req, res) => {
+    try {
+        const categories = await banner.find({ type: req.params.type });
+        if (categories.length > 0) {
+            return res.status(200).json({ status: 200, message: 'Banner found successfully', data: categories });
+        } else {
+            return res.status(404).json({ status: 404, message: 'Banner not found.', data: categories });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Failed to fetch Banner' });
+    }
+};
