@@ -12,6 +12,7 @@ const subEvent = require("../models/subEvent");
 const freelancing = require("../models/freelancing");
 const ads = require("../models/ads");
 const userModel = require("../models/userModel");
+const banner = require('../models/banner');
 
 exports.registration = async (req, res) => {
     const { phone, email } = req.body;
@@ -827,5 +828,106 @@ exports.dashboard = async (req, res, next) => {
     } catch (error) {
         console.log(error);
         return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.createBanner = async (req, res) => {
+    try {
+        const { bannerTitle, bannerDescription, bannerImage, bannerVideo, type, } = req.body;
+        let findBanner = await banner.findOne({ type });
+        if (findBanner) {
+            return res.status(409).json({ status: 409, message: 'Banner already successfully', data: findBanner });
+        } else {
+            if (req.files['image']) {
+                let image = req.files['image'];
+                req.body.bannerImage = image[0].path;
+            }
+            if (req.files['video']) {
+                let video = req.files['video'];
+                req.body.bannerVideo = video[0].path;
+            }
+            const newCategory = await banner.create(req.body);
+            return res.status(200).json({ status: 200, message: 'Banner created successfully', data: newCategory });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Failed to create Banner' });
+    }
+};
+exports.getBannerById = async (req, res) => {
+    try {
+        const bannerId = req.params.bannerId;
+        const user = await banner.findById(bannerId);
+        if (user) {
+            return res.status(201).json({ message: "Banner found successfully", status: 200, data: user, });
+        }
+        return res.status(201).json({ message: "Banner not Found", status: 404, data: {}, });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Failed to retrieve Banner" });
+    }
+};
+exports.updateBanner = async (req, res) => {
+    try {
+        const { bannerTitle, bannerDescription, bannerImage, bannerVideo, type } = req.body;
+        const bannerId = req.params.bannerId;
+        const findData = await banner.findById(bannerId);
+        if (!findData) {
+            return res.status(201).json({ message: "Banner not Found", status: 404, data: {}, });
+        }
+        let findCompany = await banner.findOne({ _id: { $ne: findData._id }, type, });
+        if (findCompany) {
+            return res.status(409).json({ status: 409, message: 'Banner already Exit', data: findCompany });
+        } else {
+            if (req.files['image']) {
+                let image = req.files['image'];
+                req.body.bannerImage = image[0].path;
+            }
+            if (req.files['video']) {
+                let video = req.files['video'];
+                req.body.bannerVideo = video[0].path;
+            }
+            let data = {
+                bannerTitle: bannerTitle || findData.bannerTitle,
+                bannerDescription: bannerDescription || findData.bannerDescription,
+                bannerImage: req.body.bannerImage,
+                bannerVideo: req.body.bannerVideo || findData.bannerVideo,
+                type: type || findData.type,
+            }
+            const newCategory = await banner.findByIdAndUpdate({ _id: findData._id }, { $set: data }, { new: true });
+            return res.status(200).json({ status: 200, message: 'Banner update successfully', data: newCategory });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Failed to create Banner' });
+    }
+};
+exports.deleteBanner = async (req, res) => {
+    try {
+        const bannerId = req.params.id;
+        const user = await banner.findById(bannerId);
+        if (user) {
+            const user1 = await banner.findByIdAndDelete({ _id: user._id });;
+            if (user1) {
+                return res.status(201).json({ message: "Banner delete successfully.", status: 200, data: {}, });
+            }
+        } else {
+            return res.status(201).json({ message: "Banner not Found", status: 404, data: {}, });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Failed to retrieve Banner" });
+    }
+};
+exports.getAllBanner = async (req, res) => {
+    try {
+        const categories = await banner.find();
+        if (categories.length > 0) {
+            return res.status(200).json({ status: 200, message: 'Banner found successfully', data: categories });
+        } else {
+            return res.status(404).json({ status: 404, message: 'Banner not found.', data: categories });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Failed to fetch Banner' });
     }
 };

@@ -15,11 +15,12 @@ const storage = new CloudinaryStorage({
         cloudinary: cloudinary,
         params: {
                 folder: "images/image",
-                allowed_formats: ["jpg", "jpeg", "png", "PNG", "xlsx", "xls", "pdf", "PDF"],
+                allowed_formats: ["jpg", "jpeg", "webp", "mp4", "mp3", "png", "PNG", "xlsx", "xls", "pdf", "PDF"]
         },
 });
 const upload = multer({ storage: storage });
 var cpUpload = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'images', maxCount: 10 },]);
+var bannerUpload = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'video', maxCount: 1 },]);
 
 router.post("/registration", auth.registration);
 router.post("/login", auth.signin);
@@ -64,4 +65,9 @@ router.get("/getClients", auth.getClients);
 router.get("/getStaffs", auth.getStaffs);
 router.get("/getUserById/:id", auth.getUserById);
 router.delete("/DeleteUser/:id", [authJwt.verifyToken], auth.DeleteUser);
+router.post('/Banner', bannerUpload, authJwt.verifyToken, auth.createBanner);                              // add Banner
+router.get('/Banner/:bannerId', auth.getBannerById);                                                                 // view Banner
+router.put('/Banner/:bannerId', bannerUpload, authJwt.verifyToken, auth.updateBanner);                     // edit Banner
+router.delete("/Banner/:id", authJwt.verifyToken, auth.deleteBanner);                                                // delete Banner
+router.get('/Banner', auth.getAllBanner);                                                                            // all Banner
 module.exports = router;
