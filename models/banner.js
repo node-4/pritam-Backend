@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const mongoosePaginate = require("mongoose-paginate");
-const mongooseAggregatePaginate = require("mongoose-aggregate-paginate");
 const companyCategorySchema = new mongoose.Schema({
         bannerTitle: {
                 type: String,
@@ -22,7 +20,5 @@ const companyCategorySchema = new mongoose.Schema({
                 type: String,
         },
 }, { timestamps: true });
-companyCategorySchema.plugin(mongoosePaginate);
-companyCategorySchema.plugin(mongooseAggregatePaginate);
 const CompanyCategory = mongoose.model('banner', companyCategorySchema);
 module.exports = CompanyCategory;
