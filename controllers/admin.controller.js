@@ -837,13 +837,8 @@ exports.createBanner = async (req, res) => {
         if (findBanner) {
             return res.status(409).json({ status: 409, message: 'Banner already successfully', data: findBanner });
         } else {
-            if (req.files['image']) {
-                let image = req.files['image'];
-                req.body.bannerImage = image[0].path;
-            }
-            if (req.files['video']) {
-                let video = req.files['video'];
-                req.body.bannerVideo = video[0].path;
+            if (req.file) {
+                req.body.bannerImage = req.file.path;
             }
             const newCategory = await banner.create(req.body);
             return res.status(200).json({ status: 200, message: 'Banner created successfully', data: newCategory });
@@ -878,13 +873,8 @@ exports.updateBanner = async (req, res) => {
         if (findCompany) {
             return res.status(409).json({ status: 409, message: 'Banner already Exit', data: findCompany });
         } else {
-            if (req.files['image']) {
-                let image = req.files['image'];
-                req.body.bannerImage = image[0].path;
-            }
-            if (req.files['video']) {
-                let video = req.files['video'];
-                req.body.bannerVideo = video[0].path;
+            if (req.file) {
+                req.body.bannerImage = req.file.path;
             }
             let data = {
                 bannerTitle: bannerTitle || findData.bannerTitle,
