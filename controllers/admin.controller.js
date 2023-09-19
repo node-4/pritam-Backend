@@ -879,7 +879,7 @@ exports.updateBanner = async (req, res) => {
             let data = {
                 bannerTitle: bannerTitle || findData.bannerTitle,
                 bannerDescription: bannerDescription || findData.bannerDescription,
-                bannerImage: req.body.bannerImage,
+                bannerImage: req.body.bannerImage || findData.bannerImage,
                 bannerVideo: req.body.bannerVideo || findData.bannerVideo,
                 type: type || findData.type,
             }
