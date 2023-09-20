@@ -330,6 +330,27 @@ exports.getWhoWeare = async (req, res) => {
         return res.status(501).send({ status: 501, message: "server error.", data: {}, });
     }
 };
+exports.editWhoWeare = async (req, res) => {
+    try {
+        const WhoWeare = await whoWeare.findById({ _id: req.params.id });
+        if (!WhoWeare) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        const data = {
+            title: req.body.title || WhoWeare.title,
+            desc: req.body.desc || WhoWeare.desc,
+            image: req.body.image || WhoWeare.image,
+            type: WhoWeare.type,
+        }
+        let updateContact = await whoWeare.findByIdAndUpdate({ _id: WhoWeare._id }, { $set: data }, { new: true });
+        if (updateContact) {
+            return res.status(200).send({ status: 200, message: "whoWeare update successfully", data: updateContact });
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
 exports.getWhoWeareById = async (req, res) => {
     try {
         const WhoWeare = await whoWeare.findById({ _id: req.params.id });
@@ -392,6 +413,31 @@ exports.getPopularJob = async (req, res) => {
         return res.status(501).send({ status: 501, message: "server error.", data: {}, });
     }
 };
+exports.editPopularJob = async (req, res) => {
+    try {
+        const PopularJob = await popularJob.findById({ _id: req.params.id });
+        if (!PopularJob) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        const data = {
+            title: req.body.title || PopularJob.title,
+            mainImage: req.body.mainImage || PopularJob.mainImage,
+            image: req.body.image || PopularJob.image,
+            desc: req.body.desc || PopularJob.desc,
+            descPoints: req.body.descPoints || PopularJob.descPoints,
+            earnUpto: req.body.earnUpto || PopularJob.earnUpto,
+            currency: req.body.currency || PopularJob.currency,
+            per: req.body.per || PopularJob.per,
+        }
+        let updateContact = await popularJob.findByIdAndUpdate({ _id: PopularJob._id }, { $set: data }, { new: true });
+        if (updateContact) {
+            return res.status(200).send({ status: 200, message: "popularJob update successfully", data: updateContact });
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
 exports.getPopularJobById = async (req, res) => {
     try {
         const PopularJob = await popularJob.findById({ _id: req.params.id });
@@ -443,6 +489,26 @@ exports.getTrendingService = async (req, res) => {
             return res.status(404).json({ status: 404, message: "No data found", data: {} });
         } else {
             return res.status(200).json({ status: 200, message: "All TrendingService Data found successfully.", data: TrendingService })
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.editTrendingService = async (req, res) => {
+    try {
+        const findData = await trendingService.findById({ _id: req.params.id });
+        if (!findData) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        const data = {
+            title: req.body.title || findData.title,
+            image: req.body.image || findData.image,
+            desc: req.body.desc || findData.desc,
+        }
+        let updateContact = await trendingService.findByIdAndUpdate({ _id: findData._id }, { $set: data }, { new: true });
+        if (updateContact) {
+            return res.status(200).send({ status: 200, message: "trendingService update successfully", data: updateContact });
         }
     } catch (err) {
         console.log(err);
@@ -636,6 +702,32 @@ exports.getFreelancing = async (req, res) => {
             return res.status(404).json({ status: 404, message: "No data found", data: {} });
         } else {
             return res.status(200).json({ status: 200, message: "All Freelancing Data found successfully.", data: Freelancing })
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.editFreelancing = async (req, res) => {
+    try {
+        const Freelancing = await freelancing.findById({ _id: req.params.id });
+        if (!Freelancing) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        if (req.body.title) {
+            const findData = await freelancing.findOne({ _id: { $ne: Freelancing._id }, title: req.body.title });
+            if (findData) {
+                return res.status(409).json({ status: 409, message: "Already exit ", data: {} })
+            }
+        }
+        const data = {
+            title: req.body.title || Freelancing.title,
+            image: req.body.image || Freelancing.image,
+            desc: req.body.desc || Freelancing.desc,
+        }
+        let updateContact = await freelancing.findByIdAndUpdate({ _id: findData._id }, { $set: data }, { new: true });
+        if (updateContact) {
+            return res.status(200).send({ status: 200, message: "freelancing update successfully", data: updateContact });
         }
     } catch (err) {
         console.log(err);
