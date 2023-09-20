@@ -785,7 +785,7 @@ exports.editFreelancing = async (req, res) => {
             image: req.body.image || Freelancing.image,
             desc: req.body.desc || Freelancing.desc,
         }
-        let updateContact = await freelancing.findByIdAndUpdate({ _id: findData._id }, { $set: data }, { new: true });
+        let updateContact = await freelancing.findByIdAndUpdate({ _id: Freelancing._id }, { $set: data }, { new: true });
         if (updateContact) {
             return res.status(200).send({ status: 200, message: "freelancing update successfully", data: updateContact });
         }
