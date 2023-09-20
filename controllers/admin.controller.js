@@ -579,7 +579,7 @@ exports.editEvent = async (req, res) => {
         if (!event) {
             return res.status(404).json({ status: 404, message: "No data found", data: {} });
         }
-        const findData = await eventModel.findOne({ _id: { $ne: event._id }, title: req.body.title, type: req.body.type });
+        const findData = await eventModel.findOne({ _id: { $ne: event._id }, type: req.body.type });
         if (findData) {
             return res.status(409).json({ status: 409, message: "Already exit ", data: {} })
         } else {
