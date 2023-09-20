@@ -573,6 +573,32 @@ exports.getEvent = async (req, res) => {
         return res.status(501).send({ status: 501, message: "server error.", data: {}, });
     }
 };
+exports.editEvent = async (req, res) => {
+    try {
+        const event = await eventModel.findById({ _id: req.params.id });
+        if (!event) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        const findData = await eventModel.findOne({ _id: { $ne: event._id }, title: req.body.title, type: req.body.type });
+        if (findData) {
+            return res.status(409).json({ status: 409, message: "Already exit ", data: {} })
+        } else {
+            const data = {
+                title: req.body.title || findData.title,
+                image: req.body.image || findData.image,
+                desc: req.body.desc || findData.desc,
+                type: req.body.type || findData.type
+            }
+            let updateContact = await eventModel.findByIdAndUpdate({ _id: event._id }, { $set: data }, { new: true });
+            if (updateContact) {
+                return res.status(200).send({ status: 200, message: "Event update successfully", data: updateContact });
+            }
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
 exports.getEventById = async (req, res) => {
     try {
         const event = await eventModel.findById({ _id: req.params.id });
@@ -631,6 +657,40 @@ exports.getSubEvent = async (req, res) => {
             return res.status(404).json({ status: 404, message: "No data found", data: {} });
         } else {
             return res.status(200).json({ status: 200, message: "All event Data found successfully.", data: event })
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.editSubEvent = async (req, res) => {
+    try {
+        const events = await subEvent.findById({ _id: req.params.id });
+        if (!events) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        const findData = await subEvent.findOne({ title: req.body.title, eventId: req.body.eventId });
+        if (findData) {
+            return res.status(409).json({ status: 409, message: "Already exit ", data: {} })
+        } else {
+            if (req.body.eventId) {
+                const event = await eventModel.findById({ _id: req.body.eventId });
+                if (!event) {
+                    return res.status(404).json({ status: 404, message: "No data found", data: {} });
+                }
+            }
+            const data = {
+                eventId: req.body.eventId || events.eventId,
+                title: req.body.title || events.title,
+                mainImage: req.body.mainImage || events.mainImage,
+                image: req.body.image || events.image,
+                desc: req.body.desc || events.desc,
+                descPoints: req.body.descPoints || events.descPoints,
+            }
+            let updateContact = await subEvent.findByIdAndUpdate({ _id: events._id }, { $set: data }, { new: true });
+            if (updateContact) {
+                return res.status(200).send({ status: 200, message: "Sub Event update successfully", data: updateContact });
+            }
         }
     } catch (err) {
         console.log(err);
