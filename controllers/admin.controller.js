@@ -867,14 +867,19 @@ exports.addAds = async (req, res) => {
         const findData = await ads.findOne({});
         if (findData) {
             let images = [];
-            let image = req.files['image'];
-            req.body.image = image[0].path;
-            let banner = req.files['banner'];
-            req.body.banner = banner[0].path;
-            let imagess = req.files['images'];
-            console.log(imagess);
-            for (let i = 0; i < imagess.length; i++) {
-                images.push(imagess[i].path)
+            if (req.files['image']) {
+                let image = req.files['image'];
+                req.body.image = image[0].path;
+            }
+            if (req.files['banner']) {
+                let banner = req.files['banner'];
+                req.body.banner = banner[0].path;
+            }
+            if (req.files['images']) {
+                let imagess = req.files['images'];
+                for (let i = 0; i < imagess.length; i++) {
+                    images.push(imagess[i].path)
+                }
             }
             const data = {
                 title: req.body.title || findData.title,
@@ -889,13 +894,19 @@ exports.addAds = async (req, res) => {
             return res.status(200).json({ status: 200, message: "Ads is Added ", data: Data })
         } else {
             let images = [];
-            let image = req.files['image'];
-            req.body.image = image[0].path;
-            let banner = req.files['banner'];
-            req.body.banner = banner[0].path;
-            let imagess = req.files['images'];
-            for (let i = 0; i < imagess.length; i++) {
-                images.push(imagess[i].path)
+            if (req.files['image']) {
+                let image = req.files['image'];
+                req.body.image = image[0].path;
+            }
+            if (req.files['banner']) {
+                let banner = req.files['banner'];
+                req.body.banner = banner[0].path;
+            }
+            if (req.files['images']) {
+                let imagess = req.files['images'];
+                for (let i = 0; i < imagess.length; i++) {
+                    images.push(imagess[i].path)
+                }
             }
             const data = {
                 title: req.body.title,
