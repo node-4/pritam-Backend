@@ -100,12 +100,40 @@ exports.addContactDetailsOffice = async (req, res) => {
         if (findCon) {
             return res.status(409).send({ status: 409, message: "Contact Detail already exit", data: {} });
         }
+        if (req.file) {
+            req.body.image = req.file.path
+        }
         let result2 = await ContactDetail.create(req.body);
         if (result2) {
             return res.status(200).send({ status: 200, message: "Contact Detail update successfully", data: result2 });
         }
     } catch (err) {
         console.log(err.message);
+        return res.status(500).send({ status: 500, msg: "internal server error", error: err.message, });
+    }
+};
+exports.updateContactDetailsOffice = async (req, res) => {
+    try {
+        let findcontactDetails = await ContactDetail.findOne({ _id: req.params.id });
+        if (!findcontactDetails) {
+            return res.status(404).send({ status: 404, message: "Contact Detail not found.", data: {} });
+        } else {
+            if (req.file) {
+                req.body.image = req.file.path
+            }
+            req.body.title = req.body.title || findcontactDetails.title;
+            req.body.description = req.body.description || findcontactDetails.description;
+            req.body.mobileNumber = req.body.mobileNumber || findcontactDetails.mobileNumber;
+            req.body.email = req.body.email || findcontactDetails.email;
+            req.body.contactType = req.body.contactType || findcontactDetails.contactType;
+            req.body.address = req.body.address || findcontactDetails.address;
+            req.body.image = req.body.image || findcontactDetails.image;
+            let updateContact = await ContactDetail.findByIdAndUpdate({ _id: findcontactDetails._id }, { $set: req.body }, { new: true });
+            if (updateContact) {
+                return res.status(200).send({ status: 200, message: "Contact Detail update successfully", data: updateContact });
+            }
+        }
+    } catch (err) {
         return res.status(500).send({ status: 500, msg: "internal server error", error: err.message, });
     }
 };
@@ -120,6 +148,19 @@ exports.viewContactDetailsOffice = async (req, res) => {
     } catch (err) {
         console.log(err);
         return res.status(500).send({ status: 500, msg: "internal server error", error: err.message, });
+    }
+};
+exports.DeleteContactDetailsOffice = async (req, res) => {
+    try {
+        const Courses = await ContactDetail.findById({ _id: req.params.id });
+        if (!Courses) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        await ContactDetail.findByIdAndDelete({ _id: req.params.id });
+        return res.status(200).json({ status: 200, message: "ContactDetail delete successfully.", data: {} })
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
     }
 };
 exports.updateContactDetails = async (req, res) => {
