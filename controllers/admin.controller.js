@@ -128,18 +128,18 @@ exports.updateContactDetails = async (req, res) => {
         if (!findcontactDetails) {
             return res.status(404).send({ status: 404, message: "Contact Detail not found.", data: {} });
         } else {
-            req.body.fb = req.body.fb || findContact.fb;
-            req.body.instagram = req.body.instagram || findContact.instagram;
-            req.body.linkedIn = req.body.linkedIn || findContact.linkedIn;
-            req.body.twitter = req.body.twitter || findContact.twitter;
-            req.body.map = req.body.map || findContact.map;
-            req.body.mobileNumber = req.body.mobileNumber || findContact.mobileNumber;
-            req.body.mobileNumberDescription = req.body.mobileNumberDescription || findContact.mobileNumberDescription;
-            req.body.email = req.body.email || findContact.email;
-            req.body.emailDescription = req.body.emailDescription || findContact.emailDescription;
-            req.body.whatAppchat = req.body.whatAppchat || findContact.whatAppchat;
-            req.body.whatAppchatDescription = req.body.whatAppchatDescription || findContact.whatAppchatDescription;
-            let updateContact = await ContactDetail.findByIdAndUpdate({ _id: findContact._id }, { $set: req.body }, { new: true });
+            req.body.fb = req.body.fb || findcontactDetails.fb;
+            req.body.instagram = req.body.instagram || findcontactDetails.instagram;
+            req.body.linkedIn = req.body.linkedIn || findcontactDetails.linkedIn;
+            req.body.twitter = req.body.twitter || findcontactDetails.twitter;
+            req.body.map = req.body.map || findcontactDetails.map;
+            req.body.mobileNumber = req.body.mobileNumber || findcontactDetails.mobileNumber;
+            req.body.mobileNumberDescription = req.body.mobileNumberDescription || findcontactDetails.mobileNumberDescription;
+            req.body.email = req.body.email || findcontactDetails.email;
+            req.body.emailDescription = req.body.emailDescription || findcontactDetails.emailDescription;
+            req.body.whatAppchat = req.body.whatAppchat || findcontactDetails.whatAppchat;
+            req.body.whatAppchatDescription = req.body.whatAppchatDescription || findcontactDetails.whatAppchatDescription;
+            let updateContact = await ContactDetail.findByIdAndUpdate({ _id: findcontactDetails._id }, { $set: req.body }, { new: true });
             if (updateContact) {
                 return res.status(200).send({ status: 200, message: "Contact Detail update successfully", data: updateContact });
             }
