@@ -19,7 +19,7 @@ const storage = new CloudinaryStorage({
         },
 });
 const upload = multer({ storage: storage });
-var cpUpload = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'images', maxCount: 10 },]);
+var cpUpload = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'banner', maxCount: 1 }, { name: 'images', maxCount: 10 },]);
 
 router.post("/registration", auth.registration);
 router.post("/login", auth.signin);

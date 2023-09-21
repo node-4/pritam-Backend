@@ -869,6 +869,8 @@ exports.addAds = async (req, res) => {
             let images = [];
             let image = req.files['image'];
             req.body.image = image[0].path;
+            let banner = req.files['banner'];
+            req.body.banner = banner[0].path;
             let imagess = req.files['images'];
             console.log(imagess);
             for (let i = 0; i < imagess.length; i++) {
@@ -881,6 +883,7 @@ exports.addAds = async (req, res) => {
                 image: req.body.image,
                 images: images,
                 desc: req.body.desc || findData.desc,
+                banner: req.body.banner || findData.banner,
             }
             const Data = await ads.findByIdAndUpdate({ _id: findData._id }, { $set: data }, { new: true });
             return res.status(200).json({ status: 200, message: "Ads is Added ", data: Data })
@@ -888,6 +891,8 @@ exports.addAds = async (req, res) => {
             let images = [];
             let image = req.files['image'];
             req.body.image = image[0].path;
+            let banner = req.files['banner'];
+            req.body.banner = banner[0].path;
             let imagess = req.files['images'];
             for (let i = 0; i < imagess.length; i++) {
                 images.push(imagess[i].path)
@@ -898,7 +903,8 @@ exports.addAds = async (req, res) => {
                 link: req.body.link,
                 image: req.body.image,
                 images: images,
-                desc: req.body.desc
+                desc: req.body.desc,
+                banner: req.body.banner
             }
             const Data = await ads.create(data);
             return res.status(200).json({ status: 200, message: "Ads is Added ", data: Data })

@@ -12,6 +12,9 @@ const vendorDetailsSchema = new mongoose.Schema({
         image: {
                 type: String,
         },
+        banner: {
+                type: String,
+        },
         images: {
                 type: Array,
         },
