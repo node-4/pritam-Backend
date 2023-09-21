@@ -85,6 +85,7 @@ exports.addContactDetails = async (req, res) => {
         if (findCon) {
             return res.status(409).send({ status: 409, message: "Contact Detail already exit", data: {} });
         }
+        req.body.contactType = "Main";
         let result2 = await ContactDetail.create(req.body);
         if (result2) {
             return res.status(200).send({ status: 200, message: "Contact Detail update successfully", data: result2 });
@@ -103,6 +104,7 @@ exports.addContactDetailsOffice = async (req, res) => {
         if (req.file) {
             req.body.image = req.file.path
         }
+        req.body.contactType = "Other";
         let result2 = await ContactDetail.create(req.body);
         if (result2) {
             return res.status(200).send({ status: 200, message: "Contact Detail update successfully", data: result2 });
