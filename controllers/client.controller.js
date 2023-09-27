@@ -63,7 +63,7 @@ exports.getCourses = async (req, res) => {
         if (req.query.date) {
             const Courses = await CoursesModel.find({ tillDate: { $lte: req.query.date } });
             if (Courses.length == 0) {
-                return res.status(404).json({ status: 404, message: "No data found", data: {} });
+                return res.status(200).json({ status: 200, message: "No data found", data: [] });
             } else {
                 return res.status(200).json({ status: 200, message: "All courses Data found successfully.", data: Courses })
             }
