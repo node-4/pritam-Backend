@@ -13,6 +13,9 @@ const freelancing = require("../models/freelancing");
 const ads = require("../models/ads");
 const userModel = require("../models/userModel");
 const banner = require('../models/banner');
+const allPageTitledescription = require('../models/allPageTitledescription');
+const yourDreamsquickly = require('../models/yourDreamsquickly');
+const businessweSupport = require('../models/businessweSupport');
 
 exports.registration = async (req, res) => {
     const { phone, email } = req.body;
@@ -1144,5 +1147,291 @@ exports.getAllBannerByType = async (req, res) => {
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: 'Failed to fetch Banner' });
+    }
+};
+exports.addPageTitledescription = async (req, res) => {
+    try {
+        const findData = await allPageTitledescription.findOne({ page: req.body.page });
+        if (findData) {
+            return res.status(409).json({ status: 409, message: "Already exit ", data: {} })
+        } else {
+            const data = {
+                title: req.body.title,
+                page: req.body.page,
+                description: req.body.description,
+                desc: req.body.desc,
+            }
+            const Data = await allPageTitledescription.create(data);
+            return res.status(200).json({ status: 200, message: "Page Title description is Added ", data: Data })
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getPageTitledescriptionbyPage = async (req, res) => {
+    try {
+        const Freelancing = await allPageTitledescription.find({ page: req.params.page });
+        if (Freelancing.length == 0) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        } else {
+            return res.status(200).json({ status: 200, message: "All Page Title description Data found successfully.", data: Freelancing })
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getPageTitledescription = async (req, res) => {
+    try {
+        const Freelancing = await allPageTitledescription.find();
+        if (Freelancing.length == 0) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        } else {
+            return res.status(200).json({ status: 200, message: "All Page Title description Data found successfully.", data: Freelancing })
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.editPageTitledescription = async (req, res) => {
+    try {
+        const Freelancing = await allPageTitledescription.findById({ _id: req.params.id });
+        if (!Freelancing) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        if (req.body.page) {
+            const findData = await allPageTitledescription.findOne({ _id: { $ne: Freelancing._id }, page: req.body.page });
+            if (findData) {
+                return res.status(409).json({ status: 409, message: "Already exit ", data: {} })
+            }
+        }
+        const data = {
+            description: req.body.description || Freelancing.description,
+            title: req.body.title || Freelancing.title,
+            page: req.body.page || Freelancing.page,
+            desc: req.body.desc || Freelancing.desc,
+        }
+        let updateContact = await allPageTitledescription.findByIdAndUpdate({ _id: Freelancing._id }, { $set: data }, { new: true });
+        if (updateContact) {
+            return res.status(200).send({ status: 200, message: "Page Title description update successfully", data: updateContact });
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getPageTitledescriptionById = async (req, res) => {
+    try {
+        const Freelancing = await allPageTitledescription.findById({ _id: req.params.id });
+        if (!Freelancing) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        return res.status(200).json({ status: 200, message: "Data found successfully.", data: Freelancing })
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.DeletePageTitledescription = async (req, res) => {
+    try {
+        const Freelancing = await allPageTitledescription.findById({ _id: req.params.id });
+        if (!Freelancing) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        await allPageTitledescription.findByIdAndDelete({ _id: req.params.id });
+        return res.status(200).json({ status: 200, message: "Page Title description delete successfully.", data: {} })
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.createYourDreamsQuickly = async (req, res) => {
+    try {
+        const { heading, title, desc, image } = req.body;
+        let findBanner = await yourDreamsquickly.findOne({});
+        if (findBanner) {
+            if (req.file) {
+                req.body.image = req.file.path;
+            }
+            let data = {
+                heading: heading || findData.heading,
+                title: title || findData.title,
+                image: req.body.image || findData.image,
+                desc: req.body.desc || findData.desc,
+            }
+            const newCategory = await yourDreamsquickly.findByIdAndUpdate({ _id: findBanner._id }, { $set: data }, { new: true });
+            return res.status(200).json({ status: 200, message: 'Your dreams quickly update successfully', data: newCategory });
+        } else {
+            if (req.file) {
+                req.body.image = req.file.path;
+            }
+            const newCategory = await yourDreamsquickly.create(req.body);
+            return res.status(200).json({ status: 200, message: 'Your dreams quickly created successfully', data: newCategory });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Failed to create Your dreams quickly' });
+    }
+};
+exports.getYourDreamsQuicklyById = async (req, res) => {
+    try {
+        const bannerId = req.params.bannerId;
+        const user = await yourDreamsquickly.findById(bannerId);
+        if (user) {
+            return res.status(201).json({ message: "Banner found successfully", status: 200, data: user, });
+        }
+        return res.status(201).json({ message: "Banner not Found", status: 404, data: {}, });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Failed to retrieve Banner" });
+    }
+};
+exports.deleteYourDreamsQuickly = async (req, res) => {
+    try {
+        const bannerId = req.params.id;
+        const user = await yourDreamsquickly.findById(bannerId);
+        if (user) {
+            const user1 = await yourDreamsquickly.findByIdAndDelete({ _id: user._id });;
+            if (user1) {
+                return res.status(201).json({ message: "Your dreams quickly delete successfully.", status: 200, data: {}, });
+            }
+        } else {
+            return res.status(201).json({ message: "Your dreams quickly not Found", status: 404, data: {}, });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Failed to retrieve Your dreams quickly" });
+    }
+};
+exports.getAllYourDreamsQuickly = async (req, res) => {
+    try {
+        const categories = await yourDreamsquickly.findOne();
+        if (categories) {
+            return res.status(200).json({ status: 200, message: 'Your dreams quickly found successfully', data: categories });
+        } else {
+            return res.status(404).json({ status: 404, message: 'Your dreams quickly not found.', data: categories });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Failed to fetch Your dreams quickly' });
+    }
+};
+exports.createBusinessweSupport = async (req, res) => {
+    try {
+        const { title, desc, image } = req.body;
+        let findBanner = await businessweSupport.findOne({});
+        if (findBanner) {
+            if (req.file) {
+                req.body.image = req.file.path;
+            }
+            let data = {
+                title: title || findData.title,
+                image: req.body.image || findData.image,
+                desc: desc || findData.desc,
+            }
+            const newCategory = await businessweSupport.findByIdAndUpdate({ _id: findBanner._id }, { $set: data }, { new: true });
+            return res.status(200).json({ status: 200, message: 'Business we Support update successfully', data: newCategory });
+        } else {
+            if (req.file) {
+                req.body.image = req.file.path;
+            }
+            const newCategory = await businessweSupport.create(req.body);
+            return res.status(200).json({ status: 200, message: 'Business we Support created successfully', data: newCategory });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Failed to create Business we Support' });
+    }
+};
+exports.getBusinessweSupportById = async (req, res) => {
+    try {
+        const bannerId = req.params.bannerId;
+        const user = await businessweSupport.findById(bannerId);
+        if (user) {
+            return res.status(201).json({ message: "Banner found successfully", status: 200, data: user, });
+        }
+        return res.status(201).json({ message: "Banner not Found", status: 404, data: {}, });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Failed to retrieve Banner" });
+    }
+};
+exports.deleteBusinessweSupport = async (req, res) => {
+    try {
+        const bannerId = req.params.id;
+        const user = await businessweSupport.findById(bannerId);
+        if (user) {
+            const user1 = await businessweSupport.findByIdAndDelete({ _id: user._id });;
+            if (user1) {
+                return res.status(201).json({ message: "Business we Support delete successfully.", status: 200, data: {}, });
+            }
+        } else {
+            return res.status(201).json({ message: "Business we Support not Found", status: 404, data: {}, });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Failed to retrieve Business we Support" });
+    }
+};
+exports.getAllBusinessweSupport = async (req, res) => {
+    try {
+        const categories = await businessweSupport.findOne();
+        if (categories) {
+            return res.status(200).json({ status: 200, message: 'Business we Support found successfully', data: categories });
+        } else {
+            return res.status(404).json({ status: 404, message: 'Business we Support not found.', data: categories });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Failed to fetch Business we Support' });
+    }
+};
+exports.addUserinBusinessweSupport = async (req, res) => {
+    try {
+        const { name, image } = req.body;
+        let findBanner = await businessweSupport.findOne({});
+        if (findBanner) {
+            if (req.file) {
+                req.body.image = req.file.path;
+            }
+            let data = {
+                name: name,
+                image: req.body.image
+            }
+            const newCategory = await businessweSupport.findByIdAndUpdate({ _id: findBanner._id }, { $push: { userArray: data } }, { new: true });
+            return res.status(200).json({ status: 200, message: 'Business we Support update successfully', data: newCategory });
+        } else {
+            return res.status(200).json({ status: 200, message: 'Business we Support not found.', data: newCategory });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Failed to create Business we Support' });
+    }
+};
+exports.deleteUserinBusinessweSupport = async (req, res) => {
+    try {
+        let findCart = await businessweSupport.findOne({});
+        if (findCart) {
+            for (let i = 0; i < findCart.userArray.length; i++) {
+                if (findCart.userArray.length > 1) {
+                    if (((findCart.userArray[i]._id).toString() == req.params.id) == true) {
+                        let updateCart = await businessweSupport.findByIdAndUpdate({ _id: findCart._id, 'userArray._id': req.params.id }, { $pull: { 'userArray': { _id: req.params.id, name: findCart.userArray[i].name, image: findCart.userArray[i].image, } } }, { new: true })
+                        if (updateCart) {
+                            return res.status(200).send({ message: "User delete from bussiness we support.", data: updateCart, });
+                        }
+                    }
+                } else {
+                    return res.status(200).send({ status: 200, message: "No Data Found ", data: [] });
+                }
+            }
+        } else {
+            return res.status(200).send({ status: 200, message: "No Data Found ", cart: [] });
+        }
+
+    } catch (error) {
+        console.log("353====================>", error)
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
     }
 };

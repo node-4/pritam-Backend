@@ -19,6 +19,6 @@ module.exports = (app) => {
     app.post("/api/v1/static/faq/createFaq", authJwt.verifyToken, staticContent.createFaq);
     app.put("/api/v1/static/faq/:id", authJwt.verifyToken, staticContent.updateFaq);
     app.delete("/api/v1/static/faq/:id", authJwt.verifyToken, staticContent.deleteFaq);
-    app.get("/api/v1/static/faq/All", staticContent.getAllFaqs);
+    app.get("/api/v1/static/faq/All/:type", staticContent.getAllFaqs);
     app.get("/api/v1/static/faq/:id", staticContent.getFaqById);
 };

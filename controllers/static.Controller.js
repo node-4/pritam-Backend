@@ -192,7 +192,7 @@ exports.deletePrivacy = async (req, res) => {
 };
 exports.getAllFaqs = async (req, res) => {
         try {
-                const faqs = await Faq.find().lean();
+                const faqs = await Faq.find({ type: req.params.type }).lean();
                 if (faqs.length == 0) {
                         return res.status(404).json({ status: 404, message: "No data found", data: {} });
                 }
@@ -216,7 +216,7 @@ exports.getFaqById = async (req, res) => {
         }
 };
 exports.createFaq = async (req, res) => {
-        const { question, answer } = req.body;
+        const { question, answer, type } = req.body;
         try {
                 if (!question || !answer) {
                         return res.status(400).json({ message: "questions and answers cannot be blank " });

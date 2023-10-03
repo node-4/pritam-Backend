@@ -5,6 +5,9 @@ const schema = new mongoose.Schema(
             type: mongoose.SchemaTypes.ObjectId,
             ref: "user",
         },
+        name: {
+            type: String,
+        },
         rating: {
             type: Number,
         },

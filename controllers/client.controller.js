@@ -119,6 +119,7 @@ exports.giveRating = async (req, res) => {
                 rating: req.body.rating,
                 comment: req.body.comment,
                 type: user.userType,
+                name: req.body.name
             }
             const Data = await ratingModel.create(data);
             return res.status(200).send({ message: "Rating add successfully", data: Data });

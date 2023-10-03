@@ -78,4 +78,21 @@ router.put('/Banner/:bannerId', upload.single('image'), authJwt.verifyToken, aut
 router.delete("/Banner/:id", authJwt.verifyToken, auth.deleteBanner);                                                // delete Banner
 router.get('/Banner', auth.getAllBanner);                                                                            // all Banner
 router.get('/BannerbyType/:type', auth.getAllBannerByType);                                                                            // all Banner
+router.post("/page/addPageTitledescription", [authJwt.verifyToken], auth.addPageTitledescription);
+router.get("/page/getPageTitledescriptionbyPage/:page", auth.getPageTitledescriptionbyPage);
+router.get("/page/getPageTitledescription", auth.getPageTitledescription);
+router.put("/page/editPageTitledescription/:id", auth.editPageTitledescription);
+router.get("/page/getPageTitledescriptionById/:id", auth.getPageTitledescriptionById);
+router.delete("/page/DeletePageTitledescription/:id", [authJwt.verifyToken], auth.DeletePageTitledescription);
+router.post("/dream/createYourDreamsQuickly", upload.single('image'), [authJwt.verifyToken], auth.createYourDreamsQuickly);
+router.get("/dream/getAllYourDreamsQuickly", auth.getAllYourDreamsQuickly);
+router.get("/dream/getYourDreamsQuicklyById/:id", auth.getYourDreamsQuicklyById);
+router.delete("/dream/deleteYourDreamsQuickly/:id", [authJwt.verifyToken], auth.deleteYourDreamsQuickly);
+router.post("/weSupport/createBusinessweSupport", upload.single('image'), [authJwt.verifyToken], auth.createBusinessweSupport);
+router.get("/weSupport/getAllBusinessweSupport", auth.getAllBusinessweSupport);
+router.get("/weSupport/getBusinessweSupportById/:id", auth.getBusinessweSupportById);
+router.delete("/weSupport/deleteBusinessweSupport/:id", [authJwt.verifyToken], auth.deleteBusinessweSupport);
+router.put("/weSupport/addUserinBusinessweSupport", upload.single('image'), [authJwt.verifyToken], auth.addUserinBusinessweSupport);
+router.delete("/weSupport/deleteUserinBusinessweSupport/:id", [authJwt.verifyToken], auth.deleteUserinBusinessweSupport);
+
 module.exports = router;
