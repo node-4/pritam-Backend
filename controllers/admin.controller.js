@@ -16,6 +16,8 @@ const banner = require('../models/banner');
 const allPageTitledescription = require('../models/allPageTitledescription');
 const yourDreamsquickly = require('../models/yourDreamsquickly');
 const businessweSupport = require('../models/businessweSupport');
+const staffTalented = require('../models/staffTalented');
+const staffTalentedType = require('../models/staffTalentedType');
 
 exports.registration = async (req, res) => {
     const { phone, email } = req.body;
@@ -1432,6 +1434,255 @@ exports.deleteUserinBusinessweSupport = async (req, res) => {
 
     } catch (error) {
         console.log("353====================>", error)
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.addStaffTalented = async (req, res) => {
+    try {
+        const findData = await staffTalented.findOne({});
+        if (findData) {
+            let consultancy = [], image = [];
+            if (req.files['formImage']) {
+                let formImage = req.files['formImage'];
+                req.body.formImage = formImage[0].path;
+            }
+            if (req.files['image']) {
+                let images = req.files['image'];
+                for (let i = 0; i < images.length; i++) {
+                    image.push(images[i].path)
+                }
+            }
+            if (req.body.consultancyTitle.length > 0) {
+                for (let i = 0; i < req.body.consultancyTitle.length; i++) {
+                    let obj = {
+                        title: req.body.consultancyTitle[i],
+                        desc: req.body.consultancyDesc[i],
+                    }
+                    consultancy.push(obj)
+                }
+            } else {
+                consultancy = findData.consultancy;
+            }
+            const data = {
+                title: req.body.title || findData.title,
+                desc: req.body.desc || findData.desc,
+                academyHeading: req.body.academyHeading || findData.academyHeading,
+                academyTitle: req.body.academyTitle || findData.academyTitle,
+                academyDesc: req.body.academyDesc || findData.academyDesc,
+                image: req.body.image || findData.image,
+                consultancy: consultancy || findData.consultancy,
+                youtubeLink: req.body.youtubeLink || findData.youtubeLink,
+                formTitle: req.body.formTitle || findData.formTitle,
+                formDesc: req.body.formDesc || findData.formDesc,
+                formPrivacy: req.body.formPrivacy || findData.formPrivacy,
+                formImage: req.body.formImage || findData.formImage,
+                formWhatApp: req.body.formWhatApp || findData.formWhatApp,
+                formCall: req.body.formCall || findData.formCall,
+            }
+            const Data = await staffTalented.findByIdAndUpdate({ _id: findData._id }, { $set: data }, { new: true });
+            return res.status(200).json({ status: 200, message: "staffTalented is Added ", data: Data })
+        } else {
+            let consultancy = [], image = [];
+            if (req.files['formImage']) {
+                let formImage = req.files['formImage'];
+                req.body.formImage = formImage[0].path;
+            }
+            if (req.files['image']) {
+                let images = req.files['image'];
+                for (let i = 0; i < images.length; i++) {
+                    image.push(images[i].path)
+                }
+            }
+            for (let i = 0; i < req.body.consultancyTitle.length; i++) {
+                let obj = {
+                    title: req.body.consultancyTitle[i],
+                    desc: req.body.consultancyDesc[i],
+                }
+                consultancy.push(obj)
+            }
+            const data = {
+                title: req.body.title,
+                desc: req.body.desc,
+                academyHeading: req.body.academyHeading,
+                academyTitle: req.body.academyTitle,
+                academyDesc: req.body.academyDesc,
+                image: image,
+                consultancy: consultancy,
+                youtubeLink: req.body.youtubeLink,
+                formTitle: req.body.formTitle,
+                formDesc: req.body.formDesc,
+                formPrivacy: req.body.formPrivacy,
+                formImage: req.body.formImage,
+                formWhatApp: req.body.formWhatApp,
+                formCall: req.body.formCall,
+            }
+            const Data = await staffTalented.create(data);
+            return res.status(200).json({ status: 200, message: "staffTalented is Added ", data: Data })
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getStaffTalented = async (req, res) => {
+    try {
+        const StaffTalented = await staffTalented.findOne().populate({ path: 'staffTalentedTypeId', select: "title image" });
+        if (!StaffTalented) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        } else {
+            return res.status(200).json({ status: 200, message: "All StaffTalented Data found successfully.", data: StaffTalented })
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getStaffTalentedById = async (req, res) => {
+    try {
+        const StaffTalented = await staffTalented.findById({ _id: req.params.id });
+        if (!StaffTalented) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        return res.status(200).json({ status: 200, message: "Data found successfully.", data: StaffTalented })
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.DeleteStaffTalented = async (req, res) => {
+    try {
+        const StaffTalented = await staffTalented.findById({ _id: req.params.id });
+        if (!StaffTalented) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        await staffTalented.findByIdAndDelete({ _id: req.params.id });
+        return res.status(200).json({ status: 200, message: "StaffTalented  delete successfully.", data: {} })
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.addstaffTalentedType = async (req, res) => {
+    try {
+        const findData = await staffTalentedType.findOne({ title: req.body.title });
+        if (findData) {
+            let description = [];
+            if (req.files['eformImage']) {
+                let eformImage = req.files['eformImage'];
+                req.body.eformImage = eformImage[0].path;
+            }
+            if (req.files['image']) {
+                let image = req.files['image'];
+                req.body.image = image[0].path;
+            }
+            if (req.body.descriptionTitle.length > 0) {
+                let obj = {
+                    title: req.body.descriptionTitle[i],
+                    desc: req.body.descriptionDesc[i],
+                }
+                description.push(obj)
+            } else {
+                description = findData.description;
+            }
+            const data = {
+                title: req.body.title,
+                desc: req.body.desc,
+                academyHeading: req.body.academyHeading,
+                academyTitle: req.body.academyTitle,
+                academyDesc: req.body.academyDesc,
+                image: req.body.image,
+                consultancy: consultancy,
+                youtubeLink: req.body.youtubeLink,
+                formTitle: req.body.formTitle,
+                formDesc: req.body.formDesc,
+                formPrivacy: req.body.formPrivacy,
+                formImage: req.body.formImage,
+                formWhatApp: req.body.formWhatApp,
+                formCall: req.body.formCall,
+            }
+            const Data = await staffTalentedType.findByIdAndUpdate({ _id: findData._id }, { $set: data }, { new: true });
+            return res.status(200).json({ status: 200, message: "staffTalented is Added ", data: Data })
+        } else {
+            let description = [];
+            if (req.files['eformImage']) {
+                let eformImage = req.files['eformImage'];
+                req.body.eformImage = eformImage[0].path;
+            }
+            if (req.files['image']) {
+                let image = req.files['image'];
+                req.body.image = image[0].path;
+            }
+            for (let i = 0; i < req.body.descriptionTitle.length; i++) {
+                let obj = {
+                    title: req.body.descriptionTitle[i],
+                    desc: req.body.descriptionDesc[i],
+                }
+                description.push(obj)
+            }
+            const data = {
+                title: req.body.title,
+                desc: req.body.desc,
+                image: req.body.image,
+                description: description,
+                contactUsformTitle: req.body.contactUsformTitle,
+                contactUsformDesc: req.body.contactUsformDesc,
+                contactUsformAvailibility: req.body.contactUsformAvailibility,
+                contactUsformPrivacy: req.body.contactUsformPrivacy,
+                youtubeLink: req.body.youtubeLink,
+                eTitle: req.body.eTitle,
+                eDesc: req.body.eDesc,
+                eformImage: req.body.eformImage,
+                eformWhatApp: req.body.eformWhatApp,
+                eformCall: req.body.eformCall,
+                eformPrivacy: req.body.eformPrivacy,
+            }
+            const Data = await staffTalentedType.create(data);
+            const findData1 = await staffTalented.findOne({});
+            if (findData1) {
+                let update = await staffTalented.findByIdAndUpdate({ _id: findData1._id }, { $push: { staffTalentedTypeId: Data._id } }, { new: true })
+                return res.status(200).json({ status: 200, message: "staffTalented is Added ", data: Data })
+            }
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getstaffTalentedType = async (req, res) => {
+    try {
+        const StaffTalented = await staffTalentedType.findOne();
+        if (!StaffTalented) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        } else {
+            return res.status(200).json({ status: 200, message: "All StaffTalented Data found successfully.", data: StaffTalented })
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getstaffTalentedTypeById = async (req, res) => {
+    try {
+        const StaffTalented = await staffTalentedType.findById({ _id: req.params.id });
+        if (!StaffTalented) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        return res.status(200).json({ status: 200, message: "Data found successfully.", data: StaffTalented })
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.DeletestaffTalentedType = async (req, res) => {
+    try {
+        const StaffTalented = await staffTalentedType.findById({ _id: req.params.id });
+        if (!StaffTalented) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        await staffTalentedType.findByIdAndDelete({ _id: req.params.id });
+        return res.status(200).json({ status: 200, message: "StaffTalented  delete successfully.", data: {} })
+    } catch (err) {
+        console.log(err);
         return res.status(501).send({ status: 501, message: "server error.", data: {}, });
     }
 };

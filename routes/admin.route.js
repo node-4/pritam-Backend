@@ -20,6 +20,8 @@ const storage = new CloudinaryStorage({
 });
 const upload = multer({ storage: storage });
 var cpUpload = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'banner', maxCount: 1 }, { name: 'images', maxCount: 10 },]);
+var cpUpload1 = upload.fields([{ name: 'formImage', maxCount: 1 }, { name: 'image', maxCount: 3 }]);
+var cpUpload2 = upload.fields([{ name: 'eformImage', maxCount: 1 }, { name: 'image', maxCount: 1 }]);
 
 router.post("/registration", auth.registration);
 router.post("/login", auth.signin);
@@ -94,5 +96,16 @@ router.get("/weSupport/getBusinessweSupportById/:id", auth.getBusinessweSupportB
 router.delete("/weSupport/deleteBusinessweSupport/:id", [authJwt.verifyToken], auth.deleteBusinessweSupport);
 router.put("/weSupport/addUserinBusinessweSupport", upload.single('image'), [authJwt.verifyToken], auth.addUserinBusinessweSupport);
 router.delete("/weSupport/deleteUserinBusinessweSupport/:id", [authJwt.verifyToken], auth.deleteUserinBusinessweSupport);
+router.post("/addStaffTalented", cpUpload1, [authJwt.verifyToken], auth.addStaffTalented);
+router.get("/getStaffTalented", auth.getStaffTalented);
+router.get("/getStaffTalentedById/:id", auth.getStaffTalentedById);
+router.delete("/DeleteStaffTalented/:id", [authJwt.verifyToken], auth.DeleteStaffTalented);
 
+
+
+
+router.post("/addstaffTalentedType", cpUpload2, [authJwt.verifyToken], auth.addstaffTalentedType);
+router.get("/getstaffTalentedType", auth.getstaffTalentedType);
+router.get("/getstaffTalentedTypeById/:id", auth.getstaffTalentedTypeById);
+router.delete("/DeletestaffTalentedType/:id", [authJwt.verifyToken], auth.DeletestaffTalentedType);
 module.exports = router;
