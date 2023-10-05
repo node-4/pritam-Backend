@@ -1650,7 +1650,7 @@ exports.addstaffTalentedType = async (req, res) => {
 };
 exports.getstaffTalentedType = async (req, res) => {
     try {
-        const StaffTalented = await staffTalentedType.findOne();
+        const StaffTalented = await staffTalentedType.find();
         if (!StaffTalented) {
             return res.status(404).json({ status: 404, message: "No data found", data: {} });
         } else {
