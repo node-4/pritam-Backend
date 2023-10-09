@@ -1576,29 +1576,32 @@ exports.addstaffTalentedType = async (req, res) => {
                 req.body.image = image[0].path;
             }
             if (req.body.descriptionTitle.length > 0) {
-                let obj = {
-                    title: req.body.descriptionTitle[i],
-                    desc: req.body.descriptionDesc[i],
+                for (let i = 0; i < req.body.descriptionTitle.length; i++) {
+                    let obj = {
+                        title: req.body.descriptionTitle[i],
+                        desc: req.body.descriptionDesc[i],
+                    }
+                    description.push(obj)
                 }
-                description.push(obj)
             } else {
                 description = findData.description;
             }
             const data = {
-                title: req.body.title,
-                desc: req.body.desc,
-                academyHeading: req.body.academyHeading,
-                academyTitle: req.body.academyTitle,
-                academyDesc: req.body.academyDesc,
-                image: req.body.image,
-                consultancy: consultancy,
-                youtubeLink: req.body.youtubeLink,
-                formTitle: req.body.formTitle,
-                formDesc: req.body.formDesc,
-                formPrivacy: req.body.formPrivacy,
-                formImage: req.body.formImage,
-                formWhatApp: req.body.formWhatApp,
-                formCall: req.body.formCall,
+                title: req.body.title || findData.title,
+                desc: req.body.desc || findData.desc,
+                image: req.body.image || findData.image,
+                description: description || findData.description,
+                contactUsformTitle: req.body.contactUsformTitle || findData.contactUsformTitle,
+                contactUsformDesc: req.body.contactUsformDesc || findData.contactUsformDesc,
+                contactUsformAvailibility: req.body.contactUsformAvailibility || findData.contactUsformAvailibility,
+                contactUsformPrivacy: req.body.contactUsformPrivacy || findData.contactUsformPrivacy,
+                youtubeLink: req.body.youtubeLink || findData.youtubeLink,
+                eTitle: req.body.eTitle || findData.eTitle,
+                eDesc: req.body.eDesc || findData.eDesc,
+                eformImage: req.body.eformImage || findData.eformImage,
+                eformWhatApp: req.body.eformWhatApp || findData.eformWhatApp,
+                eformCall: req.body.eformCall || findData.eformCall,
+                eformPrivacy: req.body.eformPrivacy || findData.eformPrivacy,
             }
             const Data = await staffTalentedType.findByIdAndUpdate({ _id: findData._id }, { $set: data }, { new: true });
             return res.status(200).json({ status: 200, message: "staffTalented is Added ", data: Data })
