@@ -1457,16 +1457,20 @@ exports.addStaffTalented = async (req, res) => {
             } else {
                 image = findData.image
             }
-            if (req.body.consultancyTitle.length > 0) {
-                for (let i = 0; i < req.body.consultancyTitle.length; i++) {
-                    let obj = {
-                        title: req.body.consultancyTitle[i],
-                        desc: req.body.consultancyDesc[i],
-                    }
-                    consultancy.push(obj)
-                }
-            } else {
+            if (req.body.consultancyTitle == (null || undefined)) {
                 consultancy = findData.consultancy;
+            } else {
+                if (req.body.consultancyTitle.length > 0) {
+                    for (let i = 0; i < req.body.consultancyTitle.length; i++) {
+                        let obj = {
+                            title: req.body.consultancyTitle[i],
+                            desc: req.body.consultancyDesc[i],
+                        }
+                        consultancy.push(obj)
+                    }
+                } else {
+                    consultancy = findData.consultancy;
+                }
             }
             const data = {
                 title: req.body.title || findData.title,
