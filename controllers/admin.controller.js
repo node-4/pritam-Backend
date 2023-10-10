@@ -1441,14 +1441,15 @@ exports.addStaffTalented = async (req, res) => {
     try {
         const findData = await staffTalented.findOne({});
         if (findData) {
-            let consultancy = [], image = [];
+            let consultancy = [], image = [], formImages;
             if (req.files['formImage']) {
                 let formImage = req.files['formImage'];
-                req.body.formImage = formImage[0].path;
+                formImages = formImage[0].path;
             }
             if (req.files['image']) {
                 let images = req.files['image'];
                 for (let i = 0; i < images.length; i++) {
+                    console.log(images[i].path);
                     image.push(images[i].path)
                 }
             }
@@ -1469,13 +1470,13 @@ exports.addStaffTalented = async (req, res) => {
                 academyHeading: req.body.academyHeading || findData.academyHeading,
                 academyTitle: req.body.academyTitle || findData.academyTitle,
                 academyDesc: req.body.academyDesc || findData.academyDesc,
-                image: req.body.image || findData.image,
+                image: image || findData.image,
                 consultancy: consultancy || findData.consultancy,
                 youtubeLink: req.body.youtubeLink || findData.youtubeLink,
                 formTitle: req.body.formTitle || findData.formTitle,
                 formDesc: req.body.formDesc || findData.formDesc,
                 formPrivacy: req.body.formPrivacy || findData.formPrivacy,
-                formImage: req.body.formImage || findData.formImage,
+                formImage: formImages || findData.formImage,
                 formWhatApp: req.body.formWhatApp || findData.formWhatApp,
                 formCall: req.body.formCall || findData.formCall,
             }
