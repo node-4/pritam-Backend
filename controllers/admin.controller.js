@@ -18,6 +18,7 @@ const yourDreamsquickly = require('../models/yourDreamsquickly');
 const businessweSupport = require('../models/businessweSupport');
 const staffTalented = require('../models/staffTalented');
 const staffTalentedType = require('../models/staffTalentedType');
+const bartending = require('../models/bartending');
 
 exports.registration = async (req, res) => {
     const { phone, email } = req.body;
@@ -1693,6 +1694,99 @@ exports.DeletestaffTalentedType = async (req, res) => {
         }
         await staffTalentedType.findByIdAndDelete({ _id: req.params.id });
         return res.status(200).json({ status: 200, message: "StaffTalented  delete successfully.", data: {} })
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.addBartending = async (req, res) => {
+    try {
+        const findData = await bartending.findOne({});
+        if (findData) {
+            let image;
+            if (req.file) {
+                image = req.file.path;
+            } else {
+                image = findData.image
+            }
+            const data = {
+                title: req.body.title || findData.title,
+                desc: req.body.desc || findData.desc,
+                image: image,
+                contactUsformTitle: req.body.contactUsformTitle || findData.contactUsformTitle,
+                contactUsformDesc: req.body.contactUsformDesc || findData.contactUsformDesc,
+                contactUsformAvailibility: req.body.contactUsformAvailibility || findData.contactUsformAvailibility,
+                contactUsformWhatApp: req.body.contactUsformWhatApp || findData.contactUsformWhatApp,
+                contactUsformCall: req.body.contactUsformCall || findData.contactUsformCall,
+                contactUsformPrivacy: req.body.contactUsformPrivacy || findData.contactUsformPrivacy,
+                privacy: req.body.privacy || findData.privacy,
+                contactUsformTerms: req.body.contactUsformTerms || findData.contactUsformTerms,
+                youtubeLink: req.body.youtubeLink || findData.youtubeLink,
+            }
+            const Data = await bartending.findByIdAndUpdate({ _id: findData._id }, { $set: data }, { new: true });
+            return res.status(200).json({ status: 200, message: "bartending is Added ", data: Data })
+        } else {
+            let image;
+            if (req.file) {
+                image = req.file.path;
+            } else {
+                image = findData.image
+            }
+            const data = {
+                title: req.body.title,
+                desc: req.body.desc,
+                image: image,
+                contactUsformTitle: req.body.contactUsformTitle,
+                contactUsformDesc: req.body.contactUsformDesc,
+                contactUsformAvailibility: req.body.contactUsformAvailibility,
+                contactUsformWhatApp: req.body.contactUsformWhatApp,
+                contactUsformCall: req.body.contactUsformCall,
+                contactUsformPrivacy: req.body.contactUsformPrivacy,
+                privacy: req.body.privacy,
+                contactUsformTerms: req.body.contactUsformTerms,
+                youtubeLink: req.body.youtubeLink,
+            }
+            const Data = await bartending.create(data);
+            return res.status(200).json({ status: 200, message: "bartending is Added ", data: Data })
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getBartending = async (req, res) => {
+    try {
+        const Bartending = await bartending.findOne();
+        if (!Bartending) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        } else {
+            return res.status(200).json({ status: 200, message: "All Bartending Data found successfully.", data: Bartending })
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getBartendingById = async (req, res) => {
+    try {
+        const Bartending = await bartending.findById({ _id: req.params.id });
+        if (!Bartending) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        return res.status(200).json({ status: 200, message: "Data found successfully.", data: Bartending })
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.DeleteBartending = async (req, res) => {
+    try {
+        const Bartending = await bartending.findById({ _id: req.params.id });
+        if (!Bartending) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        await bartending.findByIdAndDelete({ _id: req.params.id });
+        return res.status(200).json({ status: 200, message: "Bartending  delete successfully.", data: {} })
     } catch (err) {
         console.log(err);
         return res.status(501).send({ status: 501, message: "server error.", data: {}, });

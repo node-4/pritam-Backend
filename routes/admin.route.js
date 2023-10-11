@@ -100,12 +100,12 @@ router.post("/addStaffTalented", cpUpload1, [authJwt.verifyToken], auth.addStaff
 router.get("/getStaffTalented", auth.getStaffTalented);
 router.get("/getStaffTalentedById/:id", auth.getStaffTalentedById);
 router.delete("/DeleteStaffTalented/:id", [authJwt.verifyToken], auth.DeleteStaffTalented);
-
-
-
-
 router.post("/addstaffTalentedType", cpUpload2, [authJwt.verifyToken], auth.addstaffTalentedType);
 router.get("/getstaffTalentedType", auth.getstaffTalentedType);
 router.get("/getstaffTalentedTypeById/:id", auth.getstaffTalentedTypeById);
 router.delete("/DeletestaffTalentedType/:id", [authJwt.verifyToken], auth.DeletestaffTalentedType);
+router.post("/Bartending/addBartending", upload.single('image'), [authJwt.verifyToken], auth.addBartending);
+router.get("/Bartending/getBartending", auth.getBartending);
+router.get("/Bartending/getBartendingById/:id", auth.getBartendingById);
+router.delete("/Bartending/DeleteBartending/:id", [authJwt.verifyToken], auth.DeleteBartending);
 module.exports = router;
