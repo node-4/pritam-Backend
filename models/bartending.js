@@ -15,7 +15,7 @@ const staticContent = mongoose.Schema({
         contactUsformDesc: {
                 type: String
         },
-        contactUsformAvailibility: {
+        contactUsformAvaili: {
                 type: String
         },
         contactUsformWhatApp: {
@@ -35,7 +35,7 @@ const staticContent = mongoose.Schema({
         },
         youtubeLink: {
                 type: String
-        },    
+        },
 }, {
         timestamps: true
 })
