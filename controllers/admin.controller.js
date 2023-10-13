@@ -628,7 +628,7 @@ exports.editEvent = async (req, res) => {
         if (!event) {
             return res.status(404).json({ status: 404, message: "No data found", data: {} });
         }
-        const findData = await eventModel.findOne({ _id: { $ne: event._id }, type: req.body.type });
+        const findData = await eventModel.findOne({ _id: { $ne: event._id }, title: req.body.title });
         if (findData) {
             return res.status(409).json({ status: 409, message: "Already exit ", data: {} })
         } else {
@@ -718,7 +718,7 @@ exports.editSubEvent = async (req, res) => {
         if (!events) {
             return res.status(404).json({ status: 404, message: "No data found", data: {} });
         }
-        const findData = await subEvent.findOne({ title: req.body.title, eventId: req.body.eventId });
+        const findData = await subEvent.findOne({ _id: { $ne: event._id }, title: req.body.title, eventId: req.body.eventId });
         if (findData) {
             return res.status(409).json({ status: 409, message: "Already exit ", data: {} })
         } else {
