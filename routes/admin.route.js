@@ -15,7 +15,7 @@ const storage = new CloudinaryStorage({
         cloudinary: cloudinary,
         params: {
                 folder: "images/image",
-                allowed_formats: ["jpg", "jpeg", "webp","avif", "mp4", "mp3", "png", "PNG", "xlsx", "xls", "pdf", "PDF"]
+                allowed_formats: ["jpg", "jpeg", "webp", "avif", "mp4", "mp3", "png", "PNG", "xlsx", "xls", "pdf", "PDF"]
         },
 });
 const upload = multer({ storage: storage });
@@ -106,6 +106,7 @@ router.get("/getstaffTalentedTypeById/:id", auth.getstaffTalentedTypeById);
 router.delete("/DeletestaffTalentedType/:id", [authJwt.verifyToken], auth.DeletestaffTalentedType);
 router.post("/Bartending/addBartending", upload.single('image'), [authJwt.verifyToken], auth.addBartending);
 router.get("/Bartending/getBartending", auth.getBartending);
+router.get("/Bartending/getFormfreelancing", auth.getFormfreelancing);
 router.get("/Bartending/getBartendingById/:id", auth.getBartendingById);
 router.delete("/Bartending/DeleteBartending/:id", [authJwt.verifyToken], auth.DeleteBartending);
 module.exports = router;

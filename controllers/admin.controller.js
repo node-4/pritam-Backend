@@ -1722,6 +1722,7 @@ exports.addBartending = async (req, res) => {
                 privacy: req.body.privacy || findData.privacy,
                 contactUsformTerms: req.body.contactUsformTerms || findData.contactUsformTerms,
                 youtubeLink: req.body.youtubeLink || findData.youtubeLink,
+                type: req.body.type || findData.type,
             }
             const Data = await bartending.findByIdAndUpdate({ _id: findData._id }, { $set: data }, { new: true });
             return res.status(200).json({ status: 200, message: "bartending is Added ", data: Data })
@@ -1745,6 +1746,7 @@ exports.addBartending = async (req, res) => {
                 privacy: req.body.privacy,
                 contactUsformTerms: req.body.contactUsformTerms,
                 youtubeLink: req.body.youtubeLink,
+                type: req.body.type,
             }
             const Data = await bartending.create(data);
             return res.status(200).json({ status: 200, message: "bartending is Added ", data: Data })
@@ -1756,7 +1758,20 @@ exports.addBartending = async (req, res) => {
 };
 exports.getBartending = async (req, res) => {
     try {
-        const Bartending = await bartending.findOne();
+        const Bartending = await bartending.findOne({ type: "bartending" });
+        if (!Bartending) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        } else {
+            return res.status(200).json({ status: 200, message: "All Bartending Data found successfully.", data: Bartending })
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getFormfreelancing = async (req, res) => {
+    try {
+        const Bartending = await bartending.findOne({ type: "freelancing" });
         if (!Bartending) {
             return res.status(404).json({ status: 404, message: "No data found", data: {} });
         } else {

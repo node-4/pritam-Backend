@@ -36,6 +36,10 @@ const staticContent = mongoose.Schema({
         youtubeLink: {
                 type: String
         },
+        type: {
+                type: String,
+                enum: ['bartending', 'freelancing']
+        },
 }, {
         timestamps: true
 })
