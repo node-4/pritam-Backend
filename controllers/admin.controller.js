@@ -632,11 +632,17 @@ exports.editEvent = async (req, res) => {
         if (findData) {
             return res.status(409).json({ status: 409, message: "Already exit ", data: {} })
         } else {
+            let images;
+            if (req.body.image != (null || undefined)) {
+                images = req.body.image
+            } else {
+                images = event.image
+            }
             const data = {
-                title: req.body.title || findData.title,
-                image: req.body.image || findData.image,
-                desc: req.body.desc || findData.desc,
-                type: req.body.type || findData.type
+                title: req.body.title || event.title,
+                image: images,
+                desc: req.body.desc || event.desc,
+                type: req.body.type || event.type
             }
             let updateContact = await eventModel.findByIdAndUpdate({ _id: event._id }, { $set: data }, { new: true });
             if (updateContact) {
