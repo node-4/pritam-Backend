@@ -1586,10 +1586,14 @@ exports.addstaffTalentedType = async (req, res) => {
             if (req.files['eformImage']) {
                 let eformImage = req.files['eformImage'];
                 req.body.eformImage = eformImage[0].path;
+            }else{
+                req.body.eformImage = findData.eformImage
             }
             if (req.files['image']) {
                 let image = req.files['image'];
                 req.body.image = image[0].path;
+            }else{
+                req.body.image = findData.image
             }
             if (req.body.descriptionTitle.length > 0) {
                 for (let i = 0; i < req.body.descriptionTitle.length; i++) {
@@ -1614,7 +1618,7 @@ exports.addstaffTalentedType = async (req, res) => {
                 youtubeLink: req.body.youtubeLink || findData.youtubeLink,
                 eTitle: req.body.eTitle || findData.eTitle,
                 eDesc: req.body.eDesc || findData.eDesc,
-                eformImage: req.body.eformImage || findData.eformImage,
+                eformImage: req.body.eformImage,
                 eformWhatApp: req.body.eformWhatApp || findData.eformWhatApp,
                 eformCall: req.body.eformCall || findData.eformCall,
                 eformPrivacy: req.body.eformPrivacy || findData.eformPrivacy,
