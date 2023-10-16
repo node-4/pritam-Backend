@@ -87,17 +87,37 @@ exports.update = async (req, res) => {
 };
 exports.addContactDetails = async (req, res) => {
     try {
-        let findCon = await ContactDetail.findOne({ contactType: "Main" });
-        if (findCon) {
-            return res.status(409).send({ status: 409, message: "Contact Detail already exit", data: {} });
-        }
-        if (req.file) {
-            req.body.image = req.file.path
-        }
-        req.body.contactType = "Main";
-        let result2 = await ContactDetail.create(req.body);
-        if (result2) {
-            return res.status(200).send({ status: 200, message: "Contact Detail update successfully", data: result2 });
+        let findcontactDetails = await ContactDetail.findOne({ contactType: "Main" });
+        if (findcontactDetails) {
+            if (req.file) {
+                req.body.image = req.file.path
+            } else {
+                req.body.image = findcontactDetails.image
+            }
+            req.body.fb = req.body.fb || findcontactDetails.fb;
+            req.body.instagram = req.body.instagram || findcontactDetails.instagram;
+            req.body.linkedIn = req.body.linkedIn || findcontactDetails.linkedIn;
+            req.body.twitter = req.body.twitter || findcontactDetails.twitter;
+            req.body.map = req.body.map || findcontactDetails.map;
+            req.body.mobileNumber = req.body.mobileNumber || findcontactDetails.mobileNumber;
+            req.body.mobileNumberDescription = req.body.mobileNumberDescription || findcontactDetails.mobileNumberDescription;
+            req.body.email = req.body.email || findcontactDetails.email;
+            req.body.emailDescription = req.body.emailDescription || findcontactDetails.emailDescription;
+            req.body.whatAppchat = req.body.whatAppchat || findcontactDetails.whatAppchat;
+            req.body.whatAppchatDescription = req.body.whatAppchatDescription || findcontactDetails.whatAppchatDescription;
+            let updateContact = await ContactDetail.findByIdAndUpdate({ _id: findcontactDetails._id }, { $set: req.body }, { new: true });
+            if (updateContact) {
+                return res.status(200).send({ status: 200, message: "Contact Detail update successfully", data: updateContact });
+            }
+        } else {
+            if (req.file) {
+                req.body.image = req.file.path
+            }
+            req.body.contactType = "Main";
+            let result2 = await ContactDetail.create(req.body);
+            if (result2) {
+                return res.status(200).send({ status: 200, message: "Contact Detail update successfully", data: result2 });
+            }
         }
     } catch (err) {
         console.log(err.message);
