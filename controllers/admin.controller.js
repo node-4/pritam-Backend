@@ -104,6 +104,7 @@ exports.addContactDetails = async (req, res) => {
             req.body.email = req.body.email || findcontactDetails.email;
             req.body.emailDescription = req.body.emailDescription || findcontactDetails.emailDescription;
             req.body.whatAppchat = req.body.whatAppchat || findcontactDetails.whatAppchat;
+            req.body.contactType = "Main";
             req.body.whatAppchatDescription = req.body.whatAppchatDescription || findcontactDetails.whatAppchatDescription;
             let updateContact = await ContactDetail.findByIdAndUpdate({ _id: findcontactDetails._id }, { $set: req.body }, { new: true });
             if (updateContact) {
