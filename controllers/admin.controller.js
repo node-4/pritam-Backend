@@ -91,6 +91,9 @@ exports.addContactDetails = async (req, res) => {
         if (findCon) {
             return res.status(409).send({ status: 409, message: "Contact Detail already exit", data: {} });
         }
+        if (req.file) {
+            req.body.image = req.file.path
+        }
         req.body.contactType = "Main";
         let result2 = await ContactDetail.create(req.body);
         if (result2) {
@@ -177,6 +180,11 @@ exports.updateContactDetails = async (req, res) => {
         if (!findcontactDetails) {
             return res.status(404).send({ status: 404, message: "Contact Detail not found.", data: {} });
         } else {
+            if (req.file) {
+                req.body.image = req.file.path
+            } else {
+                req.body.image = findcontactDetails.image
+            }
             req.body.fb = req.body.fb || findcontactDetails.fb;
             req.body.instagram = req.body.instagram || findcontactDetails.instagram;
             req.body.linkedIn = req.body.linkedIn || findcontactDetails.linkedIn;
@@ -1586,13 +1594,13 @@ exports.addstaffTalentedType = async (req, res) => {
             if (req.files['eformImage']) {
                 let eformImage = req.files['eformImage'];
                 req.body.eformImage = eformImage[0].path;
-            }else{
+            } else {
                 req.body.eformImage = findData.eformImage
             }
             if (req.files['image']) {
                 let image = req.files['image'];
                 req.body.image = image[0].path;
-            }else{
+            } else {
                 req.body.image = findData.image
             }
             if (req.body.descriptionTitle.length > 0) {
@@ -1769,6 +1777,19 @@ exports.addBartending = async (req, res) => {
 exports.getBartending = async (req, res) => {
     try {
         const Bartending = await bartending.findOne({ type: "bartending" });
+        if (!Bartending) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        } else {
+            return res.status(200).json({ status: 200, message: "All Bartending Data found successfully.", data: Bartending })
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getFormData = async (req, res) => {
+    try {
+        const Bartending = await bartending.findOne({ type: req.params.type });
         if (!Bartending) {
             return res.status(404).json({ status: 404, message: "No data found", data: {} });
         } else {
