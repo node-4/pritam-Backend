@@ -12,11 +12,18 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 if (process.env.NODE_ENV == "production") {
-    console.log = function () { };
+    console.log = function () { 
+
+    };
 }
 app.get("/", (req, res) => {
     res.send("Hello World!");
 });
+
+
+
+
+
 
 const admin = require('./routes/admin.route');
 const course = require('./routes/course.route');
