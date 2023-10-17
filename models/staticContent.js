@@ -9,6 +9,9 @@ const staticContent = mongoose.Schema({
     title: {
         type: String
     },
+    image: {
+        type: String
+    },
     desc: [{
         title: {
             type: String

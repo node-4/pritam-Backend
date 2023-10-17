@@ -2,9 +2,14 @@ const staticContent = require('../models/staticContent');
 const Faq = require("../models/faq.Model");
 exports.createAboutUs = async (req, res) => {
         try {
+                let image;
+                if (req.file) {
+                        image = req.file.path;
+                }
                 const newAboutUs = {
                         title: req.body.title,
                         desc: req.body.desc,
+                        image: image,
                         type: "ABOUTUS"
                 }
                 const result = await staticContent.create(newAboutUs)
@@ -45,9 +50,15 @@ exports.updateAboutUs = async (req, res) => {
                 if (!data || data.length === 0) {
                         return res.status(404).json({ status: 404, message: "No data found", data: {} });
                 } else {
+                        let image;
+                        if (req.file) {
+                                image = req.file.path;
+                        } else {
+                                image = data.image;
+                        }
                         let title = req.body.title || data.title;
                         let desc = req.body.desc || data.desc;
-                        const result = await staticContent.findByIdAndUpdate({ _id: req.params.id }, { $set: { title: title, desc: desc, type: data.type, } }, { new: true });
+                        const result = await staticContent.findByIdAndUpdate({ _id: req.params.id }, { $set: { title: title, image: image, desc: desc, type: data.type, } }, { new: true });
                         return res.status(200).json({ status: 200, message: "update successfully.", data: result });
                 }
         } catch (error) {

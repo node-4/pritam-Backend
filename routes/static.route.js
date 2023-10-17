@@ -1,8 +1,28 @@
 const staticContent = require('../controllers/static.Controller');
 const authJwt = require("../middlewares/authJwt");
+var multer = require("multer");
+const path = require("path");
+const express = require("express");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("cloudinary").v2;
+cloudinary.config({
+        cloud_name: "dbrvq9uxa",
+        api_key: "567113285751718",
+        api_secret: "rjTsz9ksqzlDtsrlOPcTs_-QtW4",
+});
+const storage = new CloudinaryStorage({
+        cloudinary: cloudinary,
+        params: {
+                folder: "images/image",
+                allowed_formats: ["jpg", "jpeg", "webp", "avif", "mp4", "mp3", "png", "PNG", "xlsx", "xls", "pdf", "PDF"]
+        },
+});
+const upload = multer({ storage: storage });
+
+
 module.exports = (app) => {
-    app.post('/api/v1/static/createAboutus', authJwt.verifyToken, staticContent.createAboutUs);
-    app.put('/api/v1/static/aboutUs/:id', authJwt.verifyToken, staticContent.updateAboutUs);
+    app.post('/api/v1/static/createAboutus', authJwt.verifyToken,upload.single('image'), staticContent.createAboutUs);
+    app.put('/api/v1/static/aboutUs/:id', authJwt.verifyToken, upload.single('image'), staticContent.updateAboutUs);
     app.delete('/api/v1/static/aboutUs/:id', authJwt.verifyToken, staticContent.deleteAboutUs);
     app.get('/api/v1/static/getAboutUs', staticContent.getAboutUs);
     app.get('/api/v1/static/aboutUs/:id', staticContent.getAboutUsById);
