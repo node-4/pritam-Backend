@@ -6,9 +6,17 @@ exports.createAboutUs = async (req, res) => {
                 if (req.file) {
                         image = req.file.path;
                 }
+                let desc = [];
+                for (let i = 0; i < req.body.title.length; i++) {
+                        let obj = {
+                                title: req.body.title[i],
+                                desc: req.body.desc[i],
+                        }
+                        desc.push(obj)
+                }
                 const newAboutUs = {
-                        title: req.body.title,
-                        desc: req.body.desc,
+                        title: req.body.Title,
+                        desc: desc,
                         image: image,
                         type: "ABOUTUS"
                 }
@@ -56,9 +64,20 @@ exports.updateAboutUs = async (req, res) => {
                         } else {
                                 image = data.image;
                         }
-                        let title = req.body.title || data.title;
-                        let desc = req.body.desc || data.desc;
-                        const result = await staticContent.findByIdAndUpdate({ _id: req.params.id }, { $set: { title: title, image: image, desc: desc, type: data.type, } }, { new: true });
+                        let desc = [];
+                        if (req.body.title == (null || undefined)) {
+                                desc = data.desc;
+                        } else {
+                                for (let i = 0; i < req.body.title.length; i++) {
+                                        let obj = {
+                                                title: req.body.title[i],
+                                                desc: req.body.desc[i],
+                                        }
+                                        desc.push(obj)
+                                }
+                        }
+                        let Title = req.body.Title || data.title;
+                        const result = await staticContent.findByIdAndUpdate({ _id: req.params.id }, { $set: { title: Title, image: image, desc: desc, type: data.type, } }, { new: true });
                         return res.status(200).json({ status: 200, message: "update successfully.", data: result });
                 }
         } catch (error) {
