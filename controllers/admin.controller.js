@@ -94,6 +94,8 @@ exports.addContactDetails = async (req, res) => {
             } else {
                 req.body.image = findcontactDetails.image
             }
+            req.body.title = req.body.title || findcontactDetails.title;
+            req.body.description = req.body.description || findcontactDetails.description;
             req.body.fb = req.body.fb || findcontactDetails.fb;
             req.body.instagram = req.body.instagram || findcontactDetails.instagram;
             req.body.linkedIn = req.body.linkedIn || findcontactDetails.linkedIn;
