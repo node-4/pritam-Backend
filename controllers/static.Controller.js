@@ -2,26 +2,51 @@ const staticContent = require('../models/staticContent');
 const Faq = require("../models/faq.Model");
 exports.createAboutUs = async (req, res) => {
         try {
-                let image;
-                if (req.file) {
-                        image = req.file.path;
-                }
-                let desc = [];
-                for (let i = 0; i < req.body.title.length; i++) {
-                        let obj = {
-                                title: req.body.title[i],
-                                desc: req.body.desc[i],
+                const data = await staticContent.findOne({ type: "ABOUTUS" });
+                if (!data) {
+                        let image;
+                        if (req.file) {
+                                image = req.file.path;
                         }
-                        desc.push(obj)
+                        let desc = [];
+                        for (let i = 0; i < req.body.title.length; i++) {
+                                let obj = {
+                                        title: req.body.title[i],
+                                        desc: req.body.desc[i],
+                                }
+                                desc.push(obj)
+                        }
+                        const newAboutUs = {
+                                title: req.body.Title,
+                                desc: desc,
+                                image: image,
+                                type: "ABOUTUS"
+                        }
+                        const result = await staticContent.create(newAboutUs)
+                        return res.status(200).json({ status: 200, message: "Data found successfully.", data: result });
+                } else {
+                        let image;
+                        if (req.file) {
+                                image = req.file.path;
+                        } else {
+                                image = data.image;
+                        }
+                        let desc = [];
+                        if (req.body.title == (null || undefined)) {
+                                desc = data.desc;
+                        } else {
+                                for (let i = 0; i < req.body.title.length; i++) {
+                                        let obj = {
+                                                title: req.body.title[i],
+                                                desc: req.body.desc[i],
+                                        }
+                                        desc.push(obj)
+                                }
+                        }
+                        let Title = req.body.Title || data.title;
+                        const result = await staticContent.findByIdAndUpdate({ _id: data._id }, { $set: { title: Title, image: image, desc: desc, type: data.type, } }, { new: true });
+                        return res.status(200).json({ status: 200, message: "update successfully.", data: result });
                 }
-                const newAboutUs = {
-                        title: req.body.Title,
-                        desc: desc,
-                        image: image,
-                        type: "ABOUTUS"
-                }
-                const result = await staticContent.create(newAboutUs)
-                return res.status(200).json({ status: 200, message: "Data found successfully.", data: result });
         } catch (error) {
                 console.log(error);
                 return res.status(501).send({ status: 501, message: "server error.", data: {}, });
@@ -29,8 +54,8 @@ exports.createAboutUs = async (req, res) => {
 };
 exports.getAboutUs = async (req, res) => {
         try {
-                const result = await staticContent.find({ type: "ABOUTUS" });
-                if (!result || result.length === 0) {
+                const result = await staticContent.findOne({ type: "ABOUTUS" });
+                if (!result) {
                         return res.status(404).json({ status: 404, message: "No data found", data: {} });
                 }
                 return res.status(200).json({ status: 200, message: "Data found successfully.", data: result });
