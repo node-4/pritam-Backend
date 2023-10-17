@@ -1744,7 +1744,7 @@ exports.DeletestaffTalentedType = async (req, res) => {
 };
 exports.addBartending = async (req, res) => {
     try {
-        const findData = await bartending.findOne({});
+        const findData = await bartending.findOne({ type: req.body.type });
         if (findData) {
             let image;
             if (req.file) {
