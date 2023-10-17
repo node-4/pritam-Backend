@@ -17,7 +17,6 @@ exports.createAboutUs = async (req, res) => {
                                 desc.push(obj)
                         }
                         const newAboutUs = {
-                                title: req.body.Title,
                                 desc: desc,
                                 image: image,
                                 type: "ABOUTUS"
@@ -43,8 +42,7 @@ exports.createAboutUs = async (req, res) => {
                                         desc.push(obj)
                                 }
                         }
-                        let Title = req.body.Title || data.title;
-                        const result = await staticContent.findByIdAndUpdate({ _id: data._id }, { $set: { title: Title, image: image, desc: desc, type: data.type, } }, { new: true });
+                        const result = await staticContent.findByIdAndUpdate({ _id: data._id }, { $set: { image: image, desc: desc, type: data.type, } }, { new: true });
                         return res.status(200).json({ status: 200, message: "update successfully.", data: result });
                 }
         } catch (error) {
@@ -54,7 +52,7 @@ exports.createAboutUs = async (req, res) => {
 };
 exports.getAboutUs = async (req, res) => {
         try {
-                const result = await staticContent.findOne({ type: "ABOUTUS" });
+                const result = await staticContent.findOne({ type: "ABOUTUS" }).select('-title');
                 if (!result) {
                         return res.status(404).json({ status: 404, message: "No data found", data: {} });
                 }
