@@ -152,6 +152,8 @@ exports.updateContactDetailsOffice = async (req, res) => {
         } else {
             if (req.file) {
                 req.body.image = req.file.path
+            } else {
+                req.body.image = findcontactDetails.image
             }
             req.body.title = req.body.title || findcontactDetails.title;
             req.body.description = req.body.description || findcontactDetails.description;
@@ -159,7 +161,7 @@ exports.updateContactDetailsOffice = async (req, res) => {
             req.body.email = req.body.email || findcontactDetails.email;
             req.body.contactType = req.body.contactType || findcontactDetails.contactType;
             req.body.address = req.body.address || findcontactDetails.address;
-            req.body.image = req.body.image || findcontactDetails.image;
+            req.body.image = req.body.image;
             let updateContact = await ContactDetail.findByIdAndUpdate({ _id: findcontactDetails._id }, { $set: req.body }, { new: true });
             if (updateContact) {
                 return res.status(200).send({ status: 200, message: "Contact Detail update successfully", data: updateContact });
