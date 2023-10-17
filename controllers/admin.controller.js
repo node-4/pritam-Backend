@@ -1773,8 +1773,6 @@ exports.addBartending = async (req, res) => {
             let image;
             if (req.file) {
                 image = req.file.path;
-            } else {
-                image = findData.image
             }
             const data = {
                 title: req.body.title,
