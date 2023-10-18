@@ -38,7 +38,7 @@ const staticContent = mongoose.Schema({
         },
         type: {
                 type: String,
-                enum: ['bartending', 'freelancing', 'contactus', 'findWork', 'aboutUs']
+                enum: ['bartending', 'freelancing', 'contactus', 'findWork', 'aboutUs', 'event']
         },
 }, {
         timestamps: true
