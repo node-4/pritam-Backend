@@ -33,6 +33,12 @@ const staticContent = mongoose.Schema({
         contactUsformTerms: {
                 type: String
         },
+        bottomTitle: {
+                type: String
+        },
+        bottomDesc: {
+                type: String
+        },
         youtubeLink: {
                 type: String
         },

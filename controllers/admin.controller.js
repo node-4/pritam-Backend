@@ -19,6 +19,7 @@ const businessweSupport = require('../models/businessweSupport');
 const staffTalented = require('../models/staffTalented');
 const staffTalentedType = require('../models/staffTalentedType');
 const bartending = require('../models/bartending');
+const permanentJobRegistration = require('../models/permanentJobRegistration');
 
 exports.registration = async (req, res) => {
     const { phone, email } = req.body;
@@ -1765,6 +1766,8 @@ exports.addBartending = async (req, res) => {
                 privacy: req.body.privacy || findData.privacy,
                 contactUsformTerms: req.body.contactUsformTerms || findData.contactUsformTerms,
                 youtubeLink: req.body.youtubeLink || findData.youtubeLink,
+                bottomDesc: req.body.bottomDesc || findData.bottomDesc,
+                bottomTitle: req.body.bottomTitle || findData.bottomTitle,
                 type: req.body.type || findData.type,
             }
             const Data = await bartending.findByIdAndUpdate({ _id: findData._id }, { $set: data }, { new: true });
@@ -1788,6 +1791,8 @@ exports.addBartending = async (req, res) => {
                 contactUsformTerms: req.body.contactUsformTerms,
                 youtubeLink: req.body.youtubeLink,
                 type: req.body.type,
+                bottomDesc: req.body.bottomDesc,
+                bottomTitle: req.body.bottomTitle,
             }
             const Data = await bartending.create(data);
             return res.status(200).json({ status: 200, message: "bartending is Added ", data: Data })
@@ -1858,6 +1863,145 @@ exports.DeleteBartending = async (req, res) => {
         return res.status(200).json({ status: 200, message: "Bartending  delete successfully.", data: {} })
     } catch (err) {
         console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.createPermanentJobRegistration = async (req, res) => {
+    try {
+        const { title, desc, formTitle, formCall, formWhatApp } = req.body;
+        let findBanner = await permanentJobRegistration.findOne({});
+        if (findBanner) {
+            if (req.files['eformImage']) {
+                let eformImage = req.files['eformImage'];
+                req.body.formImage = eformImage[0].path;
+            } else {
+                req.body.formImage = findData.formImage
+            }
+            if (req.files['bannerImage']) {
+                let bannerImage = req.files['bannerImage'];
+                req.body.bannerImage = bannerImage[0].path;
+            } else {
+                req.body.bannerImage = findData.bannerImage
+            }
+            let data = {
+                title: title || findData.title,
+                formImage: req.body.formImage,
+                desc: desc || findData.desc,
+                formTitle: formTitle || findData.formTitle,
+                formWhatApp: formWhatApp || findData.formWhatApp,
+                formCall: formCall || findData.formCall,
+                bannerImage: req.body.bannerImage
+            }
+            const newCategory = await permanentJobRegistration.findByIdAndUpdate({ _id: findBanner._id }, { $set: data }, { new: true });
+            return res.status(200).json({ status: 200, message: 'Permanent Job Registration update successfully', data: newCategory });
+        } else {
+            if (req.files['eformImage']) {
+                let eformImage = req.files['eformImage'];
+                req.body.formImage = eformImage[0].path;
+            } else {
+                req.body.formImage = findData.formImage
+            }
+            if (req.files['bannerImage']) {
+                let bannerImage = req.files['bannerImage'];
+                req.body.bannerImage = bannerImage[0].path;
+            } else {
+                req.body.bannerImage = findData.bannerImage
+            }
+            const newCategory = await permanentJobRegistration.create(req.body);
+            return res.status(200).json({ status: 200, message: 'Permanent Job Registration created successfully', data: newCategory });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Failed to create Permanent Job Registration' });
+    }
+};
+exports.getPermanentJobRegistrationById = async (req, res) => {
+    try {
+        const bannerId = req.params.bannerId;
+        const user = await permanentJobRegistration.findById(bannerId);
+        if (user) {
+            return res.status(201).json({ message: "Banner found successfully", status: 200, data: user, });
+        }
+        return res.status(201).json({ message: "Banner not Found", status: 404, data: {}, });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Failed to retrieve Banner" });
+    }
+};
+exports.deletePermanentJobRegistration = async (req, res) => {
+    try {
+        const bannerId = req.params.id;
+        const user = await permanentJobRegistration.findById(bannerId);
+        if (user) {
+            const user1 = await permanentJobRegistration.findByIdAndDelete({ _id: user._id });;
+            if (user1) {
+                return res.status(201).json({ message: "Permanent Job Registration delete successfully.", status: 200, data: {}, });
+            }
+        } else {
+            return res.status(201).json({ message: "Permanent Job Registration not Found", status: 404, data: {}, });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Failed to retrieve Permanent Job Registration" });
+    }
+};
+exports.getAllPermanentJobRegistration = async (req, res) => {
+    try {
+        const categories = await permanentJobRegistration.findOne();
+        if (categories) {
+            return res.status(200).json({ status: 200, message: 'Permanent Job Registration found successfully', data: categories });
+        } else {
+            return res.status(404).json({ status: 404, message: 'Permanent Job Registration not found.', data: categories });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Failed to fetch Permanent Job Registration' });
+    }
+};
+exports.addUserinPermanentJobRegistration = async (req, res) => {
+    try {
+        const { title, desc, image } = req.body;
+        let findBanner = await permanentJobRegistration.findOne({});
+        if (findBanner) {
+            if (req.file) {
+                req.body.image = req.file.path;
+            }
+            let data = {
+                title: title,
+                desc: desc,
+                image: req.body.image
+            }
+            const newCategory = await permanentJobRegistration.findByIdAndUpdate({ _id: findBanner._id }, { $push: { imageArray: data } }, { new: true });
+            return res.status(200).json({ status: 200, message: 'Permanent Job Registration update successfully', data: newCategory });
+        } else {
+            return res.status(200).json({ status: 200, message: 'Permanent Job Registration not found.', data: newCategory });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Failed to create Permanent Job Registration' });
+    }
+};
+exports.deleteUserinPermanentJobRegistration = async (req, res) => {
+    try {
+        let findCart = await permanentJobRegistration.findOne({});
+        if (findCart) {
+            for (let i = 0; i < findCart.imageArray.length; i++) {
+                if (findCart.imageArray.length > 1) {
+                    if (((findCart.imageArray[i]._id).toString() == req.params.id) == true) {
+                        let updateCart = await permanentJobRegistration.findByIdAndUpdate({ _id: findCart._id, 'imageArray._id': req.params.id }, { $pull: { 'imageArray': { _id: req.params.id, name: findCart.userArray[i].name, image: findCart.imageArray[i].image, } } }, { new: true })
+                        if (updateCart) {
+                            return res.status(200).send({ message: "Content delete from Permanent JobRegistration.", data: updateCart, });
+                        }
+                    }
+                } else {
+                    return res.status(200).send({ status: 200, message: "No Data Found ", data: [] });
+                }
+            }
+        } else {
+            return res.status(200).send({ status: 200, message: "No Data Found ", cart: [] });
+        }
+    } catch (error) {
+        console.log("353====================>", error)
         return res.status(501).send({ status: 501, message: "server error.", data: {}, });
     }
 };

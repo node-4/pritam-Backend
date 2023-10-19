@@ -22,6 +22,7 @@ const upload = multer({ storage: storage });
 var cpUpload = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'banner', maxCount: 1 }, { name: 'images', maxCount: 10 },]);
 var cpUpload1 = upload.fields([{ name: 'formImage', maxCount: 1 }, { name: 'image', maxCount: 3 }]);
 var cpUpload2 = upload.fields([{ name: 'eformImage', maxCount: 1 }, { name: 'image', maxCount: 1 }]);
+var cpUpload3 = upload.fields([{ name: 'eformImage', maxCount: 1 }, { name: 'bannerImage', maxCount: 1 }]);
 
 router.post("/registration", auth.registration);
 router.post("/login", auth.signin);
@@ -110,4 +111,11 @@ router.get("/Bartending/getFormfreelancing", auth.getFormfreelancing);
 router.get("/Bartending/getBartendingById/:id", auth.getBartendingById);
 router.delete("/Bartending/DeleteBartending/:id", [authJwt.verifyToken], auth.DeleteBartending);
 router.get("/Bartending/getFormData/:type", auth.getFormData);
+router.post("/PJR/createPermanentJobRegistration", cpUpload3, [authJwt.verifyToken], auth.createPermanentJobRegistration);
+router.get("/PJR/getAllPermanentJobRegistration", auth.getAllPermanentJobRegistration);
+router.get("/PJR/getPermanentJobRegistrationById/:id", auth.getPermanentJobRegistrationById);
+router.delete("/PJR/deletePermanentJobRegistration/:id", [authJwt.verifyToken], auth.deletePermanentJobRegistration);
+router.put("/PJR/addUserinPermanentJobRegistration", upload.single('image'), [authJwt.verifyToken], auth.addUserinPermanentJobRegistration);
+router.delete("/PJR/deleteUserinPermanentJobRegistration/:id", [authJwt.verifyToken], auth.deleteUserinPermanentJobRegistration);
+
 module.exports = router;
