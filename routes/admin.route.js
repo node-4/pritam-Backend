@@ -117,5 +117,9 @@ router.get("/PJR/getPermanentJobRegistrationById/:id", auth.getPermanentJobRegis
 router.delete("/PJR/deletePermanentJobRegistration/:id", [authJwt.verifyToken], auth.deletePermanentJobRegistration);
 router.put("/PJR/addUserinPermanentJobRegistration", upload.single('image'), [authJwt.verifyToken], auth.addUserinPermanentJobRegistration);
 router.delete("/PJR/deleteUserinPermanentJobRegistration/:id", [authJwt.verifyToken], auth.deleteUserinPermanentJobRegistration);
-
+router.post("/Question", auth.createQuestion);
+router.get("/Question/All", auth.getAllQuestions);
+router.get("/Question/:questionId", auth.getQuestionById);
+router.put("/Question/:questionId", auth.updateQuestion);
+router.delete("/Question/:questionId", auth.deleteQuestion);
 module.exports = router;
