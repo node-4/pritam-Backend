@@ -4,6 +4,7 @@ const authConfig = require("../configs/auth.config");
 const User = require("../models/userModel");
 const ContactDetail = require("../models/ContactDetail");
 const CoursesModel = require("../models/CoursesModel");
+const skillModel = require("../models/skillModel");
 const whoWeare = require("../models/whoWeare");
 const popularJob = require("../models/popularJob");
 const trendingService = require("../models/trendingService");
@@ -2081,5 +2082,75 @@ exports.deleteQuestion = async (req, res) => {
         return res
             .status(500)
             .json({ error: "An error occurred while deleting the question." });
+    }
+};
+exports.AddSkill = async (req, res) => {
+    try {
+        const data = {
+            title: req.body.title,
+            description: req.body.description,
+            descriptionPoints: req.body.descriptionPoints
+        }
+        const Data = await skillModel.create(data);
+        return res.status(200).json({ status: 200, message: "Skill is Added ", data: Data })
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.editSkill = async (req, res) => {
+    try {
+        const Skills = await skillModel.findById({ _id: req.params.id });
+        if (!Skills) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        const data = {
+            title: req.body.title || Skills.title,
+            description: req.body.description || Skills.description,
+            descriptionPoints: req.body.descriptionPoints || Skills.descriptionPoints,
+        }
+        const Data = await skillModel.findByIdAndUpdate({ _id: Skills._id }, { $set: data }, { new: true });
+        return res.status(200).json({ status: 200, message: "Skill is Added ", data: Data })
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getSkills = async (req, res) => {
+    try {
+        const Skills = await skillModel.find();
+        if (Skills.length == 0) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        } else {
+            return res.status(200).json({ status: 200, message: "All skills Data found successfully.", data: Skills })
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.getSkillsById = async (req, res) => {
+    try {
+        const Skills = await skillModel.findById({ _id: req.params.id });
+        if (!Skills) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        return res.status(200).json({ status: 200, message: "Data found successfully.", data: Skills })
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+    }
+};
+exports.DeleteSkills = async (req, res) => {
+    try {
+        const Skills = await skillModel.findById({ _id: req.params.id });
+        if (!Skills) {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+        await skillModel.findByIdAndDelete({ _id: req.params.id });
+        return res.status(200).json({ status: 200, message: "Skills delete successfully.", data: {} })
+    } catch (err) {
+        console.log(err);
+        return res.status(501).send({ status: 501, message: "server error.", data: {}, });
     }
 };
