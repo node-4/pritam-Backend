@@ -12,37 +12,25 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 if (process.env.NODE_ENV == "production") {
-    console.log = function () { 
+    console.log = function () {
 
     };
 }
 app.get("/", (req, res) => {
     res.send("Hello World!");
 });
-
-
-
-
-
-
-const admin = require('./routes/admin.route');
-const course = require('./routes/course.route');
-const user = require('./routes/user.route');
-app.use('/api/v1/admin', admin);
+require("./routes/Client/Auth/user.route")(app);
+require("./routes/Client/Profile/addressRoutes")(app);
 require("./routes/static.route")(app);
-app.use('/api/v1/course', course);
-app.use('/api/v1/user', user);
-
-
+require("./routes/course.route")(app);
+require("./routes/admin.route")(app);
+require("./routes/staffRoutes")(app);
 mongoose.Promise = global.Promise;
 mongoose.set("strictQuery", true);
-
 mongoose.connect(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true, }).then((data) => {
     console.log(`Mongodb connected with server: ${data.connection.host}`);
 });
-
 app.listen(process.env.PORT, () => {
     console.log(`Listening on port ${process.env.PORT}!`);
 });
-
 module.exports = { handler: serverless(app) };

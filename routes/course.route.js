@@ -1,4 +1,4 @@
-const auth = require("../controllers/admin.controller");
+const auth = require("../controllers/Admin/admin.controller");
 const authJwt = require("../middlewares/authJwt");
 var multer = require("multer");
 const path = require("path");
@@ -19,15 +19,16 @@ const storage = new CloudinaryStorage({
         },
 });
 const upload = multer({ storage: storage });
-router.post('/addCourse', upload.array('image'), auth.AddCourse);
-router.get('/all', auth.getCourses);
-router.get('/view/:id', auth.getCoursesById);
-router.put('/edit/:id/:tillDate', upload.array('image'), auth.editCourse);
-router.get('/viewByTrendingServiceId/:trendingServiceId', auth.getCoursesbyTrendingServiceId);
-router.delete('/delete/:id', auth.DeleteCourses);
-router.post('/Skill/addSkill', auth.AddSkill);
-router.get('/Skill/all', auth.getSkills);
-router.get('/Skill/view/:id', auth.getSkillsById);
-router.put('/Skill/edit/:id', auth.editSkill);
-router.delete('/Skill/delete/:id', auth.DeleteSkills);
-module.exports = router;
+module.exports = (app) => {
+        app.post('api/v1/course/addCourse', upload.array('image'), auth.AddCourse);
+        app.get('api/v1/course/all', auth.getCourses);
+        app.get('api/v1/course/view/:id', auth.getCoursesById);
+        app.put('api/v1/course/edit/:id/:tillDate', upload.array('image'), auth.editCourse);
+        app.get('api/v1/course/viewByTrendingServiceId/:trendingServiceId', auth.getCoursesbyTrendingServiceId);
+        app.delete('api/v1/course/delete/:id', auth.DeleteCourses);
+        app.post('api/v1/course/Skill/addSkill', auth.AddSkill);
+        app.get('api/v1/course/Skill/all', auth.getSkills);
+        app.get('api/v1/course/Skill/view/:id', auth.getSkillsById);
+        app.put('api/v1/course/Skill/edit/:id', auth.editSkill);
+        app.delete('api/v1/course/Skill/delete/:id', auth.DeleteSkills);
+}

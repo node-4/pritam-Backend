@@ -1,4 +1,4 @@
-const staticContent = require('../controllers/static.Controller');
+const staticContent = require('../controllers/static/static.Controller');
 const authJwt = require("../middlewares/authJwt");
 var multer = require("multer");
 const path = require("path");
@@ -31,6 +31,11 @@ module.exports = (app) => {
     app.delete('/api/v1/static/privacy/:id', authJwt.verifyToken, staticContent.deletePrivacy);
     app.get('/api/v1/static/getPrivacy', staticContent.getPrivacy);
     app.get('/api/v1/static/privacy/:id', staticContent.getPrivacybyId);
+    app.post('/api/v1/static/createCancelationPrivacy', authJwt.verifyToken, staticContent.createCancelationPrivacy);
+    app.put('/api/v1/static/CancelationPrivacy/:id', authJwt.verifyToken, staticContent.updateCancelationPrivacy);
+    app.delete('/api/v1/static/CancelationPrivacy/:id', authJwt.verifyToken, staticContent.deleteCancelationPrivacy);
+    app.get('/api/v1/static/getCancelationPrivacy', staticContent.getCancelationPrivacy);
+    app.get('/api/v1/static/CancelationPrivacy/:id', staticContent.getCancelationPrivacybyId);
     app.post('/api/v1/static/createTerms', authJwt.verifyToken, staticContent.createTerms);
     app.put('/api/v1/static/terms/:id', authJwt.verifyToken, staticContent.updateTerms);
     app.delete('/api/v1/static/terms/:id', authJwt.verifyToken, staticContent.deleteTerms);

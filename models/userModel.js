@@ -1,70 +1,171 @@
 const mongoose = require("mongoose");
 const schema = mongoose.Schema;
-var userSchema = new schema(
-    {
-        fullName: {
-            type: String,
-        },
-        firstName: {
-            type: String,
-        },
-        lastName: {
-            type: String,
-        },
-        image: {
-            type: String,
-        },
-        phone: {
-            type: String,
-        },
-        email: {
-            type: String,
-            minLength: 10,
-        },
-        password: {
-            type: String,
-        },
-        selectQuestion: {
-            type: String,
-        },
-        yourAnswer: {
-            type: String,
-        },
-        interest: {
-            type: String,
-        },
-        pinCode: {
-            type: String,
-        },
-        address1: {
-            type: String,
-        },
-        address2: {
-            type: String,
-        },
-        otp: {
-            type: String,
-        },
-        otpExpiration: {
-            type: Date,
-        },
-        accountVerification: {
-            type: Boolean,
-            default: false,
-        },
-        userType: {
-            type: String,
-            enum: ["CLIENT", "STAFF", "ADMIN"],
-        },
-        status: {
-            type: String,
-            enum: ["Approved", "Reject", "Pending"],
-        },
-        wallet: {
-            type: Number,
-            default: 0,
-        },
+var userSchema = new schema({
+    title: {
+        type: String,
     },
-    { timestamps: true }
-);
+    fullName: {
+        type: String,
+    },
+    firstName: {
+        type: String,
+    },
+    lastName: {
+        type: String,
+    },
+    image: {
+        type: String,
+    },
+    profileOption: {
+        type: String,
+    },
+    phone: {
+        type: String,
+    },
+    email: {
+        type: String,
+        minLength: 10,
+    },
+    password: {
+        type: String,
+    },
+    selectQuestion: {
+        type: String,
+    },
+    yourAnswer: {
+        type: String,
+    },
+    address1: {
+        type: String,
+    },
+    address2: {
+        type: String,
+    },
+    otp: {
+        type: String,
+    },
+    otpExpiration: {
+        type: Date,
+    },
+    accountVerification: {
+        type: Boolean,
+        default: false,
+    },
+    role: {
+        type: String,
+        enum: ["EMPLOYMENT", "FREELANCER", ""],
+        default: ""
+    },
+    userType: {
+        type: String,
+        enum: ["CLIENT", "STAFF", "ADMIN"],
+    },
+    status: {
+        type: String,
+        enum: ["Approved", "Reject", "Pending"],
+    },
+    wallet: {
+        type: Number,
+        default: 0,
+    },
+    /////////////////////////// employment Profile /////
+    gender: {
+        type: String,
+    },
+    dateOfBirth: {
+        type: Date,
+    },
+    /////////////////////////// add your address
+    street1: {
+        type: String,
+    },
+    street2: {
+        type: String,
+    },
+    town: {
+        type: String,
+    },
+    landMark: {
+        type: String,
+    },
+    city: {
+        type: String,
+    },
+    state: {
+        type: String,
+    },
+    country: {
+        type: String,
+    },
+    pinCode: {
+        type: String,
+    },
+    ///////////////////////// other Details
+    interest: {
+        type: String,
+    },
+    expertise: {
+        type: String,
+    },
+    yearOfExperience: {
+        type: String,
+    },
+    bio: {
+        type: String,
+    },
+    interestedCity: {
+        type: String,
+    },
+    eligibleToWorkInUk: {
+        type: Boolean,
+    },
+    ownCar: {
+        type: Boolean,
+    },
+    license: {
+        type: Boolean,
+    },
+    /////////////////////// Right to work /////////////////
+    facePhoto: {
+        type: String,
+    },
+    frontPassport: {
+        type: String,
+    },
+    backPassport: {
+        type: String,
+    },
+    frontId: {
+        type: String,
+    },
+    backId: {
+        type: String,
+    },
+    cv: {
+        type: String,
+    },
+    uniqueTaxPayerReferenceNumber: {
+        type: String,
+    },
+    /////////////////////// Bank detail /////////////////
+    bank: {
+        type: String,
+    },
+    accountName: {
+        type: String,
+    },
+    accountNumber: {
+        type: String,
+    },
+    sortCode: {
+        type: String,
+    },
+    available: {
+        type: String,
+        enum: ["fullDay", "partTime", ""],
+    },
+    termsAccepted: {
+        type: Date,
+    },
+}, { timestamps: true });
 module.exports = mongoose.model("user", userSchema);

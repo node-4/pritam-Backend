@@ -1,5 +1,5 @@
-const staticContent = require('../models/staticContent');
-const Faq = require("../models/faq.Model");
+const staticContent = require('../../models/staticContent');
+const Faq = require("../../models/faq.Model");
 exports.createAboutUs = async (req, res) => {
         try {
                 const data = await staticContent.findOne({ type: "ABOUTUS" });
@@ -232,6 +232,69 @@ exports.getPrivacybyId = async (req, res) => {
         }
 };
 exports.deletePrivacy = async (req, res) => {
+        try {
+                const data = await staticContent.findByIdAndDelete(req.params.id);
+                if (!data) {
+                        return res.status(404).json({ status: 404, message: "No data found", data: {} });
+                }
+                return res.status(200).json({ status: 200, message: "Deleted Successfully", });
+        } catch (err) {
+                console.log(err.message);
+                return res.status(500).send({ msg: "internal server error", error: err.message });
+        }
+};
+exports.createCancelationPrivacy = async (req, res) => {
+        try {
+                if (!req.body.privacy) {
+                        return res.status(400).send("please specify privacy");
+                }
+                const result = await staticContent.create({ privacy: req.body.privacy, type: "CANCELATION" });
+                return res.status(200).json({ status: 200, message: "Data create successfully.", data: result });
+        } catch (error) {
+                console.log(error);
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.updateCancelationPrivacy = async (req, res) => {
+        try {
+                const data = await staticContent.findById(req.params.id);
+                if (!data || data.length === 0) {
+                        return res.status(404).json({ status: 404, message: "No data found", data: {} });
+                } else {
+                        let privacy = req.body.privacy || data.privacy;
+                        const data1 = await staticContent.findByIdAndUpdate({ _id: req.params.id }, { privacy: privacy, type: data.type }, { new: true, });
+                        return res.status(200).json({ status: 200, message: "update successfully.", data: data1 });
+                }
+        } catch (error) {
+                console.log(error);
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.getCancelationPrivacy = async (req, res) => {
+        try {
+                const data = await staticContent.find({ type: "CANCELATION" });
+                if (!data || data.length === 0) {
+                        return res.status(404).json({ status: 404, message: "No data found", data: {} });
+                }
+                return res.status(200).json({ status: 200, message: "Data found successfully.", data: data });
+        } catch (error) {
+                console.log(error);
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.getCancelationPrivacybyId = async (req, res) => {
+        try {
+                const data = await staticContent.findById(req.params.id);
+                if (!data || data.length === 0) {
+                        return res.status(404).json({ status: 404, message: "No data found", data: {} });
+                }
+                return res.status(200).json({ status: 200, message: "Data found successfully.", data: data });
+        } catch (error) {
+                console.log(error);
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.deleteCancelationPrivacy = async (req, res) => {
         try {
                 const data = await staticContent.findByIdAndDelete(req.params.id);
                 if (!data) {

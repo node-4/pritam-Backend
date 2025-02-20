@@ -1,13 +1,13 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const authConfig = require("../configs/auth.config");
-const User = require("../models/userModel");
-const ContactDetail = require("../models/ContactDetail");
-const CoursesModel = require("../models/CoursesModel");
-const inquire = require("../models/inquireModel");
-const newLetter = require("../models/newLetter");
-const ratingModel = require("../models/ratingModel");
-const jobRegisterform = require("../models/jobRegisterform");
+const authConfig = require("../../configs/auth.config");
+const User = require("../../models/userModel");
+const ContactDetail = require("../../models/ContactDetail");
+const CoursesModel = require("../../models/CoursesModel");
+const inquire = require("../../models/inquireModel");
+const newLetter = require("../../models/newLetter");
+const ratingModel = require("../../models/ratingModel");
+const jobRegisterform = require("../../models/jobRegisterform");
 
 exports.clientRegistration = async (req, res) => {
     try {
