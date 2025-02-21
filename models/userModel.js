@@ -68,6 +68,9 @@ var userSchema = new schema({
         type: Number,
         default: 0,
     },
+    language: {
+        type: String,
+    },
     /////////////////////////// employment Profile /////
     gender: {
         type: String,

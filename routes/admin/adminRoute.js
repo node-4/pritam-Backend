@@ -1,0 +1,26 @@
+const Department = require("../../controllers/Admin/adminController");
+var multer = require("multer");
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 1024 * 1024 * 100 }, });
+const userUpload = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'coverImage', maxCount: 1 },]);
+module.exports = (app) => {
+        app.post("/api/v1/admin/Department/addDepartment", upload.single('image'), Department.createDepartment);
+        app.get("/api/v1/admin/Department/allDepartment", Department.getDepartment);
+        app.get("/api/v1/admin/Department/paginateDepartmentSearch", Department.paginateDepartmentSearch);
+        app.put("/api/v1/admin/Department/updateDepartment/:id", upload.single('image'), Department.updateDepartment);
+        app.delete("/api/v1/admin/Department/deleteDepartment/:id", Department.removeDepartment);
+        app.post("/api/v1/admin/Role/addRole",  Department.createRole);
+        app.get("/api/v1/admin/Role/allRole", Department.getRole);
+        app.get("/api/v1/admin/Role/paginateRoleSearch", Department.paginateRoleSearch);
+        app.put("/api/v1/admin/Role/updateRole/:id",  Department.updateRole);
+        app.delete("/api/v1/admin/Role/deleteRole/:id", Department.removeRole);
+        app.post("/api/v1/admin/Equipment/addEquipment",  Department.createEquipment);
+        app.get("/api/v1/admin/Equipment/allEquipment", Department.getEquipment);
+        app.get("/api/v1/admin/Equipment/paginateEquipmentSearch", Department.paginateEquipmentSearch);
+        app.put("/api/v1/admin/Equipment/updateEquipment/:id",  Department.updateEquipment);
+        app.delete("/api/v1/admin/Equipment/deleteEquipment/:id", Department.removeEquipment);
+        app.post("/api/v1/admin/Outfit/addOutfit",  Department.createOutfit);
+        app.get("/api/v1/admin/Outfit/allOutfit", Department.getOutfit);
+        app.get("/api/v1/admin/Outfit/paginateOutfitSearch", Department.paginateOutfitSearch);
+        app.put("/api/v1/admin/Outfit/updateOutfit/:id",  Department.updateOutfit);
+        app.delete("/api/v1/admin/Outfit/deleteOutfit/:id", Department.removeOutfit);
+};
