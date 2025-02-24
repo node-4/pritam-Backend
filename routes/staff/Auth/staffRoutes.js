@@ -1,5 +1,5 @@
-const staff = require('../controllers/Staff/staffController');
-const authJwt = require("../middlewares/authJwt");
+const staff = require('../../../controllers/Staff/Auth/staffController');
+const authJwt = require("../../../middlewares/authJwt");
 var multer = require("multer");
 const path = require("path");
 const express = require("express");

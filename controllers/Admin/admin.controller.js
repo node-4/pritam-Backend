@@ -46,9 +46,7 @@ exports.signin = async (req, res) => {
         const { email, password } = req.body;
         const user = await User.findOne({ email: email, userType: "ADMIN" });
         if (!user) {
-            return res
-                .status(404)
-                .send({ message: "user not found ! not registered" });
+            return res.status(404).send({ message: "user not found ! not registered" });
         }
         const isValidPassword = bcrypt.compareSync(password, user.password);
         if (!isValidPassword) {
@@ -57,7 +55,7 @@ exports.signin = async (req, res) => {
         const accessToken = jwt.sign({ id: user._id }, authConfig.secret, {
             expiresIn: authConfig.accessTokenTime,
         });
-        return res.status(201).send({ data: user, accessToken: accessToken });
+        return res.status(200).send({ data: user, accessToken: accessToken });
     } catch (error) {
         console.error(error);
         return res.status(500).send({ message: "Server error" + error.message });
@@ -1083,7 +1081,7 @@ exports.dashboard = async (req, res, next) => {
             whoWeare: findwhoWeare,
             Course: findCourse
         }
-        return res.status(200).json({ status: 200, msg: "DashBoad data", data: obj })
+        return res.status(200).json({ status: 200, msg: "Dashboard data", data: obj })
     } catch (error) {
         console.log(error);
         return res.status(501).send({ status: 501, message: "server error.", data: {}, });
@@ -1112,9 +1110,9 @@ exports.getBannerById = async (req, res) => {
         const bannerId = req.params.bannerId;
         const user = await banner.findById(bannerId);
         if (user) {
-            return res.status(201).json({ message: "Banner found successfully", status: 200, data: user, });
+            return res.status(200).json({ message: "Banner found successfully", status: 200, data: user, });
         }
-        return res.status(201).json({ message: "Banner not Found", status: 404, data: {}, });
+        return res.status(404).json({ message: "Banner not Found", status: 404, data: {}, });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: "Failed to retrieve Banner" });
@@ -1126,7 +1124,7 @@ exports.updateBanner = async (req, res) => {
         const bannerId = req.params.bannerId;
         const findData = await banner.findById(bannerId);
         if (!findData) {
-            return res.status(201).json({ message: "Banner not Found", status: 404, data: {}, });
+            return res.status(404).json({ message: "Banner not Found", status: 404, data: {}, });
         }
         let findCompany = await banner.findOne({ _id: { $ne: findData._id }, type, });
         if (findCompany) {
@@ -1157,10 +1155,10 @@ exports.deleteBanner = async (req, res) => {
         if (user) {
             const user1 = await banner.findByIdAndDelete({ _id: user._id });;
             if (user1) {
-                return res.status(201).json({ message: "Banner delete successfully.", status: 200, data: {}, });
+                return res.status(200).json({ message: "Banner delete successfully.", status: 200, data: {}, });
             }
         } else {
-            return res.status(201).json({ message: "Banner not Found", status: 404, data: {}, });
+            return res.status(404).json({ message: "Banner not Found", status: 404, data: {}, });
         }
     } catch (error) {
         console.error(error);
@@ -1324,9 +1322,9 @@ exports.getYourDreamsQuicklyById = async (req, res) => {
         const bannerId = req.params.bannerId;
         const user = await yourDreamsquickly.findById(bannerId);
         if (user) {
-            return res.status(201).json({ message: "Banner found successfully", status: 200, data: user, });
+            return res.status(200).json({ message: "Banner found successfully", status: 200, data: user, });
         }
-        return res.status(201).json({ message: "Banner not Found", status: 404, data: {}, });
+        return res.status(200).json({ message: "Banner not Found", status: 404, data: {}, });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: "Failed to retrieve Banner" });
@@ -1339,10 +1337,10 @@ exports.deleteYourDreamsQuickly = async (req, res) => {
         if (user) {
             const user1 = await yourDreamsquickly.findByIdAndDelete({ _id: user._id });;
             if (user1) {
-                return res.status(201).json({ message: "Your dreams quickly delete successfully.", status: 200, data: {}, });
+                return res.status(200).json({ message: "Your dreams quickly delete successfully.", status: 200, data: {}, });
             }
         } else {
-            return res.status(201).json({ message: "Your dreams quickly not Found", status: 404, data: {}, });
+            return res.status(200).json({ message: "Your dreams quickly not Found", status: 404, data: {}, });
         }
     } catch (error) {
         console.error(error);
@@ -1394,9 +1392,9 @@ exports.getBusinessweSupportById = async (req, res) => {
         const bannerId = req.params.bannerId;
         const user = await businessweSupport.findById(bannerId);
         if (user) {
-            return res.status(201).json({ message: "Banner found successfully", status: 200, data: user, });
+            return res.status(200).json({ message: "Banner found successfully", status: 200, data: user, });
         }
-        return res.status(201).json({ message: "Banner not Found", status: 404, data: {}, });
+        return res.status(200).json({ message: "Banner not Found", status: 404, data: {}, });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: "Failed to retrieve Banner" });
@@ -1409,10 +1407,10 @@ exports.deleteBusinessweSupport = async (req, res) => {
         if (user) {
             const user1 = await businessweSupport.findByIdAndDelete({ _id: user._id });;
             if (user1) {
-                return res.status(201).json({ message: "Business we Support delete successfully.", status: 200, data: {}, });
+                return res.status(200).json({ message: "Business we Support delete successfully.", status: 200, data: {}, });
             }
         } else {
-            return res.status(201).json({ message: "Business we Support not Found", status: 404, data: {}, });
+            return res.status(200).json({ message: "Business we Support not Found", status: 404, data: {}, });
         }
     } catch (error) {
         console.error(error);
@@ -1921,9 +1919,9 @@ exports.getPermanentJobRegistrationById = async (req, res) => {
         const bannerId = req.params.bannerId;
         const user = await permanentJobRegistration.findById(bannerId);
         if (user) {
-            return res.status(201).json({ message: "Banner found successfully", status: 200, data: user, });
+            return res.status(200).json({ message: "Banner found successfully", status: 200, data: user, });
         }
-        return res.status(201).json({ message: "Banner not Found", status: 404, data: {}, });
+        return res.status(404).json({ message: "Banner not Found", status: 404, data: {}, });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: "Failed to retrieve Banner" });
@@ -1936,10 +1934,10 @@ exports.deletePermanentJobRegistration = async (req, res) => {
         if (user) {
             const user1 = await permanentJobRegistration.findByIdAndDelete({ _id: user._id });;
             if (user1) {
-                return res.status(201).json({ message: "Permanent Job Registration delete successfully.", status: 200, data: {}, });
+                return res.status(200).json({ message: "Permanent Job Registration delete successfully.", status: 200, data: {}, });
             }
         } else {
-            return res.status(201).json({ message: "Permanent Job Registration not Found", status: 404, data: {}, });
+            return res.status(404).json({ message: "Permanent Job Registration not Found", status: 404, data: {}, });
         }
     } catch (error) {
         console.error(error);
@@ -1975,7 +1973,7 @@ exports.addUserinPermanentJobRegistration = async (req, res) => {
             const newCategory = await permanentJobRegistration.findByIdAndUpdate({ _id: findBanner._id }, { $push: { imageArray: data } }, { new: true });
             return res.status(200).json({ status: 200, message: 'Permanent Job Registration update successfully', data: newCategory });
         } else {
-            return res.status(200).json({ status: 200, message: 'Permanent Job Registration not found.', data: newCategory });
+            return res.status(404).json({ status: 404, message: 'Permanent Job Registration not found.', data: newCategory });
         }
     } catch (error) {
         console.error(error);
@@ -2037,7 +2035,7 @@ exports.getQuestionById = async (req, res) => {
     try {
         const question = await Question.findById(questionId);
         if (!question) {
-            return res.status(404).json({ error: "Question not found." });
+            return res.status(404).json({ status: 404, message: "Question not found." });
         }
         return res.json({ msg: question });
     } catch (error) {
@@ -2054,16 +2052,16 @@ exports.updateQuestion = async (req, res) => {
         }
         const questions = await Question.findById(questionId);
         if (!questions) {
-            return res.status(404).json({ error: "Question not found." });
+            return res.status(404).json({ status: 404, message:"Question not found." });
         }
         let data = {
             question: req.body.question || questions.question,
         }
         const updatedQuestion = await Question.findByIdAndUpdate(questionId, { $set: data }, { new: true });
         if (!updatedQuestion) {
-            return res.status(404).json({ error: "Question not found." });
+            return res.status(404).json({ status: 404, message: "Question not found." });
         }
-        return res.json(updatedQuestion);
+        return res.status(200).json({ status: 200, message: "Question update successfully.", data: updatedQuestion });; // No content
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: "An error occurred while updating the question." });
@@ -2074,9 +2072,9 @@ exports.deleteQuestion = async (req, res) => {
     try {
         const deletedQuestion = await Question.findByIdAndRemove(questionId);
         if (!deletedQuestion) {
-            return res.status(404).json({ error: "Question not found." });
+            return res.status(404).json({ status: 404, message: "Question not found." });
         }
-        return res.status(204).json({ message: "Question delete successfully." });; // No content
+        return res.status(200).json({ status: 200, message: "Question delete successfully." });; // No content
     } catch (error) {
         console.error(error);
         return res

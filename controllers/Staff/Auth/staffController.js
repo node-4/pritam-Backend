@@ -1,13 +1,13 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const authConfig = require("../../configs/auth.config");
-const userModel = require("../../models/userModel");
-const ContactDetail = require("../../models/ContactDetail");
-const CoursesModel = require("../../models/CoursesModel");
-const inquire = require("../../models/inquireModel");
-const newLetter = require("../../models/newLetter");
-const ratingModel = require("../../models/ratingModel");
-const jobRegisterform = require("../../models/jobRegisterform");
+const authConfig = require("../../../configs/auth.config");
+const userModel = require("../../../models/userModel");
+const ContactDetail = require("../../../models/ContactDetail");
+const CoursesModel = require("../../../models/CoursesModel");
+const inquire = require("../../../models/inquireModel");
+const newLetter = require("../../../models/newLetter");
+const ratingModel = require("../../../models/ratingModel");
+const jobRegisterform = require("../../../models/jobRegisterform");
 
 exports.login = async (req, res) => {
     try {
@@ -28,7 +28,7 @@ exports.login = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ errorName: error.name, message: error.message, });
+        return res.status(500).json({ status: 500, errorName: error.name, message: error.message, });
     }
 };
 exports.verifyOtp = async (req, res) => {
@@ -36,7 +36,7 @@ exports.verifyOtp = async (req, res) => {
         const { otp } = req.body;
         const user = await userModel.findById(req.params.id);
         if (!user) {
-            return res.status(404).send({ message: "user not found" });
+            return res.status(404).send({ status: 404, message: "user not found" });
         }
         if (user.otp !== otp || user.otpExpiration < Date.now()) {
             return res.status(400).json({ message: "Invalid OTP" });
@@ -52,7 +52,7 @@ exports.verifyOtp = async (req, res) => {
         return res.status(200).send({ status: 200, message: "logged in successfully", data: obj });
     } catch (err) {
         console.log(err.message);
-        return res.status(500).send({ error: "internal server error" + err.message });
+        return res.status(500).send({ status: 500, error: "internal server error" + err.message });
     }
 };
 ////////////////// credentials   /////////////////
@@ -61,20 +61,29 @@ exports.updateCredentials = async (req, res) => {
         const { role, title, firstName, lastName, email, phone, password, profileOption } = req.body;
         const user = await userModel.findById(req.params.id);
         if (!user) {
-            return res.status(404).send({ message: "user not found" });
+            return res.status(404).send({ status: 404, message: "user not found" });
         }
-        req.body.email = email.split(" ").join("").toLowerCase();
-        let user1 = await userModel.findOne({ $and: [{ $or: [{ email: req.body.email }, { phone: phone }] }], userType: "STAFF" });
-        if (!user1) {
+        if (phone) {
+            let user1 = await userModel.findOne({ phone: phone, _id: { $ne: user._id }, userType: "STAFF" });
+            if (user1) {
+                return res.status(409).send({ message: "Already Exist", data: [] });
+            }
+        }
+        if (email) {
+            req.body.email = email.split(" ").join("").toLowerCase();
+            let user1 = await userModel.findOne({ email: req.body.email, _id: { $ne: user._id }, userType: "STAFF" });
+            if (user1) {
+                return res.status(409).send({ message: "Already Exist", data: [] });
+            }
+        }
+        if (password) {
             req.body.password = bcrypt.hashSync(password, 8);
-        } else {
-            return res.status(409).send({ message: "Already Exist", data: [] });
         }
         const updated = await userModel.findByIdAndUpdate({ _id: user._id }, { $set: req.body }, { new: true })
         return res.status(200).send({ status: 200, message: "logged in successfully", data: updated });
     } catch (err) {
         console.log(err.message);
-        return res.status(500).send({ error: "internal server error" + err.message });
+        return res.status(500).send({ status: 500, error: "internal server error" + err.message });
     }
 };
 ///////////////// Demographics ///////////////////////
@@ -83,13 +92,13 @@ exports.updateDemographics = async (req, res) => {
         const { gender, dateOfBirth, street1, street2, town, landMark, city, state, country, pinCode, interest, expertise, yearOfExperience, bio, interestedCity, eligibleToWorkInUk, ownCar, license } = req.body;
         const user = await userModel.findById(req.params.id);
         if (!user) {
-            return res.status(404).send({ message: "user not found" });
+            return res.status(404).send({ status: 404, message: "user not found" });
         }
         const updated = await userModel.findByIdAndUpdate({ _id: user._id }, { $set: req.body }, { new: true })
         return res.status(200).send({ status: 200, message: "logged in successfully", data: updated });
     } catch (err) {
         console.log(err.message);
-        return res.status(500).send({ error: "internal server error" + err.message });
+        return res.status(500).send({ status: 500, error: "internal server error" + err.message });
     }
 };
 ///////////////// Right to work ///////////////////////
@@ -98,7 +107,7 @@ exports.updateRightToWork = async (req, res) => {
         const { facePhoto, frontPassport, backPassport, frontId, backId, cv, uniqueTaxPayerReferenceNumber } = req.body;
         const user = await userModel.findById(req.params.id);
         if (!user) {
-            return res.status(404).send({ message: "user not found" });
+            return res.status(404).send({ status: 404, message: "user not found" });
         }
         if (req.files['facePhoto']) {
             let facePhoto = req.files['facePhoto'];
@@ -145,7 +154,7 @@ exports.updateRightToWork = async (req, res) => {
         return res.status(200).send({ status: 200, message: "logged in successfully", data: updated });
     } catch (err) {
         console.log(err.message);
-        return res.status(500).send({ error: "internal server error" + err.message });
+        return res.status(500).send({ status: 500, error: "internal server error" + err.message });
     }
 };
 //////////////// Bank Details ////////////////////////
@@ -154,7 +163,7 @@ exports.updateBankDetails = async (req, res) => {
         const { bank, accountName, accountNumber, sortCode } = req.body;
         const user = await userModel.findById(req.params.id);
         if (!user) {
-            return res.status(404).send({ message: "user not found" });
+            return res.status(404).send({ status: 404, message: "user not found" });
         }
         if (bank) {
             req.body.bank = bank;
@@ -180,7 +189,7 @@ exports.updateBankDetails = async (req, res) => {
         return res.status(200).send({ status: 200, message: "logged in successfully", data: updated });
     } catch (err) {
         console.log(err.message);
-        return res.status(500).send({ error: "internal server error" + err.message });
+        return res.status(500).send({ status: 500, error: "internal server error" + err.message });
     }
 };
 ///////////////// Availability ////////////////////////
@@ -189,7 +198,7 @@ exports.updateAvailability = async (req, res) => {
         const { available } = req.body;
         const user = await userModel.findById(req.params.id);
         if (!user) {
-            return res.status(404).send({ message: "user not found" });
+            return res.status(404).send({ status: 404, message: "user not found" });
         }
         if (available) {
             req.body.available = available;
@@ -200,26 +209,26 @@ exports.updateAvailability = async (req, res) => {
         return res.status(200).send({ status: 200, message: "update availability in successfully", data: updated });
     } catch (err) {
         console.log(err.message);
-        return res.status(500).send({ error: "internal server error" + err.message });
+        return res.status(500).send({ status: 500, error: "internal server error" + err.message });
     }
 };
 exports.updateTermsAccepted = async (req, res) => {
     try {
         const user = await userModel.findById(req.params.id);
         if (!user) {
-            return res.status(404).send({ message: "user not found" });
+            return res.status(404).send({ status: 404, message: "user not found" });
         }
         let termsAccepted;
         if (user.termsAccepted != (null || undefined)) {
-            termsAccepted=  new Date(Date.now());
+            termsAccepted = new Date(Date.now());
         } else {
             termsAccepted = user.termsAccepted;
         }
-        const updated = await userModel.findByIdAndUpdate({ _id: user._id }, { $set: {termsAccepted:termsAccepted} }, { new: true })
+        const updated = await userModel.findByIdAndUpdate({ _id: user._id }, { $set: { termsAccepted: termsAccepted } }, { new: true })
         return res.status(200).send({ status: 200, message: "update availability in successfully", data: updated });
     } catch (err) {
         console.log(err.message);
-        return res.status(500).send({ error: "internal server error" + err.message });
+        return res.status(500).send({ status: 500, error: "internal server error" + err.message });
     }
 };
 /////////////////////////////Home////

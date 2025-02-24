@@ -1,5 +1,5 @@
-const auth = require("../controllers/Admin/admin.controller");
-const authJwt = require("../middlewares/authJwt");
+const auth = require("../../controllers/Admin/admin.controller");
+const authJwt = require("../../middlewares/authJwt");
 var multer = require("multer");
 const path = require("path");
 const express = require("express");

@@ -14,6 +14,10 @@ const vendorDetailsSchema = new mongoose.Schema({
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "user",
         }],
+        staffSeen: [{
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "user",
+        }],
         category: {
                 type: mongoose.SchemaTypes.ObjectId,
                 ref: "Category",
