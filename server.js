@@ -39,7 +39,7 @@ require("./routes/Client/Profile/invoices")(app);
 require("./routes/Client/Profile/myDetails")(app);
 // my TimeSheet
 require("./routes/Client/Profile/order")(app);
-// payment Methods
+require("./routes/Client/Profile/paymentMethod")(app);
 require("./routes/Client/Profile/Privacy")(app);
 require("./routes/Client/Profile/Terms")(app);
 require("./routes/Client/Profile/VouchersAndOffers")(app);
@@ -95,7 +95,7 @@ require("./routes/admin/course.route")(app);
 require("./routes/admin/static.route")(app);
 mongoose.Promise = global.Promise;
 mongoose.set("strictQuery", true);
-mongoose.connect(process.env.DB_URL, { useNewUrlParser: true, useUnifiedTopology: true, }).then((data) => {
+mongoose.connect(process.env.DB_URL).then((data) => {
     console.log(`Mongodb connected with server: ${data.connection.host}`);
 });
 app.listen(process.env.PORT, () => {
