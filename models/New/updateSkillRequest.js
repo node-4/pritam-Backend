@@ -6,11 +6,11 @@ var notificationModel = new Schema({
                 ref: "user"
         },
         jobId: {
-                type: schema.Types.ObjectId,
+                type: Schema.Types.ObjectId,
                 ref: "job"
         },
         skillId: [{
-                type: schema.Types.ObjectId,
+                type: Schema.Types.ObjectId,
                 ref: "skill"
         }],
         status: {
