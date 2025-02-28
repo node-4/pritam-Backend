@@ -1,6 +1,14 @@
 const mongoose = require("mongoose");
 const schema = mongoose.Schema;
 var userSchema = new schema({
+    jobId: [{
+        type: schema.Types.ObjectId,
+        ref: "job"
+    }],
+    skillId: [{
+        type: schema.Types.ObjectId,
+        ref: "skill"
+    }],
     title: {
         type: String,
     },
@@ -170,5 +178,13 @@ var userSchema = new schema({
     termsAccepted: {
         type: Date,
     },
+    contactPreference: [{
+        name: {
+            type: String,
+        },
+        phoneNumber: {
+            type: String,
+        },
+    }]
 }, { timestamps: true });
 module.exports = mongoose.model("user", userSchema);

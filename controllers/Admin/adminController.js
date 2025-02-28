@@ -26,6 +26,11 @@ const Department = require("../../models/New/department/department");
 const Role = require("../../models/New/department/role");
 const Equipment = require("../../models/New/outfitAndEquipment/equipment");
 const Outfit = require("../../models/New/outfitAndEquipment/outfit");
+const Community = require("../../models/New/community");
+const CommunityInfo = require("../../models/New/communityInfo");
+const Benefits = require("../../models/New/Benefits");
+const Job = require("../../models/New/job");
+const JobBusinessType = require("../../models/New/jobBusinessType");
 
 exports.createDepartment = async (req, res) => {
     try {
@@ -388,3 +393,515 @@ exports.removeOutfit = async (req, res) => {
         return res.status(500).send({ msg: "internal server error ", error: err.message, });
     }
 };
+exports.createCommunity = async (req, res) => {
+    try {
+        let findCommunity = await Community.findOne({ name: req.body.name });
+        if (findCommunity) {
+            return res.status(409).json({ message: "Community already exit.", status: 404, data: {} });
+        } else {
+            let fileUrl;
+            if (req.file) {
+                fileUrl = req.file.path
+            }
+            const data = { name: req.body.name, description: req.body.description, image: fileUrl };
+            const community = await Community.create(data);
+            return res.status(200).json({ message: "Community add successfully.", status: 200, data: community });
+        }
+    } catch (error) {
+        if (error.response.status == 413) {
+            return res.status(413).send({ status: 413, message: "Image is too large.", data: {}, });
+        } else {
+            return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+    }
+};
+exports.getCommunity = async (req, res) => {
+    try {
+        const categories = await Community.find({}).sort({ createdAt: 1 });
+        if (categories.length == 0) {
+            return res.status(404).json({ message: "Community not found.", status: 404, data: [] });
+        }
+        return res.status(201).json({ message: "Community Found", status: 200, data: categories, });
+    } catch (err) {
+        return res.status(500).send({ msg: "internal server error ", error: err.message, });
+    }
+};
+exports.paginateCommunitySearch = async (req, res) => {
+    try {
+        console.log("------------------------");
+        const { search, fromDate, toDate, page, limit } = req.query;
+        let query = {};
+        if (search) {
+            query.$or = [
+                { "name": { $regex: req.query.search, $options: "i" }, },
+            ]
+        }
+        if ((fromDate == null) && (toDate != null)) {
+            query.createdAt = { $lte: toDate };
+        }
+        if ((fromDate != null) && (toDate != null)) {
+            query.$and = [
+                { createdAt: { $gte: fromDate } },
+                { createdAt: { $lte: toDate } },
+            ]
+        }
+        let options = {
+            page: Number(page) || 1,
+            limit: Number(limit) || 10,
+            sort: { createdAt: -1 },
+        };
+        let data = await Community.paginate(query, options);
+        return res.status(200).json({ status: 200, message: "Community data found.", data: data });
+    } catch (err) {
+        return res.status(500).send({ msg: "internal server error ", error: err.message, });
+    }
+};
+exports.updateCommunity = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const community = await Community.findById(id);
+        if (!community) {
+            return res.status(404).json({ message: "Community Not Found", status: 404, data: {} });
+        }
+        let fileUrl;
+        if (req.file) {
+            fileUrl = req.file.path
+        }
+        community.image = fileUrl || community.image;
+        community.name = req.body.name || community.name;
+        community.description = req.body.description || community.description;
+        let update = await community.save();
+        return res.status(200).json({ message: "Updated Successfully", data: update });
+    } catch (error) {
+        if (error.response.status == 413) {
+            return res.status(413).send({ status: 413, message: "Image is too large.", data: {}, });
+        } else {
+            return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+    }
+};
+exports.removeCommunity = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const community = await Community.findById(id);
+        if (!community) {
+            return res.status(404).json({ message: "Community Not Found", status: 404, data: {} });
+        } else {
+            await Community.findByIdAndDelete(community._id);
+            return res.status(200).json({ message: "Community Deleted Successfully !" });
+        }
+    } catch (err) {
+        return res.status(500).send({ msg: "internal server error ", error: err.message, });
+    }
+};
+exports.addDataForCommunityInfo = async (req, res) => {
+    try {
+        const community = await Community.findById(req.params.id);
+        if (!community) {
+            return res.status(404).json({ message: "Community not found.", status: 404, data: {} });
+        } else {
+            let fileUrl = null;
+            if (req.file) {
+                fileUrl = req.file.path
+            }
+            let obj = {
+                communityId: community._id,
+                title: req.body.title,
+                description: req.body.description,
+                image: fileUrl,
+            }
+            const saved = await CommunityInfo.create(obj);
+            if (saved) {
+                return res.status(200).json({ message: "Community data add info.", status: 200, data: saved });
+            }
+        }
+    } catch (err) {
+        return res.status(500).json({ message: "Internal server error", error: err.message });
+    }
+};
+exports.getCommunityInfo = async (req, res) => {
+    try {
+        const categories = await CommunityInfo.find({}).populate('communityId').sort({ createdAt: 1 });
+        if (categories.length == 0) {
+            return res.status(404).json({ message: "Community not found.", status: 404, data: [] });
+        }
+        return res.status(201).json({ message: "Community Found", status: 200, data: categories, });
+    } catch (err) {
+        return res.status(500).send({ msg: "internal server error ", error: err.message, });
+    }
+};
+exports.paginateCommunityInfoSearch = async (req, res) => {
+    try {
+        console.log("------------------------");
+        const { search, fromDate, toDate, page, limit } = req.query;
+        let query = {};
+        if (search) {
+            query.$or = [
+                { "name": { $regex: req.query.search, $options: "i" }, },
+            ]
+        }
+        if ((fromDate == null) && (toDate != null)) {
+            query.createdAt = { $lte: toDate };
+        }
+        if ((fromDate != null) && (toDate != null)) {
+            query.$and = [
+                { createdAt: { $gte: fromDate } },
+                { createdAt: { $lte: toDate } },
+            ]
+        }
+        let options = {
+            page: Number(page) || 1,
+            limit: Number(limit) || 10,
+            sort: { createdAt: -1 },
+            populate: "communityId"
+        };
+        let data = await CommunityInfo.paginate(query, options);
+        return res.status(200).json({ status: 200, message: "Community data found.", data: data });
+    } catch (err) {
+        return res.status(500).send({ msg: "internal server error ", error: err.message, });
+    }
+};
+exports.updateCommunityInfo = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const community = await CommunityInfo.findById(id);
+        if (!community) {
+            return res.status(404).json({ message: "Community Not Found", status: 404, data: {} });
+        }
+        let fileUrl;
+        if (req.file) {
+            fileUrl = req.file.path
+        }
+        community.image = fileUrl || community.image;
+        community.title = req.body.title || community.title;
+        community.description = req.body.description || community.description;
+        let update = await community.save();
+        return res.status(200).json({ message: "Updated Successfully", data: update });
+    } catch (error) {
+        if (error.response.status == 413) {
+            return res.status(413).send({ status: 413, message: "Image is too large.", data: {}, });
+        } else {
+            return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+    }
+};
+exports.removeCommunityInfo = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const community = await CommunityInfo.findById(id);
+        if (!community) {
+            return res.status(404).json({ message: "Community Not Found", status: 404, data: {} });
+        } else {
+            await CommunityInfo.findByIdAndDelete(community._id);
+            return res.status(200).json({ message: "Community Deleted Successfully !" });
+        }
+    } catch (err) {
+        return res.status(500).send({ msg: "internal server error ", error: err.message, });
+    }
+};
+exports.createBenefits = async (req, res) => {
+    try {
+        let findBenefits = await Benefits.findOne({ name: req.body.name });
+        if (findBenefits) {
+            return res.status(409).json({ message: "Benefits already exit.", status: 404, data: {} });
+        } else {
+            let fileUrl;
+            if (req.file) {
+                fileUrl = req.file.path
+            }
+            const data = { name: req.body.name, description: req.body.description, link: req.body.link, image: fileUrl };
+            const benefits = await Benefits.create(data);
+            return res.status(200).json({ message: "Benefits add successfully.", status: 200, data: benefits });
+        }
+    } catch (error) {
+        if (error.response.status == 413) {
+            return res.status(413).send({ status: 413, message: "Image is too large.", data: {}, });
+        } else {
+            return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+    }
+};
+exports.getBenefits = async (req, res) => {
+    try {
+        const categories = await Benefits.find({}).sort({ createdAt: 1 });
+        if (categories.length == 0) {
+            return res.status(404).json({ message: "Benefits not found.", status: 404, data: [] });
+        }
+        return res.status(201).json({ message: "Benefits Found", status: 200, data: categories, });
+    } catch (err) {
+        return res.status(500).send({ msg: "internal server error ", error: err.message, });
+    }
+};
+exports.paginateBenefitsSearch = async (req, res) => {
+    try {
+        console.log("------------------------");
+        const { search, fromDate, toDate, page, limit } = req.query;
+        let query = {};
+        if (search) {
+            query.$or = [
+                { "name": { $regex: req.query.search, $options: "i" }, },
+            ]
+        }
+        if ((fromDate == null) && (toDate != null)) {
+            query.createdAt = { $lte: toDate };
+        }
+        if ((fromDate != null) && (toDate != null)) {
+            query.$and = [
+                { createdAt: { $gte: fromDate } },
+                { createdAt: { $lte: toDate } },
+            ]
+        }
+        let options = {
+            page: Number(page) || 1,
+            limit: Number(limit) || 10,
+            sort: { createdAt: -1 },
+        };
+        let data = await Benefits.paginate(query, options);
+        return res.status(200).json({ status: 200, message: "Benefits data found.", data: data });
+    } catch (err) {
+        return res.status(500).send({ msg: "internal server error ", error: err.message, });
+    }
+};
+exports.updateBenefits = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const benefits = await Benefits.findById(id);
+        if (!benefits) {
+            return res.status(404).json({ message: "Benefits Not Found", status: 404, data: {} });
+        }
+        let fileUrl;
+        if (req.file) {
+            fileUrl = req.file.path
+        }
+        benefits.image = fileUrl || benefits.image;
+        benefits.name = req.body.name || benefits.name;
+        benefits.link = req.body.link || benefits.link;
+        benefits.description = req.body.description || benefits.description;
+        let update = await benefits.save();
+        return res.status(200).json({ message: "Updated Successfully", data: update });
+    } catch (error) {
+        if (error.response.status == 413) {
+            return res.status(413).send({ status: 413, message: "Image is too large.", data: {}, });
+        } else {
+            return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+    }
+};
+exports.removeBenefits = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const benefits = await Benefits.findById(id);
+        if (!benefits) {
+            return res.status(404).json({ message: "Benefits Not Found", status: 404, data: {} });
+        } else {
+            await Benefits.findByIdAndDelete(benefits._id);
+            return res.status(200).json({ message: "Benefits Deleted Successfully !" });
+        }
+    } catch (err) {
+        return res.status(500).send({ msg: "internal server error ", error: err.message, });
+    }
+};
+exports.createJob = async (req, res) => {
+    try {
+        let findJob = await Job.findOne({ name: req.body.name });
+        if (findJob) {
+            return res.status(409).json({ message: "Job already exit.", status: 404, data: {} });
+        } else {
+            let fileUrl;
+            if (req.file) {
+                fileUrl = req.file.path
+            }
+            const data = { name: req.body.name, description: req.body.description,image: fileUrl };
+            const job = await Job.create(data);
+            return res.status(200).json({ message: "Job add successfully.", status: 200, data: job });
+        }
+    } catch (error) {
+        if (error.response.status == 413) {
+            return res.status(413).send({ status: 413, message: "Image is too large.", data: {}, });
+        } else {
+            return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+    }
+};
+exports.getJob = async (req, res) => {
+    try {
+        const categories = await Job.find({}).sort({ createdAt: 1 });
+        if (categories.length == 0) {
+            return res.status(404).json({ message: "Job not found.", status: 404, data: [] });
+        }
+        return res.status(201).json({ message: "Job Found", status: 200, data: categories, });
+    } catch (err) {
+        return res.status(500).send({ msg: "internal server error ", error: err.message, });
+    }
+};
+exports.paginateJobSearch = async (req, res) => {
+    try {
+        console.log("------------------------");
+        const { search, fromDate, toDate, page, limit } = req.query;
+        let query = {};
+        if (search) {
+            query.$or = [
+                { "name": { $regex: req.query.search, $options: "i" }, },
+            ]
+        }
+        if ((fromDate == null) && (toDate != null)) {
+            query.createdAt = { $lte: toDate };
+        }
+        if ((fromDate != null) && (toDate != null)) {
+            query.$and = [
+                { createdAt: { $gte: fromDate } },
+                { createdAt: { $lte: toDate } },
+            ]
+        }
+        let options = {
+            page: Number(page) || 1,
+            limit: Number(limit) || 10,
+            sort: { createdAt: -1 },
+        };
+        let data = await Job.paginate(query, options);
+        return res.status(200).json({ status: 200, message: "Job data found.", data: data });
+    } catch (err) {
+        return res.status(500).send({ msg: "internal server error ", error: err.message, });
+    }
+};
+exports.updateJob = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const job = await Job.findById(id);
+        if (!job) {
+            return res.status(404).json({ message: "Job Not Found", status: 404, data: {} });
+        }
+        let fileUrl;
+        if (req.file) {
+            fileUrl = req.file.path
+        }
+        job.image = fileUrl || job.image;
+        job.name = req.body.name || job.name;
+        job.description = req.body.description || job.description;
+        let update = await job.save();
+        return res.status(200).json({ message: "Updated Successfully", data: update });
+    } catch (error) {
+        if (error.response.status == 413) {
+            return res.status(413).send({ status: 413, message: "Image is too large.", data: {}, });
+        } else {
+            return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+    }
+};
+exports.removeJob = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const job = await Job.findById(id);
+        if (!job) {
+            return res.status(404).json({ message: "Job Not Found", status: 404, data: {} });
+        } else {
+            await Job.findByIdAndDelete(job._id);
+            return res.status(200).json({ message: "Job Deleted Successfully !" });
+        }
+    } catch (err) {
+        return res.status(500).send({ msg: "internal server error ", error: err.message, });
+    }
+};
+exports.createJobBusinessType = async (req, res) => {
+    try {
+        let findJobBusinessType = await JobBusinessType.findOne({ name: req.body.name });
+        if (findJobBusinessType) {
+            return res.status(409).json({ message: "JobBusinessType already exit.", status: 404, data: {} });
+        } else {
+            let fileUrl;
+            if (req.file) {
+                fileUrl = req.file.path
+            }
+            const data = { name: req.body.name, description: req.body.description,image: fileUrl };
+            const jobBusinessType = await JobBusinessType.create(data);
+            return res.status(200).json({ message: "JobBusinessType add successfully.", status: 200, data: jobBusinessType });
+        }
+    } catch (error) {
+        if (error.response.status == 413) {
+            return res.status(413).send({ status: 413, message: "Image is too large.", data: {}, });
+        } else {
+            return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+    }
+};
+exports.getJobBusinessType = async (req, res) => {
+    try {
+        const categories = await JobBusinessType.find({}).sort({ createdAt: 1 });
+        if (categories.length == 0) {
+            return res.status(404).json({ message: "JobBusinessType not found.", status: 404, data: [] });
+        }
+        return res.status(201).json({ message: "JobBusinessType Found", status: 200, data: categories, });
+    } catch (err) {
+        return res.status(500).send({ msg: "internal server error ", error: err.message, });
+    }
+};
+exports.paginateJobBusinessTypeSearch = async (req, res) => {
+    try {
+        console.log("------------------------");
+        const { search, fromDate, toDate, page, limit } = req.query;
+        let query = {};
+        if (search) {
+            query.$or = [
+                { "name": { $regex: req.query.search, $options: "i" }, },
+            ]
+        }
+        if ((fromDate == null) && (toDate != null)) {
+            query.createdAt = { $lte: toDate };
+        }
+        if ((fromDate != null) && (toDate != null)) {
+            query.$and = [
+                { createdAt: { $gte: fromDate } },
+                { createdAt: { $lte: toDate } },
+            ]
+        }
+        let options = {
+            page: Number(page) || 1,
+            limit: Number(limit) || 10,
+            sort: { createdAt: -1 },
+        };
+        let data = await JobBusinessType.paginate(query, options);
+        return res.status(200).json({ status: 200, message: "JobBusinessType data found.", data: data });
+    } catch (err) {
+        return res.status(500).send({ msg: "internal server error ", error: err.message, });
+    }
+};
+exports.updateJobBusinessType = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const jobBusinessType = await JobBusinessType.findById(id);
+        if (!jobBusinessType) {
+            return res.status(404).json({ message: "JobBusinessType Not Found", status: 404, data: {} });
+        }
+        let fileUrl;
+        if (req.file) {
+            fileUrl = req.file.path
+        }
+        jobBusinessType.image = fileUrl || jobBusinessType.image;
+        jobBusinessType.name = req.body.name || jobBusinessType.name;
+        jobBusinessType.description = req.body.description || jobBusinessType.description;
+        let update = await jobBusinessType.save();
+        return res.status(200).json({ message: "Updated Successfully", data: update });
+    } catch (error) {
+        if (error.response.status == 413) {
+            return res.status(413).send({ status: 413, message: "Image is too large.", data: {}, });
+        } else {
+            return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+    }
+};
+exports.removeJobBusinessType = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const jobBusinessType = await JobBusinessType.findById(id);
+        if (!jobBusinessType) {
+            return res.status(404).json({ message: "JobBusinessType Not Found", status: 404, data: {} });
+        } else {
+            await JobBusinessType.findByIdAndDelete(jobBusinessType._id);
+            return res.status(200).json({ message: "JobBusinessType Deleted Successfully !" });
+        }
+    } catch (err) {
+        return res.status(500).send({ msg: "internal server error ", error: err.message, });
+    }
+};
+
+

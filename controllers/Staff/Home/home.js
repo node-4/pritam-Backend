@@ -11,6 +11,7 @@ const jobRegisterform = require("../../../models/jobRegisterform");
 const banner = require("../../../models/banner");
 const Booking = require('../../../models/New/Order/booking');
 const AllBooking = require('../../../models/New/Order/AllBooking');
+const staffBooking = require('../../../models/New/Order/staffBooking');
 const Cart = require('../../../models/New/cart/cart');
 const Address = require("../../../models/address");
 //// banner //////////
@@ -85,5 +86,79 @@ exports.getAllSeenJob = async (req, res, next) => {
         } catch (error) {
                 console.log(error);
                 return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
+};
+exports.acceptedBooking = async (req, res, next) => {
+        try {
+                const data = await User.findOne({ _id: req.user._id, });
+                if (data) {
+                        const cart = await Booking.findOne({ _id: req.params.id });
+                        if (!cart) {
+                                return res.status(200).json({ success: false, msg: "Order not found", data: {} });
+                        } else {
+                                let update = await Booking.findOneAndUpdate({ _id: cart._id }, { $pull: { staff: data._id }, $addToSet: { staffAccepted: data._id } }, { new: true });
+                                if (update) {
+                                        let obj = {
+                                                user: update.user,
+                                                staff: data._id,
+                                                category: cart.category,
+                                                subCategory: cart.category,
+                                                subCategoryTimeId: cart.subCategoryTimeId,
+                                                bookingId: cart._id,
+                                                date: cart.date,
+                                                toTime: cart.toTime,
+                                                fromTime: cart.fromTime,
+                                                workingHours: cart.workingHours,
+                                                jobStatus: "Pending",
+                                                status: "Pending"
+                                        }
+                                        const Data1 = await staffBooking.create(obj);
+                                        if (Data1) {
+                                                return res.status(200).json({ success: true, msg: "Accept booking successfully", data: update });
+                                        }
+                                }
+                        }
+                } else {
+                        return res.status(200).json({ status: 500, msg: "User not found", data: {} });
+                }
+        } catch (error) {
+                return res.status(501).json({ status: 501, message: `Added to cart`, data: error });
+        }
+};
+exports.easyApplyBooking = async (req, res, next) => {
+        try {
+                const data = await User.findOne({ _id: req.user._id, });
+                if (data) {
+                        const cart = await Booking.findOne({ _id: req.params.id });
+                        if (!cart) {
+                                return res.status(200).json({ success: false, msg: "Order not found", data: {} });
+                        } else {
+                                let obj = {
+                                        user: cart.user,
+                                        staff: data._id,
+                                        category: cart.category,
+                                        subCategory: cart.category,
+                                        subCategoryTimeId: cart.subCategoryTimeId,
+                                        bookingId: cart._id,
+                                        date: req.body.date,
+                                        toTime: req.body.toTime,
+                                        fromTime: req.body.fromTime,
+                                        workingHours: req.body.workingHours,
+                                        jobStatus: "Pending",
+                                        status: "Pending"
+                                }
+                                const Data1 = await staffBooking.create(obj);
+                                if (Data1) {
+                                        let update = await Booking.findOneAndUpdate({ _id: cart._id }, { $pull: { staff: data._id }, $addToSet: { staffAccepted: data._id, staffBookingIds: Data1._id }, }, { new: true });
+                                        if (update) {
+                                                return res.status(200).json({ success: true, msg: "Accept booking successfully", data: update });
+                                        }
+                                }
+                        }
+                } else {
+                        return res.status(200).json({ status: 500, msg: "User not found", data: {} });
+                }
+        } catch (error) {
+                return res.status(501).json({ status: 501, message: `Added to cart`, data: error });
         }
 };

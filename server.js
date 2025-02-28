@@ -62,7 +62,7 @@ require("./routes/staff/Account/appSetting")(app);
 // B1.e. followUs
 require("./routes/staff/Account/followUs")(app);
 // B1.f. myCommunity
-
+require("./routes/staff/Account/myCommunity")(app);
 // B1.g. My Document
 require("./routes/staff/Account/mydocument")(app);
 // B1.h. My Earning
@@ -74,7 +74,7 @@ require("./routes/staff/Account/myEarning")(app);
 // B1.k. My unavailability
 
 // B1.l. upgradeMySkills
-
+require("./routes/staff/Account/upgradeMySkills")(app);
 /// B2.//// Home ///////////////////////////////
 require("./routes/staff/Home/home")(app);
 /// B3.//// Mission ///////////////////////////////

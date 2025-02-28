@@ -34,6 +34,10 @@ const vendorDetailsSchema = new mongoose.Schema({
                 type: mongoose.SchemaTypes.ObjectId,
                 ref: "AllBooking",
         },
+        staffBookingIds: [{
+                type: mongoose.SchemaTypes.ObjectId,
+                ref: "staffBooking",
+        }],
         products: [{
                 productId: {
                         type: mongoose.SchemaTypes.ObjectId,
