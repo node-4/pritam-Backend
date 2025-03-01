@@ -18,6 +18,7 @@ app.get("/", (req, res) => {
     res.send("Hello World!");
 });
 // A. ///////////////////////////////////////////Client //////////////////////
+require("./routes/Client/Profile/attendance")(app);
 //A1. ////////////cart
 require("./routes/Client/Cart/cart")(app);
 //A2. ////////////Home
@@ -37,7 +38,7 @@ require("./routes/Client/Profile/faq")(app);
 require("./routes/Client/Profile/invoices")(app);
 // legal document
 require("./routes/Client/Profile/myDetails")(app);
-// my TimeSheet
+require("./routes/Client/Profile/timeSheet")(app);
 require("./routes/Client/Profile/order")(app);
 require("./routes/Client/Profile/paymentMethod")(app);
 require("./routes/Client/Profile/Privacy")(app);
@@ -70,9 +71,9 @@ require("./routes/staff/Account/myEarning")(app);
 // B1.i. My Invoice
 
 // B1.j. My MissionPreference
-
+require("./routes/staff/Account/myMissionPreference")(app);
 // B1.k. My unavailability
-
+require("./routes/staff/Account/myUnavailability")(app);
 // B1.l. upgradeMySkills
 require("./routes/staff/Account/upgradeMySkills")(app);
 /// B2.//// Home ///////////////////////////////
@@ -83,11 +84,11 @@ require("./routes/staff/Mission/mission")(app);
 require("./routes/staff/Notification/notification")(app);
 /// B5.//// SideBar ///////////////////////////////
 // B5.a. Journey
-
+require("./routes/staff/sideBar/Journey")(app);
 // B5.b. state
-
+require("./routes/staff/sideBar/stats")(app);
 // B5.c. superTalent
-
+require("./routes/staff/sideBar/superTalent")(app);
 /////////////////////////////////////////////admin //////////////////////
 require("./routes/admin/adminRoute")(app);
 require("./routes/admin/admin.route")(app);

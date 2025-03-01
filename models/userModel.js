@@ -185,6 +185,26 @@ var userSchema = new schema({
         phoneNumber: {
             type: String,
         },
-    }]
+    }],
+    //////////////// My Mission Preference //////////////////////////
+    travellingDistanceFrom: {
+        type: Number,
+    },
+    travellingDistanceTo: {
+        type: Number,
+    },
+    hourPreferenceFrom: {
+        type: Number,
+    },
+    hourPreferenceTo: {
+        type: Number,
+    },
+    drivingLicense: {
+        type: String,
+    },
+    roleIds: [{
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: "role",
+    }],
 }, { timestamps: true });
 module.exports = mongoose.model("user", userSchema);

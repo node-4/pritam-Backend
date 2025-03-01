@@ -22,6 +22,14 @@ const vendorDetailsSchema = new mongoose.Schema({
                 type: mongoose.SchemaTypes.ObjectId,
                 ref: "subCategoryTime",
         },
+        roleId: {
+                type: mongoose.SchemaTypes.ObjectId,
+                ref: "role",
+        },
+        departmentId: {
+                type: mongoose.SchemaTypes.ObjectId,
+                ref: "department",
+        },
         bookingId: {
                 type: mongoose.SchemaTypes.ObjectId,
                 ref: "booking",

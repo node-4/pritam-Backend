@@ -4,6 +4,26 @@ const schema = new mongoose.Schema({
         type: mongoose.SchemaTypes.ObjectId,
         ref: "user",
     },
+    staffId: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: "user",
+    },
+    jobBusinessTypeId: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: "jobBusinessType",
+    },
+    jobId: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: "job",
+    },
+    roleId: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: "role",
+    },
+    bookingId: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: "booking",
+    },
     name: {
         type: String,
     },
@@ -12,6 +32,10 @@ const schema = new mongoose.Schema({
     },
     comment: {
         type: String,
+    },
+    staffAgain: {
+        type: Boolean,
+        default: false,
     },
     date: {
         type: Date,

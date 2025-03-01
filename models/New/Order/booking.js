@@ -121,6 +121,10 @@ const vendorDetailsSchema = new mongoose.Schema({
         timeTaken: {
                 type: String
         },
+        superMission : {
+                type: Boolean,
+                default: false
+        },
         jobStatus: {
                 type: String,
                 default: "Pending"

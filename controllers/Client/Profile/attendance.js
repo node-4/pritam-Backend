@@ -10,41 +10,39 @@ const ratingModel = require("../../../models/ratingModel");
 const jobRegisterform = require("../../../models/jobRegisterform");
 const TimeSheet = require("../../../models/New/timeSheet");
 const Booking = require("../../../models/New/Order/booking");
-
-exports.createTimeSheet = async (req, res, next) => {
+const Attendance = require("../../../models/New/attendance");
+exports.markAttendance = async (req, res, next) => {
     try {
-        const cart = await Booking.findOne({ _id: req.body.bookingId });
-        if (!cart) {
+        const findUser = await User.findOne({ _id: req.user.id });
+        if (!findUser) {
             return res.status(200).json({ success: false, msg: "Order not found", data: {} });
         } else {
-            let findData = await TimeSheet.findOne({ user: cart.user, bookingId: cart._id, date: req.body.date, });
+            let findData = await Attendance.findOne({ clientId: req.body.clientId, staffId: findUser._id, date: req.body.date, });
             if (findData) {
                 let obj = {
+                    clientId: req.body.clientId,
+                    staffId: findUser._id,
+                    currentDate: req.body.currentDate,
+                    month: req.body.month,
+                    year: req.body.year,
                     date: req.body.date,
-                    staff: req.body.staffId,
-                    startTime: req.body.startTime,
-                    endTime: req.body.endTime,
+                    day: req.body.day,
                 }
-                let update = await TimeSheet.findOneAndUpdate({ _id: findData._id }, { $push: { staffData: obj } }, { new: true });
+                let update = await Attendance.findOneAndUpdate({ _id: findData._id }, { $set: obj }, { new: true });
                 if (update) {
                     return res.status(200).json({ success: true, msg: "TimeSheet updated", data: update });
                 }
             } else {
-                let staffData = [];
-                let obj1 = {
-                    date: req.body.date,
-                    staff: req.body.staffId,
-                    startTime: req.body.startTime,
-                    endTime: req.body.endTime,
-                }
-                staffData.push(obj1);
                 let obj = {
-                    user: cart.user,
-                    bookingId: cart._id,
+                    clientId: req.body.clientId,
+                    staffId: findUser._id,
+                    currentDate: req.body.currentDate,
+                    month: req.body.month,
+                    year: req.body.year,
                     date: req.body.date,
-                    staffData: staffData
+                    day: req.body.day,
                 }
-                const address = await TimeSheet.create(obj);
+                const address = await Attendance.create(obj);
                 if (address) {
                     return res.status(200).json({ message: "TimeSheet create successfully.", data: address });
                 }
@@ -54,13 +52,14 @@ exports.createTimeSheet = async (req, res, next) => {
         return res.status(501).json({ status: 501, message: `Added to cart`, data: error });
     }
 };
-exports.getMyTimeSheet = async (req, res) => {
+
+exports.getAttendance = async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
         if (!user) {
             return res.status(404).send({ status: 404, message: "not found", data: {} });
         } else {
-            let findData = await TimeSheet.find({ user: user._id, }).populate([{ path: "bookingId" }, { path: "staffData.staffId" }]);
+            let findData = await Attendance.find({ staffId: user._id, }).populate([{ path: "staffId" }, { path: "clientId" }]);
             if (findData.length > 0) {
                 return res.status(200).send({ status: 200, message: "TimeSheet found", data: findData });
             }
@@ -71,9 +70,9 @@ exports.getMyTimeSheet = async (req, res) => {
         return res.status(500).send({ status: 500, message: "internal server error " + err.message, });
     }
 };
-exports.getTimeSheetById = async (req, res) => {
+exports.getAttendanceById = async (req, res) => {
     try {
-        let findData = await TimeSheet.findById({ _id: req.params.id, }).populate([{ path: "bookingId" }, { path: "staffData.staffId" }]);
+        let findData = await Attendance.findById({ _id: req.params.id, }).populate([{ path: "staffId" }, { path: "clientId" }]);
         if (findData) {
             return res.status(200).send({ status: 200, message: "TimeSheet found", data: findData });
         }
