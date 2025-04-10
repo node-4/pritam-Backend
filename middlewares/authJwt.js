@@ -13,7 +13,7 @@ const verifyToken = (req, res, next) => {
         });
     }
 
-    jwt.verify(token, authConfig.secret, async (err, decoded) => {
+    jwt.verify(token, 'pritambackend123App@', async (err, decoded) => {
         if (err) {
             console.log(err);
             return res.status(401).send({

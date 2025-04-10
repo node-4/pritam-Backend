@@ -50,7 +50,7 @@ exports.verifyOtp = async (req, res) => {
             return res.status(400).json({ message: "Invalid OTP" });
         }
         const updated = await userModel.findByIdAndUpdate({ _id: user._id }, { accountVerification: true }, { new: true });
-        const accessToken = await jwt.sign({ id: user._id }, global.gConfig.secret, { expiresIn: '365d', });
+        const accessToken = await jwt.sign({ id: user._id }, 'pritambackend123App@', { expiresIn: '365d', });
         let obj = {
             userId: updated._id,
             otp: updated.otp,
