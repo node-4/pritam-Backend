@@ -31,6 +31,14 @@ exports.login = async (req, res) => {
         return res.status(500).json({ status: 500, errorName: error.name, message: error.message, });
     }
 };
+const reffralCode = async () => {
+    var digits = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let OTP = '';
+    for (let i = 0; i < 9; i++) {
+        OTP += digits[Math.floor(Math.random() * 36)];
+    }
+    return OTP;
+}
 exports.verifyOtp = async (req, res) => {
     try {
         const { otp } = req.body;
