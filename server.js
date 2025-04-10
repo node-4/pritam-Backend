@@ -103,4 +103,5 @@ mongoose.connect(process.env.DB_URL).then((data) => {
 app.listen(process.env.PORT, () => {
     console.log(`Listening on port ${process.env.PORT}!`);
 });
-module.exports = { handler: serverless(app) };
+module.exports = app;
+module.exports.handler = serverless(app);
