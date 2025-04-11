@@ -115,9 +115,9 @@ var userSchema = new schema({
     interest: {
         type: String,
     },
-    expertise: {
+    expertise: [{
         type: String,
-    },
+    }],
     yearOfExperience: {
         type: String,
     },
