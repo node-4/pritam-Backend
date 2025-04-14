@@ -59,6 +59,10 @@ var userSchema = new schema({
         type: Boolean,
         default: false,
     },
+    isTermsAccepted: {
+        type: Boolean,
+        default: false,
+    },
     role: {
         type: String,
         enum: ["EMPLOYMENT", "FREELANCER", ""],

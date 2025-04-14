@@ -23,6 +23,7 @@ exports.login = async (req, res) => {
             req.body.otp = otp;
             req.body.refferalCode = await reffralCode();
             req.body.userType = "STAFF";
+            req.body.isTermsAccepted = true;
             const newUser = await userModel.create(req.body);
             return res.status(200).send({ status: 200, message: "Login successfully ", data: newUser, });
         }
