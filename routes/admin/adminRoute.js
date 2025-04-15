@@ -48,8 +48,8 @@ module.exports = (app) => {
         app.get("/api/v1/admin/JobBusinessType/paginateJobBusinessTypeSearch", Department.paginateJobBusinessTypeSearch);
         app.put("/api/v1/admin/JobBusinessType/updateJobBusinessType/:id", upload.single('image'), Department.updateJobBusinessType);
         app.delete("/api/v1/admin/JobBusinessType/deleteJobBusinessType/:id", Department.removeJobBusinessType);
-        app.post('/api/v1/admin/sendNotificationToAllUsers', adminAuth, upload.single('image'), Department.sendNotificationToAllUsers);
-        app.get('/api/v1/admin/getAllNotifications', adminAuth, Department.getAllNotifications);
+        app.post('/api/v1/admin/sendNotificationToAllUsers', upload.single('image'), Department.sendNotificationToAllUsers);
+        app.get('/api/v1/admin/getAllNotifications', Department.getAllNotifications);
         app.get('/api/v1/admin/getNotificationById/:id', Department.getNotificationById);
         app.delete('/api/v1/admin/deleteNotification/:id', Department.deleteNotification);
 };
