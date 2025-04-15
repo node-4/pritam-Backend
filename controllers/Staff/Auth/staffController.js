@@ -113,7 +113,7 @@ exports.updateDemographics = async (req, res) => {
 ///////////////// Right to work ///////////////////////
 exports.updateRightToWork = async (req, res) => {
     try {
-        const { facePhoto, frontPassport, backPassport, frontId, backId, cv, uniqueTaxPayerReferenceNumber } = req.body;
+        const { facePhoto, frontPassport, backPassport, frontId, backId, cv, uniqueTaxPayerReferenceNumber, shareCode } = req.body;
         const user = await userModel.findById(req.params.id);
         if (!user) {
             return res.status(404).send({ status: 404, message: "user not found" });
@@ -158,6 +158,11 @@ exports.updateRightToWork = async (req, res) => {
             req.body.uniqueTaxPayerReferenceNumber = uniqueTaxPayerReferenceNumber;
         } else {
             req.body.uniqueTaxPayerReferenceNumber = user.uniqueTaxPayerReferenceNumber;
+        }
+        if (shareCode) {
+            req.body.shareCode = shareCode;
+        } else {
+            req.body.shareCode = user.shareCode;
         }
         const updated = await userModel.findByIdAndUpdate({ _id: user._id }, { $set: req.body }, { new: true })
         return res.status(200).send({ status: 200, message: "logged in successfully", data: updated });

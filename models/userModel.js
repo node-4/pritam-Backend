@@ -162,6 +162,9 @@ var userSchema = new schema({
     uniqueTaxPayerReferenceNumber: {
         type: String,
     },
+    shareCode: {
+        type: String,
+    },
     /////////////////////// Bank detail /////////////////
     bank: {
         type: String,
