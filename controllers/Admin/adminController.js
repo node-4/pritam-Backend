@@ -31,6 +31,7 @@ const CommunityInfo = require("../../models/New/communityInfo");
 const Benefits = require("../../models/New/Benefits");
 const Job = require("../../models/New/job");
 const JobBusinessType = require("../../models/New/jobBusinessType");
+const Notification = require('../../models/New/notification');
 
 exports.createDepartment = async (req, res) => {
     try {
@@ -905,3 +906,83 @@ exports.removeJobBusinessType = async (req, res) => {
 };
 
 
+exports.sendNotificationToAllUsers = async (req, res) => {
+    try {
+        const { title, desc, subject, expireDate, type, userId } = req.body;
+        const adminId = req.admin.adminId;
+        if (!title || !desc || !subject || !expireDate || !type) {
+            return res.status(400).json({ message: 'All required fields (title, desc, subject, expireDate, and type) must be provided.' });
+        }
+        let imageUrl = req.file ? req.file.path : null;
+        const notification = new Notification({
+            title,
+            desc,
+            subject,
+            image: imageUrl,
+            expireDate,
+            adminId,
+            type,
+            userId
+        });
+        await notification.save();
+        if (type === 'All') {
+            // const users = await User.find({ userType: 'USER' });
+            // for (const user of users) {
+            //     // user.notifications.push(notification._id);
+            //     await user.save();
+            // }
+            return res.status(200).json({ message: 'Notification sent to all users.' });
+        } else if (type === 'Single') {
+            if (!userId) {
+                return res.status(400).json({ message: 'userId is required for single user notifications.' });
+            }
+            const user = await User.findById(userId);
+            if (!user) {
+                return res.status(404).json({ message: 'User not found.' });
+            }
+            // user.notifications.push(notification._id);
+            // await user.save();
+            return res.status(200).json({ message: 'Notification sent to the specified user.' });
+        } else {
+            return res.status(400).json({ message: 'Invalid type. Use "All" or "Single".' });
+        }
+    } catch (error) {
+        return res.status(500).json({ message: 'Error sending notification', error: error.message });
+    }
+};
+exports.getAllNotifications = async (req, res) => {
+    try {
+        console.log(req.admin)
+        const notifications = await Notification.find({ $or: [{ userId: req.admin._id }, { adminId: req.admin._id }] }).populate('adminId').populate('userId');
+        if (!notifications) {
+            return res.status(404).json({ message: 'Notification not found' });
+        }
+        return res.status(200).json({ message: 'Notifications retrieved successfully', data: notifications });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error retrieving notifications', error: error.message });
+    }
+};
+exports.getNotificationById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const notification = await Notification.findById(id).populate('adminId').populate('userId');
+        if (!notification) {
+            return res.status(404).json({ message: 'Notification not found' });
+        }
+        return res.status(200).json({ message: 'Notification retrieved successfully', data: notification });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error retrieving notification', error: error.message });
+    }
+};
+exports.deleteNotification = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const notification = await Notification.findByIdAndDelete(id);
+        if (!notification) {
+            return res.status(404).json({ message: 'Notification not found' });
+        }
+        return res.status(200).json({ message: 'Notification deleted successfully' });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error deleting notification', error: error.message });
+    }
+};
