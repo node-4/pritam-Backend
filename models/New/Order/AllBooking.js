@@ -43,6 +43,30 @@ const vendorDetailsSchema = new mongoose.Schema({
         equipment: [{
                 type: String,
         }],
+        staffMealProvided: {
+                type: Boolean,
+                default: false,
+        },
+        bringYourId: {
+                type: Boolean,
+                default: false,
+        },
+        onsiteContact: {
+                name: {
+                        type: String
+                },
+                contactNumber: {
+                        type: String
+                },
+        },
+        taskList: [{
+                task: {
+                        type: String,
+                },
+        }],
+        missionDescription: {
+                type: String
+        },
         contactName: {
                 type: String,
         },

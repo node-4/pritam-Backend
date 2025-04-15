@@ -27,10 +27,10 @@ var notificationModel = new Schema({
                 type: Boolean,
                 default: false
         },
-        type: {
-                type: String,
-                enum: ["Email", "Push", "SMS"]
-        },
+        // type: {
+        //         type: String,
+        //         enum: ["Email", "Push", "SMS"]
+        // },
         receiverId: [{
                 type: Mongoose.Schema.Types.ObjectId,
                 ref: "user"

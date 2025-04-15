@@ -1,6 +1,27 @@
 const mongoose = require("mongoose");
 const mongoosePaginate = require('mongoose-paginate-v2');
 const mongooseAggregatePaginate = require("mongoose-aggregate-paginate");
+const Schema = mongoose.Schema;
+const cartDepartmentSchema = new Schema({
+        departmentId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "department"
+        },
+        quantity: {
+                type: Number,
+                default: 1
+        }
+}, { _id: false });
+const carRoleSchema = new Schema({
+        roleId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "role"
+        },
+        quantity: {
+                type: Number,
+                default: 1
+        }
+}, { _id: false })
 const vendorDetailsSchema = new mongoose.Schema({
         user: {
                 type: mongoose.Schema.Types.ObjectId,
@@ -10,25 +31,11 @@ const vendorDetailsSchema = new mongoose.Schema({
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "user",
         },
-        category: {
-                type: mongoose.SchemaTypes.ObjectId,
-                ref: "Category",
+        departments: {
+                type: [cartDepartmentSchema]
         },
-        subCategory: {
-                type: mongoose.SchemaTypes.ObjectId,
-                ref: "subcategory",
-        },
-        subCategoryTimeId: {
-                type: mongoose.SchemaTypes.ObjectId,
-                ref: "subCategoryTime",
-        },
-        roleId: {
-                type: mongoose.SchemaTypes.ObjectId,
-                ref: "role",
-        },
-        departmentId: {
-                type: mongoose.SchemaTypes.ObjectId,
-                ref: "department",
+        roles: {
+                type: [carRoleSchema]
         },
         bookingId: {
                 type: mongoose.SchemaTypes.ObjectId,
@@ -94,3 +101,7 @@ const vendorDetailsSchema = new mongoose.Schema({
 vendorDetailsSchema.plugin(mongoosePaginate);
 vendorDetailsSchema.plugin(mongooseAggregatePaginate);
 module.exports = mongoose.model("staffBooking", vendorDetailsSchema);
+
+
+
+

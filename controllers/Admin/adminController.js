@@ -904,12 +904,10 @@ exports.removeJobBusinessType = async (req, res) => {
         return res.status(500).send({ msg: "internal server error ", error: err.message, });
     }
 };
-
-
 exports.sendNotificationToAllUsers = async (req, res) => {
     try {
         const { title, desc, subject, expireDate, type, userId } = req.body;
-        const adminId = req.admin.adminId;
+        const adminId = req.user._id;
         if (!title || !desc || !subject || !expireDate || !type) {
             return res.status(400).json({ message: 'All required fields (title, desc, subject, expireDate, and type) must be provided.' });
         }

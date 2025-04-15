@@ -1,7 +1,25 @@
 const Department = require("../../controllers/Admin/adminController");
+const authJwt = require("../../middlewares/authJwt");
 var multer = require("multer");
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 1024 * 1024 * 100 }, });
-const userUpload = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'coverImage', maxCount: 1 },]);
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("cloudinary").v2;
+cloudinary.config({
+        cloud_name: "dbrvq9uxa",
+        api_key: "567113285751718",
+        api_secret: "rjTsz9ksqzlDtsrlOPcTs_-QtW4",
+});
+const storage = new CloudinaryStorage({
+        cloudinary: cloudinary,
+        params: {
+                folder: "images/image",
+                allowed_formats: ["jpg", "jpeg", "webp", "avif", "mp4", "mp3", "png", "PNG", "xlsx", "xls", "pdf", "PDF"]
+        },
+});
+const upload = multer({ storage: storage });
+var cpUpload = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'banner', maxCount: 1 }, { name: 'images', maxCount: 10 },]);
+var cpUpload1 = upload.fields([{ name: 'formImage', maxCount: 1 }, { name: 'image', maxCount: 3 }]);
+var cpUpload2 = upload.fields([{ name: 'eformImage', maxCount: 1 }, { name: 'image', maxCount: 1 }]);
+var cpUpload3 = upload.fields([{ name: 'eformImage', maxCount: 1 }, { name: 'bannerImage', maxCount: 1 }]);
 module.exports = (app) => {
         app.post("/api/v1/admin/Department/addDepartment", upload.single('image'), Department.createDepartment);
         app.get("/api/v1/admin/Department/allDepartment", Department.getDepartment);
@@ -48,8 +66,8 @@ module.exports = (app) => {
         app.get("/api/v1/admin/JobBusinessType/paginateJobBusinessTypeSearch", Department.paginateJobBusinessTypeSearch);
         app.put("/api/v1/admin/JobBusinessType/updateJobBusinessType/:id", upload.single('image'), Department.updateJobBusinessType);
         app.delete("/api/v1/admin/JobBusinessType/deleteJobBusinessType/:id", Department.removeJobBusinessType);
-        app.post('/api/v1/admin/sendNotificationToAllUsers', upload.single('image'), Department.sendNotificationToAllUsers);
-        app.get('/api/v1/admin/getAllNotifications', Department.getAllNotifications);
+        app.post('/api/v1/admin/sendNotificationToAllUsers', upload.single('image'), authJwt.verifyToken, Department.sendNotificationToAllUsers);
+        app.get('/api/v1/admin/getAllNotifications', authJwt.verifyToken, Department.getAllNotifications);
         app.get('/api/v1/admin/getNotificationById/:id', Department.getNotificationById);
         app.delete('/api/v1/admin/deleteNotification/:id', Department.deleteNotification);
 };

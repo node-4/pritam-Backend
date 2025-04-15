@@ -46,7 +46,7 @@ exports.getAllNewJob = async (req, res, next) => {
         try {
                 const data = await User.findOne({ _id: req.user._id, });
                 if (data) {
-                        const orders = await Booking.find({ staff: { $in: req.user._id }, }).populate('allBookingId').sort({ date: 1 })
+                        const orders = await Booking.find({ }).populate('allBookingId departments.departmentId roles.roleId').sort({ date: 1 })
                         if (orders.length == 0) {
                                 return res.status(404).json({ status: 404, message: "Orders not found", data: [] });
                         }
