@@ -16,7 +16,7 @@ exports.getSatisfactionPerJob = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-        const ratings = await Rating.find({ staffId: user._id }).populate('roleId');
+        const ratings = await Rating.find({ staffId: user._id }).populate('jobBusinessTypeId roleId');
         if (!ratings.length) {
             return res.status(200).json({ message: "No ratings found", data: [] });
         }
@@ -46,7 +46,7 @@ exports.getVolumeOfMissionCount = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-        const bookings = await staffBooking.find({ staff: user._id }).populate("roleId");
+        const bookings = await staffBooking.find({ staff: user._id }).populate("roles.roleId");
         if (!bookings.length) {
             return res.status(200).json({ message: "No missions found", data: [] });
         }
@@ -82,7 +82,7 @@ exports.getPerTypeOfBusiness = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-        const bookings = await staffBooking.find({ staff: user._id }).populate("departmentId");
+        const bookings = await staffBooking.find({ staff: user._id }).populate("departments.departmentId");
         if (!bookings.length) {
             return res.status(200).json({ message: "No missions found", data: [] });
         }

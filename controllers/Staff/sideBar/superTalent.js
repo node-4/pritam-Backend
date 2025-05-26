@@ -8,6 +8,7 @@ const inquire = require("../../../models/inquireModel");
 const newLetter = require("../../../models/newLetter");
 const Rating = require("../../../models/ratingModel");
 const Notification = require("../../../models/New/notification");
+const staffBooking = require('../../../models/New/Order/staffBooking');
 const moment = require("moment");
 ///////////////// Your achievements ///////////////
 exports.getSuperTalentStatus = async (req, res) => {
@@ -16,6 +17,7 @@ exports.getSuperTalentStatus = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
+        console.log(user._id);
         const ninetyDaysAgo = moment().subtract(90, "days").toDate();
         // Fetch all bookings where the logged-in user is the staff in the last 90 days
         const completedMissions = await staffBooking.countDocuments({ staff: user._id, date: { $gte: ninetyDaysAgo } });
