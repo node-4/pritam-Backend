@@ -48,7 +48,9 @@ async function generateSlotsForOneYear() {
     if (findUser.length > 0) {
         for (let i = 0; i < findUser.length; i++) {
             let findData = await slot.find({ staffId: findUser[i]._id })
-            await generateSlots(findUser[i]._id);
+            if (findData.length != 168) {
+                await generateSlots(findUser[i]._id);
+            }
         }
     }
 }
@@ -59,8 +61,8 @@ setInterval(async () => {
     } catch (error) {
         console.error("Error occurred while generating slots:", error);
     }
-    // }, 6000);
-}, 7200000);
+}, 60000);
+// }, 7200000);
 
 exports.getSlot = async (req, res) => {
     try {
