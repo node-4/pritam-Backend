@@ -24,5 +24,6 @@ module.exports = (app) => {
     app.get("/api/v1/user/getSlot", authJwt.verifyToken, auth.getSlot);
     app.get("/api/v1/user/getSlotById/:id", auth.getSlotById);
     app.put("/api/v1/user/updateSlotById/:id", authJwt.verifyToken,auth.updateSlotById);
+    app.post("/api/v1/user/updateWeekSlot", authJwt.verifyToken, auth.updateWeekSlot);
 
 }

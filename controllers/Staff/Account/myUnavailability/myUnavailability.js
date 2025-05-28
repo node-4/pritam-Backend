@@ -63,7 +63,6 @@ setInterval(async () => {
     }
 }, 60000);
 // }, 7200000);
-
 exports.getSlot = async (req, res) => {
     try {
         const user = await userModel.findById(req.user.id);
@@ -121,3 +120,56 @@ exports.updateSlotById = async (req, res) => {
         return res.status(500).send({ status: 500, message: "internal server error " + err.message, });
     }
 };
+exports.updateWeekSlot = async (req, res) => {
+    try {
+        const user = await userModel.findById(req.user.id);
+        if (!user) {
+            return res.status(404).send({ status: 404, message: "not found", data: {} });
+        } else {
+            let update = await userModel.findByIdAndUpdate({ _id: user._id, }, { $set: req.body }, { new: true })
+            if (update) {
+                if (update.sunday == true) {
+                    updateWeekDaySlot(update._id, "Sunday");
+                }
+                if (update.monday == true) {
+                    updateWeekDaySlot(update._id, "Monday");
+                }
+                if (update.tuesday == true) {
+                    updateWeekDaySlot(update._id, "Tuesday");
+                }
+                if (update.wednesday == true) {
+                    updateWeekDaySlot(update._id, "Wednesday");
+                }
+                if (update.thursday == true) {
+                    updateWeekDaySlot(update._id, "Thursday");
+                }
+                if (update.friday == true) {
+                    updateWeekDaySlot(update._id, "Friday");
+                }
+                if (update.saturday == true) {
+                    updateWeekDaySlot(update._id, "Saturday");
+                }
+                return res.status(200).send({ status: 200, message: "Slot found", data: update });
+            }
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send({ status: 500, message: "internal server error " + err.message, });
+    }
+};
+async function updateWeekDaySlot(staffId, dayName) {
+    try {
+        // Update all matching slots in a single query
+        const result = await slot.updateMany({ staffId, dayName }, { $set: { slotBlocked: false } });
+        if (result.modifiedCount > 0) {
+            console.log(`Successfully updated ${result.modifiedCount} slots for ${dayName}.`);
+        } else {
+            console.log(`No slots found for staff ${staffId} on ${dayName}.`);
+        }
+
+        return result;
+    } catch (error) {
+        console.error(`Error updating slots for staff ${staffId} on ${dayName}:`, error);
+        throw error; // Re-throw if you want calling functions to handle it
+    }
+}
