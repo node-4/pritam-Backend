@@ -69,7 +69,7 @@ require("./routes/staff/Account/mydocument")(app);
 // B1.h. My Earning
 require("./routes/staff/Account/myEarning")(app);
 // B1.i. My Invoice
-
+require("./routes/staff/Account/invoices")(app);
 // B1.j. My MissionPreference
 require("./routes/staff/Account/myMissionPreference")(app);
 // B1.k. My unavailability
