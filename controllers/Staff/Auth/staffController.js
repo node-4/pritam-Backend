@@ -11,9 +11,9 @@ const jobRegisterform = require("../../../models/jobRegisterform");
 
 exports.login = async (req, res) => {
     try {
-        const { email } = req.body;
+        const { email, userType } = req.body;
         req.body.email = email.split(" ").join("").toLowerCase();
-        const phone = await userModel.findOne({ email: req.body.email, userType: "STAFF" });
+        const phone = await userModel.findOne({ email: req.body.email, userType: userType });
         if (phone) {
             const otp = Math.floor(100000 + Math.random() * 900000).toString();
             let update = await userModel.findByIdAndUpdate({ _id: phone._id }, { $set: { otp: otp } }, { new: true });
@@ -22,7 +22,7 @@ exports.login = async (req, res) => {
             const otp = Math.floor(100000 + Math.random() * 900000).toString();
             req.body.otp = otp;
             req.body.refferalCode = await reffralCode();
-            req.body.userType = "STAFF";
+            req.body.userType = userType;
             req.body.isTermsAccepted = true;
             const newUser = await userModel.create(req.body);
             return res.status(200).send({ status: 200, message: "Login successfully ", data: newUser, });
