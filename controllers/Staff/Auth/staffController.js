@@ -246,4 +246,72 @@ exports.updateTermsAccepted = async (req, res) => {
     }
 };
 /////////////////////////////Home////
-
+exports.updateBusinessDetails = async (req, res) => {
+    try {
+        const { jobId, businessName, businessDescription, street1, street2, town, landMark, city, state, country, pinCode, } = req.body;
+        const user = await userModel.findById(req.params.id);
+        if (!user) {
+            return res.status(404).send({ status: 404, message: "user not found" });
+        }
+        if (jobId) {
+            req.body.jobId = jobId;
+        } else {
+            req.body.jobId = user.jobId;
+        }
+        if (businessName) {
+            req.body.businessName = businessName;
+        } else {
+            req.body.businessName = user.businessName;
+        }
+        if (businessDescription) {
+            req.body.businessDescription = businessDescription;
+        } else {
+            req.body.businessDescription = user.businessDescription;
+        }
+        if (street1) {
+            req.body.street1 = street1;
+        } else {
+            req.body.street1 = user.street1;
+        }
+        if (street2) {
+            req.body.street2 = street2;
+        } else {
+            req.body.street2 = user.street2;
+        }
+        if (town) {
+            req.body.town = town;
+        } else {
+            req.body.town = user.town;
+        }
+        if (landMark) {
+            req.body.landMark = landMark;
+        } else {
+            req.body.landMark = user.landMark;
+        }
+        if (city) {
+            req.body.city = city;
+        } else {
+            req.body.city = user.city;
+        }
+        if (state) {
+            req.body.state = state;
+        } else {
+            req.body.state = user.state;
+        }
+        if (country) {
+            req.body.country = country;
+        } else {
+            req.body.country = user.country;
+        }
+        if (pinCode) {
+            req.body.pinCode = pinCode;
+        } else {
+            req.body.pinCode = user.pinCode;
+        }
+        const updated = await userModel.findByIdAndUpdate({ _id: user._id }, { $set: req.body }, { new: true })
+        return res.status(200).send({ status: 200, message: "logged in successfully", data: updated });
+    } catch (err) {
+        console.log(err.message);
+        return res.status(500).send({ status: 500, error: "internal server error" + err.message });
+    }
+};

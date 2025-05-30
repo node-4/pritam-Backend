@@ -91,6 +91,12 @@ var userSchema = new schema({
         type: Date,
     },
     /////////////////////////// add your address
+    businessName: {
+        type: String,
+    },
+    businessDescription: {
+        type: String,
+    },
     street1: {
         type: String,
     },

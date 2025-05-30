@@ -29,4 +29,5 @@ module.exports = (app) => {
     app.put('/api/v1/staff/updateBankDetails/:id', staff.updateBankDetails);
     app.put('/api/v1/staff/updateAvailability/:id', staff.updateAvailability);
     app.put('/api/v1/staff/updateTermsAccepted/:id', staff.updateTermsAccepted);
+    app.put('/api/v1/staff/updateBusinessDetails/:id', staff.updateBusinessDetails);
 };
