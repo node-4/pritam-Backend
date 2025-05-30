@@ -72,17 +72,17 @@ exports.updateCredentials = async (req, res) => {
         if (!user) {
             return res.status(404).send({ status: 404, message: "user not found" });
         }
-        if (phone) {
+        if (phone != undefined || phone != null || phone != "") {
             let user1 = await userModel.findOne({ phone: phone, _id: { $ne: user._id }, userType: "STAFF" });
             if (user1) {
-                return res.status(409).send({ message: "Already Exist", data: [] });
+                return res.status(409).send({ message: "Phone already Exist", data: [] });
             }
         }
-        if (email) {
+        if (email != undefined || email != null || email != "") {
             req.body.email = email.split(" ").join("").toLowerCase();
             let user1 = await userModel.findOne({ email: req.body.email, _id: { $ne: user._id }, userType: "STAFF" });
             if (user1) {
-                return res.status(409).send({ message: "Already Exist", data: [] });
+                return res.status(409).send({ message: "Email already Exist", data: [] });
             }
         }
         if (password) {
