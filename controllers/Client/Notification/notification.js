@@ -11,14 +11,14 @@ const Notification = require("../../../models/New/notification");
 
 exports.allNotification = async (req, res) => {
         try {
-                const admin = await User.findById({ _id: req.user._id });
+                const admin = await userModel.findById({ _id: req.user._id });
                 if (!admin) {
                         return res.status(404).json({ status: 404, message: "Admin not found" });
                 } else {
                         console.log(admin)
                         let findNotification = await Notification.find({ userId: admin._id }).populate('userId receiverId');
                         if (findNotification.length == 0) {
-                                return res.status(404).json({ status: 404, message: "Notification data not found successfully.", data: {} })
+                                return res.status(404).json({ status: 404, message: "Notification data not found successfully.", data: [] })
                         } else {
                                 return res.status(200).json({ status: 200, message: "Notification data found successfully.", data: findNotification })
                         }

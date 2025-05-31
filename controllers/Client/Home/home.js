@@ -254,10 +254,10 @@ exports.addInvoiceDetailsToCart = async (req, res, next) => {
 //////////////// Dashboard //////////////////////
 exports.getDashboard = async (req, res) => {
     try {
-        const ongoingJobs = await Booking.find({ user: req.user._id, fromTime: { $gte: new Date() } }).count()
-        const completedJobs = await Booking.find({ user: req.user._id, fromTime: { $lt: new Date() } }).count()
-        const totalJobsPosted = await AllBooking.find({ user: req.user._id }).count()
-        const totalInvoicesData = await AllBooking.find({ user: req.user._id });
+        const ongoingJobs = await Booking.countDocuments({ user: req.user._id, fromTime: { $gte: new Date() } })
+        const completedJobs = await Booking.countDocuments({ user: req.user._id, fromTime: { $lt: new Date() } })
+        const totalJobsPosted = await AllBooking.countDocuments({ user: req.user._id })
+        const totalInvoicesData = await AllBooking.countDocuments({ user: req.user._id });
         let totalInvoices = 0;
         if (totalInvoicesData.length === 0) {
             totalInvoicesData.forEach((invoice) => {
