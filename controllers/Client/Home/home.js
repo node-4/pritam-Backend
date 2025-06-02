@@ -103,6 +103,7 @@ exports.addShiftDateAndTimeToCart = async (req, res, next) => {
                     startDate: req.body.startDate,
                     endDate: req.body.endDate,
                     dateArray: req.body.dateArray,
+                    allowMultipleProfessionals: req.body.allowMultipleProfessionals,
                     bringYourId: req.body.bringYourId,
                     staffMealProvided: req.body.staffMealProvided,
                 }
