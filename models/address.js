@@ -32,6 +32,10 @@ const addressSchema = new mongoose.Schema({
         email: {
                 type: String,
         },
+        freeParking: {
+                type: Boolean,
+                default: false,
+        },
         location: {
                 type: {
                         type: String,
