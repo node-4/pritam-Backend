@@ -5,7 +5,7 @@ exports.getAllOnGoingMission = async (req, res, next) => {
     try {
         const data = await User.findOne({ _id: req.user._id, });
         if (data) {
-            const orders = await Booking.find({ user: req.user._id, fromTime: { $gte: new Date() } }).populate('allBookingId departmentId').sort({ date: 1 })
+            const orders = await Booking.find({ user: req.user._id, fromTime: { $gte: new Date() } }).populate('allBookingId departments.departmentId roles.roleId').sort({ date: 1 })
             if (orders.length == 0) {
                 return res.status(404).json({ status: 404, message: "Orders not found", data: [] });
             }
@@ -20,7 +20,7 @@ exports.getAllOnGoingMission = async (req, res, next) => {
 };
 exports.getOnGoingMissionById = async (req, res, next) => {
     try {
-        const cart = await Booking.findOne({ _id: req.params.id }).populate('allBookingId departmentId');
+        const cart = await Booking.findOne({ _id: req.params.id }).populate('allBookingId departments.departmentId roles.roleId');
         if (!cart) {
             return res.status(200).json({ success: false, msg: "Order not found", data: {} });
         }
