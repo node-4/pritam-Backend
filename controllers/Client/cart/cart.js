@@ -95,6 +95,7 @@ exports.checkOut = async (req, res) => {
                 for (let i = 0; i < bookingIds.length; i++) {
                     let update = await Booking.findByIdAndUpdate({ _id: bookingIds[i] }, { $set: { allBookingId: savedData._id } }, { new: true });
                 }
+                await Cart.findByIdAndDelete({ _id: findCart._id });
                 return res.status(200).json({ success: true, msg: "Booking is done", booking: savedData });
             }
         } else {
