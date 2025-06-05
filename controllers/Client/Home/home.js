@@ -172,6 +172,23 @@ exports.addAddOnToCart = async (req, res, next) => {
         if (data) {
             let findCart = await Cart.findOne({ user: req.user._id });
             if (findCart) {
+                let vat = 0, subTotal = 0, total = 0;
+                if (req.body.missionPrice) {
+                    vat = req.body.missionPrice * 0.18;
+                    subTotal = req.body.missionPrice + vat;
+                    total = subTotal;
+                } else {
+                    let m = findCart.missionPrice;
+                    if (m <= 0) {
+                        vat = 1 * 0.18;
+                        subTotal = 1;
+                        total = subTotal + vat;
+                    } else {
+                        vat = findCart.missionPrice * 0.18;
+                        subTotal = findCart.missionPrice;
+                        total = subTotal + vat;
+                    }
+                }
                 let obj = {
                     outfit: req.body.outfit,
                     equipment: req.body.equipment,
@@ -180,12 +197,32 @@ exports.addAddOnToCart = async (req, res, next) => {
                     missionDescription: req.body.missionDescription,
                     taskList: req.body.taskList,
                     missionPrice: req.body.missionPrice,
+                    vat: vat,
+                    subTotal: subTotal,
+                    total: total,
                 }
                 let update = await Cart.findByIdAndUpdate({ _id: findCart._id }, { $set: obj }, { new: true });
                 if (update) {
                     return res.status(200).json({ status: 200, message: "Address added to cart", data: update });
                 }
             } else {
+                let vat = 0, subTotal = 0, total = 0;
+                if (req.body.missionPrice) {
+                    vat = req.body.missionPrice * 0.18;
+                    subTotal = req.body.missionPrice + vat;
+                    total = subTotal;
+                } else {
+                    let m = findCart.missionPrice;
+                    if (m <= 0) {
+                        vat = 1 * 0.18;
+                        subTotal = 1;
+                        total = subTotal + vat;
+                    } else {
+                        vat = findCart.missionPrice * 0.18;
+                        subTotal = findCart.missionPrice;
+                        total = subTotal + vat;
+                    }
+                }
                 let obj = {
                     outfit: req.body.outfit,
                     equipment: req.body.equipment,
@@ -195,6 +232,9 @@ exports.addAddOnToCart = async (req, res, next) => {
                     taskList: req.body.taskList,
                     missionPrice: req.body.missionPrice,
                     user: req.user._id,
+                    vat: vat,
+                    subTotal: subTotal,
+                    total: total,
                 }
                 let create = await Cart.create(obj);
                 if (create) {

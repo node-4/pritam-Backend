@@ -115,6 +115,15 @@ const CartSchema = new Schema({
     missionPrice: {
         type: Number
     },
+    vat: {
+        type: Number
+    },
+    subTotal: {
+        type: Number
+    },
+    total: {
+        type: Number
+    },
     invoiceName: {
         type: String,
     },
