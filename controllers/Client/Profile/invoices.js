@@ -16,6 +16,7 @@ exports.getInvoiceById = async (req, res, next) => {
 };
 exports.getAllInvoice = async (req, res) => {
         try {
+                console.log(req.user._id)
                 const data = await Transaction.find({ user: req.user._id }).populate("user candidate booking");
                 if (data.length > 0) {
                         return res.status(200).json({ message: "Transaction  found", data: data });

@@ -60,7 +60,9 @@ exports.getMyTimeSheet = async (req, res) => {
         if (!user) {
             return res.status(404).send({ status: 404, message: "not found", data: {} });
         } else {
-            let findData = await TimeSheet.find({ user: user._id, }).populate([{ path: "bookingId" }, { path: "staffData.staffId" }]);
+            let findData = await TimeSheet.find({ user: user._id, }).populate([{ path: "bookingId" }, 
+                // { path: "staffData.staffId" }
+            ]);
             if (findData.length > 0) {
                 return res.status(200).send({ status: 200, message: "TimeSheet found", data: findData });
             }
