@@ -40,6 +40,7 @@ require("./routes/Client/Profile/invoices")(app);
 require("./routes/Client/Profile/myDetails")(app);
 require("./routes/Client/Profile/timeSheet")(app);
 require("./routes/Client/Profile/order")(app);
+require("./routes/Client/Profile/contactPreferenceRoutes")(app);
 require("./routes/Client/Profile/paymentMethod")(app);
 require("./routes/Client/Profile/Privacy")(app);
 require("./routes/Client/Profile/Terms")(app);
