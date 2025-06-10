@@ -136,4 +136,5 @@ const vendorDetailsSchema = new mongoose.Schema({
                 default: "Pending"
         }
 }, { timestamps: true });
+vendorDetailsSchema.index({ location: "2dsphere" });
 module.exports = mongoose.model("AllBooking", vendorDetailsSchema);

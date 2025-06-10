@@ -246,6 +246,18 @@ var userSchema = new schema({
     saturday: {
         type: Boolean,
         default: false
-    }
+    },
+    hours: {
+        type: Number,
+        default: 0,
+    },
+    satisfactionRating: {
+        type: Number,
+        default: 0,
+    },
+    whitelisted: {
+        type: Number,
+        default: 0,
+    },
 }, { timestamps: true });
 module.exports = mongoose.model("user", userSchema);

@@ -46,7 +46,7 @@ exports.getAllNewJob = async (req, res, next) => {
         try {
                 const data = await User.findOne({ _id: req.user._id, });
                 if (data) {
-                        const orders = await Booking.find({ }).populate('allBookingId departments.departmentId roles.roleId').sort({ date: 1 })
+                        const orders = await Booking.find({}).populate('allBookingId departments.departmentId roles.roleId').sort({ date: 1 })
                         if (orders.length == 0) {
                                 return res.status(404).json({ status: 404, message: "Orders not found", data: [] });
                         }
@@ -162,3 +162,97 @@ exports.easyApplyBooking = async (req, res, next) => {
                 return res.status(501).json({ status: 501, message: `Added to cart`, data: error });
         }
 };
+exports.getAllSearchJob = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ status: 404, msg: "User not found", data: {} });
+    }
+
+    const {
+      fromTime,
+      toTime,
+      startImmediately,
+      minSalary,
+      maxSalary,
+      roleId,
+      minDistance = 0,
+      maxDistance = 50000 
+    } = req.query;
+
+    const userCoords = user.location?.coordinates || [0, 0];
+
+    const pipeline = [
+      {
+        $geoNear: {
+          near: { type: "Point", coordinates: userCoords },
+          distanceField: "distance",
+          spherical: true,
+          distanceMultiplier: 0.001, // Convert meters to KM
+          maxDistance: parseFloat(maxDistance), // In meters
+          minDistance: parseFloat(minDistance) || 0
+        }
+      },
+      {
+        $lookup: {
+          from: "bookings",
+          localField: "_id",
+          foreignField: "allBookingId",
+          as: "bookingData"
+        }
+      },
+      {
+        $unwind: "$bookingData"
+      },
+      {
+        $match: {
+          ...(fromTime && toTime
+            ? {
+                "bookingData.date": {
+                  $gte: new Date(fromTime),
+                  $lte: new Date(toTime)
+                }
+              }
+            : {}),
+          ...(startImmediately === "true"
+            ? { "bookingData.startTime": { $exists: true } }
+            : {}),
+          ...(minSalary || maxSalary
+            ? {
+                "bookingData.price": {
+                  ...(minSalary ? { $gte: Number(minSalary) } : {}),
+                  ...(maxSalary ? { $lte: Number(maxSalary) } : {})
+                }
+              }
+            : {}),
+          ...(roleId
+            ? { "bookingData.roles.roleId": new mongoose.Types.ObjectId(roleId) }
+            : {})
+        }
+      },
+      {
+        $lookup: {
+          from: "roles",
+          localField: "bookingData.roles.roleId",
+          foreignField: "_id",
+          as: "rolesInfo"
+        }
+      },
+      {
+        $sort: { "bookingData.date": 1 }
+      }
+    ];
+
+    const results = await AllBooking.aggregate(pipeline);
+
+    if (!results.length) {
+      return res.status(404).json({ status: 404, message: "Orders not found", data: [] });
+    }
+
+    return res.status(200).json({ status: 200, msg: "Filtered orders", data: results });
+  } catch (error) {
+    console.error(error);
+    return res.status(501).json({ status: 501, message: "Server error", data: {} });
+  }
+};
+

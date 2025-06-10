@@ -22,7 +22,7 @@ exports.getTransactionById = async (req, res, next) => {
 };
 exports.getAllTransaction = async (req, res) => {
         try {
-                const data = await Transaction.find({ user: req.user._id }).populate("user candidate booking");
+                const data = await Transaction.find({ $or: [{ user: req.user._id }, { candidate: req.user._id }] }).populate("user candidate booking");
                 if (data.length > 0) {
                         return res.status(200).json({ message: "Transaction  found", data: data });
                 } else {
