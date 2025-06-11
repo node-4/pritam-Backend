@@ -230,6 +230,16 @@ exports.getAllSearchJob = async (req, res, next) => {
             : {})
         }
       },
+      // Lookup for departments
+      {
+        $lookup: {
+          from: "departments",
+          localField: "bookingData.departments.departmentId",
+          foreignField: "_id",
+          as: "departmentsInfo"
+        }
+      },
+      // Lookup for roles
       {
         $lookup: {
           from: "roles",
@@ -238,8 +248,70 @@ exports.getAllSearchJob = async (req, res, next) => {
           as: "rolesInfo"
         }
       },
+      // Add array fields to bookingData
+      {
+        $addFields: {
+          "bookingData.departments": {
+            $map: {
+              input: "$bookingData.departments",
+              as: "dept",
+              in: {
+                $mergeObjects: [
+                  "$$dept",
+                  {
+                    departmentInfo: {
+                      $arrayElemAt: [
+                        {
+                          $filter: {
+                            input: "$departmentsInfo",
+                            as: "di",
+                            cond: { $eq: ["$$di._id", "$$dept.departmentId"] }
+                          }
+                        },
+                        0
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "bookingData.roles": {
+            $map: {
+              input: "$bookingData.roles",
+              as: "role",
+              in: {
+                $mergeObjects: [
+                  "$$role",
+                  {
+                    roleInfo: {
+                      $arrayElemAt: [
+                        {
+                          $filter: {
+                            input: "$rolesInfo",
+                            as: "ri",
+                            cond: { $eq: ["$$ri._id", "$$role.roleId"] }
+                          }
+                        },
+                        0
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
       {
         $sort: { "bookingData.date": 1 }
+      },
+      // Remove temporary fields
+      {
+        $project: {
+          departmentsInfo: 0,
+          rolesInfo: 0
+        }
       }
     ];
 
@@ -255,4 +327,3 @@ exports.getAllSearchJob = async (req, res, next) => {
     return res.status(501).json({ status: 501, message: "Server error", data: {} });
   }
 };
-

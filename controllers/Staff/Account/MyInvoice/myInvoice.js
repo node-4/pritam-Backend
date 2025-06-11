@@ -5,7 +5,17 @@ const Booking = require('../../../../models/New/Order/booking');
 const Transaction = require('../../../../models/New/transactionModel');
 exports.getInvoiceById = async (req, res, next) => {
         try {
-                const cart = await Transaction.findOne({ _id: req.params.id }).populate('user candidate booking');
+                const cart = await Transaction.findOne({ _id: req.params.id }) .populate([
+                { path: 'user' },
+                { path: 'candidate' },
+                {
+                    path: 'booking',
+                    populate: [
+                        { path: 'departments.departmentId' },
+                        { path: 'roles.roleId' }
+                    ]
+                }
+            ]);
                 if (!cart) {
                         return res.status(200).json({ success: false, msg: "Order not found", data: {} });
                 }
@@ -15,14 +25,26 @@ exports.getInvoiceById = async (req, res, next) => {
         }
 };
 exports.getAllInvoice = async (req, res) => {
-        try {
-                const data = await Transaction.find({ candidate: req.user._id }).populate("user candidate booking");
-                if (data.length > 0) {
-                        return res.status(200).json({ message: "Transaction  found", data: data });
-                } else {
-                        return res.status(404).json({ status: 404, message: "No data found", data: {} });
+    try {
+        const data = await Transaction.find({ candidate: req.user._id })
+            .populate([
+                { path: 'user' },
+                { path: 'candidate' },
+                {
+                    path: 'booking',
+                    populate: [
+                        { path: 'departments.departmentId' },
+                        { path: 'roles.roleId' }
+                    ]
                 }
-        } catch (err) {
-                return res.status(400).json({ message: err.message });
+            ]);
+
+        if (data.length > 0) {
+            return res.status(200).json({ message: "Transaction found", data });
+        } else {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
         }
+    } catch (err) {
+        return res.status(400).json({ message: err.message });
+    }
 };
