@@ -8,6 +8,7 @@ const inquire = require("../../../models/inquireModel");
 const newLetter = require("../../../models/newLetter");
 const ratingModel = require("../../../models/ratingModel");
 const jobRegisterform = require("../../../models/jobRegisterform");
+const QRCode = require('qrcode');
 exports.updateMyDetails = async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
@@ -40,10 +41,30 @@ exports.getMyDetails = async (req, res) => {
         if (!user) {
             return res.status(404).send({ status: 404, message: "not found", data: {} });
         } else {
-            return res.status(200).send({ status: 200, message: "get my details", data: user });
+            if (user.qrCode == (null || undefined)) {
+                const qrCodeData = {
+                    _id: user._id,
+                    fullName: user.fullName,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    image: user.image,
+                    phone: user.phone,
+                    email: user.email,
+                };
+                const qrCodeDataURL = await QRCode.toDataURL(JSON.stringify(qrCodeData)); // e.g., data:image/png;base64,...
+                if (qrCodeDataURL) {
+                    console.log(qrCodeDataURL);
+                    let updated = await User.findByIdAndUpdate({ _id: req.user.id }, { $set: { qrCode: qrCodeDataURL } }, { new: true });
+                    if (updated) {
+                        return res.status(200).send({ status: 200, message: "get my details", data: updated });
+                    }
+                }
+            } else {
+                return res.status(200).send({ status: 200, message: "get my details", data: user });
+            }
         }
     } catch (err) {
         console.log(err);
         return res.status(500).send({ status: 500, message: "internal server error " + err.message, });
     }
-};
+}

@@ -259,5 +259,8 @@ var userSchema = new schema({
         type: Number,
         default: 0,
     },
+    qrCode: {
+        type: String,
+    },
 }, { timestamps: true });
 module.exports = mongoose.model("user", userSchema);

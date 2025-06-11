@@ -5,7 +5,7 @@ const Booking = require('../../../../models/New/Order/booking');
 const Transaction = require('../../../../models/New/transactionModel');
 exports.getInvoiceById = async (req, res, next) => {
         try {
-                const cart = await Transaction.findOne({ _id: req.params.id }) .populate([
+                const cart = await Transaction.findOne({ _id: req.params.id }).populate([
                 { path: 'user' },
                 { path: 'candidate' },
                 {
