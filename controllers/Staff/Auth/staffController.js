@@ -323,7 +323,7 @@ exports.forgetPassword = async (req, res) => {
         if (!data) {
             return res.status(400).send({ status: 400, data: {}, message: "Incorrect email" });
         } else {
-            let otp = newOTP.generate(4, { alphabets: false, upperCase: false, specialChar: false, });
+            let otp = Math.floor(100000 + Math.random() * 900000).toString();
             // var transporter = nodemailer.createTransport({ timeout: 600000, pool: true, service: 'gmail', auth: { "user": "support@spinandshare.com", "pass": "bsoxbpovrhmpxdnd" } });
             // let mailOptions;
             // mailOptions = { from: 'Spinand Share <>', to: req.body.email, subject: 'Password verification', text: `Your account verification code is ${otp}`, };
