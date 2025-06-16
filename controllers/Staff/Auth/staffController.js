@@ -315,3 +315,68 @@ exports.updateBusinessDetails = async (req, res) => {
         return res.status(500).send({ status: 500, error: "internal server error" + err.message });
     }
 };
+exports.forgetPassword = async (req, res) => {
+    try {
+        const { email, userType } = req.body;
+        req.body.email = email.split(" ").join("").toLowerCase();
+        const data = await userModel.findOne({ email: req.body.email, userType: userType });
+        if (!data) {
+            return res.status(400).send({ status: 400, data: {}, message: "Incorrect email" });
+        } else {
+            let otp = newOTP.generate(4, { alphabets: false, upperCase: false, specialChar: false, });
+            // var transporter = nodemailer.createTransport({ timeout: 600000, pool: true, service: 'gmail', auth: { "user": "support@spinandshare.com", "pass": "bsoxbpovrhmpxdnd" } });
+            // let mailOptions;
+            // mailOptions = { from: 'Spinand Share <>', to: req.body.email, subject: 'Password verification', text: `Your account verification code is ${otp}`, };
+            // let info = await transporter.sendMail(mailOptions);
+            // if (info) {
+            let accountVerification = false;
+            let otpExpiration = new Date(Date.now() + 5 * 60 * 1000);
+            const updated = await userModel.findOneAndUpdate({ _id: data._id }, { $set: { accountVerification: accountVerification, otp: otp, otpExpiration: otpExpiration } }, { new: true, });
+            if (updated) {
+                return res.status(200).json({ message: "Otp send to your email.", status: 200, data: updated });
+            }
+            // } else {
+            //     return res.status(200).json({ message: "Otp not send on your mail please check.", status: 200, data: {} });
+            // }
+        }
+    } catch (err) {
+        console.log(err.message);
+        return res.status(500).send({ message: "Internal server error", error: err.message, });
+    }
+};
+exports.forgotVerifyOtp = async (req, res) => {
+    try {
+        const { otp } = req.body;
+        const user = await userModel.findOne({ _id: req.params.id });
+        if (!user) {
+            return res.status(404).send({ message: "user not found" });
+        }
+        if (user.otp !== otp || user.otpExpiration < Date.now()) {
+            return res.status(400).json({ message: "Invalid otp." });
+        }
+        const updated = await userModel.findByIdAndUpdate({ _id: user._id }, { $set: { accountVerification: true } }, { new: true });
+        let obj = { userId: updated._id, otp: updated.otp, }
+        return res.status(200).send({ status: 200, message: "Verify otp successfully", data: obj });
+    } catch (err) {
+        console.log(err.message);
+        return res.status(500).send({ error: "Internal server error" + err.message });
+    }
+};
+exports.changePassword = async (req, res) => {
+    try {
+        const user = await userModel.findOne({ _id: req.params.id });
+        if (user) {
+            if (req.body.newPassword == req.body.confirmPassword) {
+                const updated = await userModel.findOneAndUpdate({ _id: user._id }, { $set: { password: bcrypt.hashSync(req.body.newPassword, 8), accountVerification: true } }, { new: true });
+                return res.status(200).send({ status: 200, message: "Password update successfully.", data: updated, });
+            } else {
+                return res.status(501).send({ message: "Password Not matched.", data: {}, });
+            }
+        } else {
+            return res.status(404).json({ status: 404, message: "No data found", data: {} });
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(501).send({ status: 501, message: "Internal server error.", data: {}, });
+    }
+};

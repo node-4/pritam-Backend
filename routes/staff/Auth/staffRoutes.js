@@ -30,4 +30,7 @@ module.exports = (app) => {
     app.put('/api/v1/staff/updateAvailability/:id', staff.updateAvailability);
     app.put('/api/v1/staff/updateTermsAccepted/:id', staff.updateTermsAccepted);
     app.put('/api/v1/staff/updateBusinessDetails/:id', staff.updateBusinessDetails);
+    app.post('/api/v1/staff/forgetPassword', staff.forgetPassword);
+    app.post('/api/v1/staff/forgotVerifyOtp/:id', staff.forgotVerifyOtp);
+    app.post('/api/v1/staff/changePassword/:id', staff.changePassword);
 };

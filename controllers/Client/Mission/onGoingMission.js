@@ -31,7 +31,7 @@ exports.getOnGoingMissionById = async (req, res, next) => {
         return res.status(501).json({ status: 501, message: `Added to cart`, data: error });
     }
 };
-exports.modifiedOnGoingMission = async (req, res, next) => {s
+exports.modifiedOnGoingMission = async (req, res, next) => {
     try {
         const { price, fromTime, toTime, date, staffId, jobBusinessTypeId, jobId, rating, comment, staffAgain } = req.body;
         const data = await User.findOne({ _id: req.user._id, });
@@ -45,7 +45,7 @@ exports.modifiedOnGoingMission = async (req, res, next) => {s
             cart.toTime = toTime;
             cart.date = date;
             await cart.save();
-            let data = {
+            let data1 = {
                 userId: data._id,
                 staffId: staffId,
                 jobBusinessTypeId: jobBusinessTypeId,
@@ -57,7 +57,7 @@ exports.modifiedOnGoingMission = async (req, res, next) => {s
                 date: new Date(),
                 type: "CLIENT",
             }
-            const Data = await Rating.create(data);
+            const Data = await Rating.create(data1);
             if (Data) {
                 let obj = {
                     userId: data._id,
@@ -73,6 +73,7 @@ exports.modifiedOnGoingMission = async (req, res, next) => {s
             return res.status(200).json({ status: 500, msg: "User not found", data: {} });
         }
     } catch (error) {
+        console.log(error);
         return res.status(501).json({ status: 501, message: `Added to cart`, data: error });
     }
 };
