@@ -7,21 +7,21 @@ exports.getAllBooking = async (req, res, next) => {
                 if (data) {
                         if (req.query.serviceStatus != (null || undefined)) {
                                 if (req.query.serviceStatus == "Done") {
-                                        const orders = await Booking.find({ user: req.user._id, fromTime: { $lt: new Date() } }).populate('allBookingId').sort({ date: -1 })
+                                        const orders = await Booking.find({ user: req.user._id, fromTime: { $lt: new Date() } }).populate('allBookingId departments.departmentId roles.roleId').sort({ date: -1 })
                                         if (orders.length == 0) {
                                                 return res.status(404).json({ status: 404, message: "Orders not found", data: [] });
                                         }
                                         return res.status(200).json({ status: 200, msg: "orders of user", data: orders })
                                 }
                                 if (req.query.serviceStatus == "Pending") {
-                                        const orders = await Booking.find({ user: req.user._id, fromTime: { $gte: new Date() } }).populate('allBookingId').sort({ date: 1 })
+                                        const orders = await Booking.find({ user: req.user._id, fromTime: { $gte: new Date() } }).populate('allBookingId departments.departmentId roles.roleId').sort({ date: 1 })
                                         if (orders.length == 0) {
                                                 return res.status(404).json({ status: 404, message: "Orders not found", data: [] });
                                         }
                                         return res.status(200).json({ status: 200, msg: "orders of user", data: orders })
                                 }
                         } else {
-                                const orders = await Booking.find({ user: req.user._id, }).populate('allBookingId').sort({ date: 1 })
+                                const orders = await Booking.find({ user: req.user._id, }).populate('allBookingId departments.departmentId roles.roleId').sort({ date: 1 })
                                 if (orders.length == 0) {
                                         return res.status(404).json({ status: 404, message: "Orders not found", data: [] });
                                 }
@@ -37,7 +37,7 @@ exports.getAllBooking = async (req, res, next) => {
 };
 exports.getBookingById = async (req, res, next) => {
         try {
-                const cart = await Booking.findOne({ _id: req.params.id }).populate('allBookingId');
+                const cart = await Booking.findOne({ _id: req.params.id }).populate('allBookingId departments.departmentId roles.roleId');
                 if (!cart) {
                         return res.status(200).json({ success: false, msg: "Order not found", data: {} });
                 }
